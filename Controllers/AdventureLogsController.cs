@@ -80,7 +80,7 @@ namespace Endevrian.Controllers
             {
                 if (!AdventureLogExists(id))
                 {
-                    await _logController.AddSystemLog($"WARNING: User {requestingUser} has caused a DbUpdateConcurrencyException");
+                    _logController.AddSystemLog($"WARNING: User {requestingUser} has caused a DbUpdateConcurrencyException");
                     return NotFound();
                 }
                 else
@@ -120,7 +120,7 @@ namespace Endevrian.Controllers
             }
             catch (Exception exc)
             {
-                await _logController.AddSystemLog($"ERROR: {exc.Message}");
+                _logController.AddSystemLog($"ERROR: {exc.Message}");
                 return BadRequest();
             }
         }
@@ -160,7 +160,7 @@ namespace Endevrian.Controllers
                 await _context.HistoricalAdventureLogCounts.AddAsync(logCount);
                 await _context.SaveChangesAsync();
 
-                await _logController.AddSystemLog("INFO: Created New Row In HistoricalAdventureLogCounts table.");
+                _logController.AddSystemLog("INFO: Created New Row In HistoricalAdventureLogCounts table.");
             }
             else if (logCounts.Count() == 1)
             {
@@ -172,7 +172,7 @@ namespace Endevrian.Controllers
             }
             else
             {
-                await _logController.AddSystemLog("WARNING: There is more than one row in the HistoricalAdventureLogCounts table");
+                _logController.AddSystemLog("WARNING: There is more than one row in the HistoricalAdventureLogCounts table");
             }
 
             return;
