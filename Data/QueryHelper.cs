@@ -35,7 +35,7 @@ namespace Endevrian.Data
                 }
                 catch(Exception exc)
                 {
-                    //_logController.AddSystemLog($"ERROR: Failed to run query: {exc}");
+                    
                 }
                 finally
                 {
