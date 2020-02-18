@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "Adventure Log";
+}
+
+<div class="d-flex flex-column p-2 align-items-end">
+    <div>
+        <button class="btn border border-primary text-primary" type="button" data-toggle="collapse" data-target="#collapseNewLog">
+            New Session Log
+        </button>
+    </div>
+</div>
+<div class="collapse" id="collapseNewLog">
+    <div class="jumbotron">
+        <form id="logForm">
+            <input type="text" class="form-control" id="inputLogTitle" placeholder="Session Title" /><br />
+            <textarea class="form-control" id="textAreaLogBody" rows="10" cols="50" placeholder="When we last left our adventurers..."></textarea>
+            <div class="d-flex flex-column p-2 align-items-end">
+                <div>
+                    <input class="btn border border-success text-success" type="submit" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@foreach (var logForDisplay in Model)
+{
+
+    var logId = logForDisplay.Log.AdventureLogID;
+
+    <div class="jumbotron">
+        <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.Log.LogTitle</h1>
+        <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
+        <p>@logForDisplay.DisplayCreateDate</p>
+        <hr class="my-4">
+        <p id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@logForDisplay.Log.LogBody</p>
+        <textarea id="areaInputLogBody@(logId)" onfocusout="editLogBody(@(logId))" class="d-none form-control" rows="10" cols="50"></textarea>
+        <div class="d-flex flex-column p-2 align-items-end">
+            <div>
+                <button class="btn border border-danger text-danger" onclick="deleteAdventureLog(@logId)">Delete</button>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+
+    const logForm = $("#logForm");
+    const formData = new FormData();
+
+    logForm.on("submit", async function (evt) {
+
+        evt.preventDefault();
+
+        item = {
+
+            logTitle: $("#inputLogTitle").val(),
+            logBody: $("#textAreaLogBody").val()
+
+        }
+
+        fetch("api/AdventureLogs", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
+
+    });
+
+    function deleteAdventureLog(id) {
+
+        fetch("api/AdventureLogs/" + id, {
+            method: 'DELETE'
+        })
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to delete item"));
+
+    }
+
+    function displayEditLogName(id) {
+
+        $("#hLogTitle" + id).toggleClass('d-none');
+        var currentLogTitleText = $("#hLogTitle" + id).text();
+        $("#inputLogTitle" + id).val(currentLogTitleText);
+        $("#inputLogTitle" + id).toggleClass('d-none');
+        $("#inputLogTitle" + id).focus();
+
+    }
+
+    function editLogName(id) {
+
+        $("#inputLogTitle" + id).toggleClass('d-none');
+        var updatedLogTitle = $("#inputLogTitle" + id).val();
+        $("#hLogTitle" + id).toggleClass('d-none');
+        $("#hLogTitle" + id).text(updatedLogTitle);
+
+        item = {
+
+            adventureLogID: id,
+            logTitle: updatedLogTitle
+
+        }
+
+        fetch("api/AdventureLogs/" + id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
+
+    }
+
+    function displayEditLogBody(id) {
+
+        $("#pLogBody" + id).toggleClass('d-none');
+        var currentLogBodyText = $("#pLogBody" + id).text();
+        $("#areaInputLogBody" + id).val(currentLogBodyText);
+        $("#areaInputLogBody" + id).toggleClass('d-none');
+        $("#areaInputLogBody" + id).focus();
+
+    }
+
+    function editLogBody(id) {
+
+        $("#areaInputLogBody" + id).toggleClass('d-none');
+        var updatedLogBody = $("#areaInputLogBody" + id).val();
+        $("#pLogBody" + id).toggleClass('d-none');
+        $("#pLogBody" + id).text(updatedLogBody);
+
+        item = {
+
+            adventureLogID: id,
+            logBody: updatedLogBody
+
+        }
+
+        fetch("api/AdventureLogs/" + id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
+
+    }
+
+
+</script>
