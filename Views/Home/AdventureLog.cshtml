@@ -33,7 +33,7 @@
         <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
         <p>@logForDisplay.DisplayCreateDate</p>
         <hr class="my-4">
-        <p id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@logForDisplay.Log.LogBody</p>
+        <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.Log.LogBody)</div>
         <textarea id="areaInputLogBody@(logId)" onfocusout="editLogBody(@(logId))" class="d-none form-control" rows="10" cols="50"></textarea>
         <div class="d-flex flex-column p-2 align-items-end">
             <div>
@@ -44,6 +44,32 @@
 }
 
 <script>
+
+    ClassicEditor
+        .create(document.querySelector('#textAreaLogBody'), {
+            removePlugins: ['ImageUpload', 'MediaEmbed']
+        })
+        .then( editor => {
+                console.log( editor );
+        } )
+        .catch( error => {
+                console.error( error );
+        });
+
+    function attachEditor(id) {
+
+        ClassicEditor
+        .create(document.querySelector('#textAreaLogBody'), {
+            removePlugins: ['ImageUpload', 'MediaEmbed']
+        })
+        .then( editor => {
+                console.log( editor );
+        } )
+        .catch( error => {
+                console.error( error );
+        });
+
+    }
 
     const logForm = $("#logForm");
     const formData = new FormData();

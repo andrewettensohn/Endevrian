@@ -23,7 +23,7 @@ namespace Endevrian.Controllers
 
         // POST: SystemLog
         [HttpPost]
-        public void AddSystemLog(string message)
+        public async void AddSystemLog(string message)
         {
             SystemLog systemLog = new SystemLog
             {
@@ -31,8 +31,8 @@ namespace Endevrian.Controllers
                 LogTime = DateTime.Now
             };
 
-            _context.SystemLogs.Add(systemLog);
-            _context.SaveChanges();
+            await _context.SystemLogs.AddAsync(systemLog);
+            await _context.SaveChangesAsync();
 
             return;
         }

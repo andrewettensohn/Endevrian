@@ -157,6 +157,7 @@ namespace Endevrian.Controllers
                 {
                     HistoricalLogCount = 1
                 };
+
                 await _context.HistoricalAdventureLogCounts.AddAsync(logCount);
                 await _context.SaveChangesAsync();
 
@@ -164,10 +165,10 @@ namespace Endevrian.Controllers
             }
             else if (logCounts.Count() == 1)
             {
-                HistoricalAdventureLogCount logCount = await _context.HistoricalAdventureLogCounts.FirstAsync();
+
+                HistoricalAdventureLogCount logCount = logCounts.First();
                 logCount.HistoricalLogCount++;
-                _context.HistoricalAdventureLogCounts.Update(logCount);
-                await _context.SaveChangesAsync();
+                QueryHelper.UpdateQuery($"UPDATE HistoricalAdventureLogCounts SET HistoricalLogCount = {logCount.HistoricalLogCount} WHERE HistoricalAdventureLogCountID = 1");
 
             }
             else
