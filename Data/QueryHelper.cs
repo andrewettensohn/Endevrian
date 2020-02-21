@@ -10,7 +10,7 @@ namespace Endevrian.Data
 {
     public class QueryHelper
     {
-
+        //TODO Make this not static
         static readonly string _connectionString;
 
         static QueryHelper()
