@@ -10,15 +10,18 @@ namespace Endevrian.Data
 {
     public class QueryHelper
     {
-        //TODO Make this not static
-        static readonly string _connectionString;
+        
+        private readonly SystemLogController _logger;
+        private readonly string _connectionString;
 
-        static QueryHelper()
+        public QueryHelper(IConfiguration config, SystemLogController systemLogController)
         {
-            _connectionString = "Server=(localdb)\\mssqllocaldb;Database=aspnet-Endevrian-5E06C235-D29D-4E9D-8A06-5EE32B599278;Trusted_Connection=True;MultipleActiveResultSets=true";
+            _connectionString = config.GetConnectionString("DefaultConnection");
+            _logger = systemLogController;
+            
         }
 
-        public static string SelectQuery(string query, string field)
+        public string SelectQuery(string query, string field)
         {
 
             string result = "No Results";
@@ -37,7 +40,7 @@ namespace Endevrian.Data
                 }
                 catch(Exception exc)
                 {
-                    
+                    _logger.AddSystemLog($"Failed to read query: {exc}");
                 }
                 finally
                 {
@@ -52,7 +55,7 @@ namespace Endevrian.Data
             return result;
         }
 
-        public static void UpdateQuery(string query)
+        public void UpdateQuery(string query)
         {
 
             using SqlConnection connection = new SqlConnection(_connectionString);

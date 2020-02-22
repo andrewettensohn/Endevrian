@@ -10,6 +10,7 @@ using Endevrian.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Endevrian.Utility;
+using Microsoft.Extensions.Configuration;
 
 namespace Endevrian.Controllers
 {
@@ -18,15 +19,14 @@ namespace Endevrian.Controllers
     public class AdventureLogsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _UserManager;
         private readonly SystemLogController _logController;
+        private readonly QueryHelper _queryHelper;
 
-        public AdventureLogsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, SystemLogController logController)
+        public AdventureLogsController(ApplicationDbContext context, SystemLogController logController, IConfiguration configuration)
         {
             _context = context;
-            _UserManager = userManager;
             _logController = logController;
-
+            _queryHelper = new QueryHelper(configuration, logController);
         }
 
         // GET: api/AdventureLogs
@@ -168,7 +168,7 @@ namespace Endevrian.Controllers
 
                 HistoricalAdventureLogCount logCount = logCounts.First();
                 logCount.HistoricalLogCount++;
-                QueryHelper.UpdateQuery($"UPDATE HistoricalAdventureLogCounts SET HistoricalLogCount = {logCount.HistoricalLogCount} WHERE HistoricalAdventureLogCountID = 1");
+                _queryHelper.UpdateQuery($"UPDATE HistoricalAdventureLogCounts SET HistoricalLogCount = {logCount.HistoricalLogCount} WHERE HistoricalAdventureLogCountID = 1");
 
             }
             else
