@@ -48,6 +48,11 @@ namespace Endevrian.Controllers
             return View(model);
         }
 
+        public IActionResult CampaignList()
+        {
+            return View();
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

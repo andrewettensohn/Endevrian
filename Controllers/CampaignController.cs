@@ -38,9 +38,14 @@ namespace Endevrian.Controllers
             return campaign;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Campaign>> PostCampaign(Campaign campaign)
+        [HttpPost("{campaignName}")]
+        public async Task<ActionResult<Campaign>> PostCampaign(string campaignName)
         {
+
+            Campaign campaign = new Campaign()
+            {
+                CampaignName = campaignName
+            };
 
             try
             {

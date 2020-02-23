@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Campaigns";
+}
+
+<div class="jumbotron">
+    <form id="formAddCampaign">
+        <div class="input-group mb-3">
+            <input id="inputCampaignName" type="text" class="form-control" placeholder="Campaign Name">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    const formAddCampaign = $("#formAddCampaign");
+
+    formAddCampaign.on("submit", async function (evt) {
+
+        evt.preventDefault();
+
+        //item = {
+
+        //    campaignName: $("#inputCampaignName").text()
+
+        //}
+
+        campaignName = $("#inputCampaignName").val();
+        console.log(campaignName)
+
+        fetch("api/Campaigns/" + campaignName, {
+            method: 'POST',
+        })
+            .then((response) => response.json())
+            //.then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
+
+    });
+
+</script>
