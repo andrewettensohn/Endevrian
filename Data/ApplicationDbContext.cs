@@ -19,5 +19,7 @@ namespace Endevrian.Data
         public DbSet<HistoricalAdventureLogCount> HistoricalAdventureLogCounts { get; set; }
 
         public DbSet<SystemLog> SystemLogs { get; set; }
+
+        public DbSet<Campaign> Campaigns { get; set; }
     }
 }

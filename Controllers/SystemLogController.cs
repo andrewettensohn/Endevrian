@@ -36,5 +36,23 @@ namespace Endevrian.Controllers
 
             return; 
         }
+
+
+        [HttpPost]
+        public void AddSystemLog(string type, string message)
+        {
+
+            SystemLog systemLog = new SystemLog
+            {
+                Type = type,
+                Message = message,
+                LogTime = DateTime.Now
+            };
+
+            _context.SystemLogs.AddAsync(systemLog);
+            _context.SaveChangesAsync();
+
+            return;
+        }
     }
 }

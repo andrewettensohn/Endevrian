@@ -57,7 +57,7 @@ namespace Endevrian.Controllers
             string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
             AdventureLog adventureLog = await _context.AdventureLogs.FindAsync(id);
 
-            if (id != sentAdventureLog.AdventureLogID || adventureLog.UserID != requestingUser)
+            if (id != sentAdventureLog.AdventureLogID || adventureLog.UserId != requestingUser)
             {
                 return BadRequest();
             }
@@ -98,7 +98,7 @@ namespace Endevrian.Controllers
         {
             try
             {
-                adventureLog.UserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                adventureLog.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 if (adventureLog.LogTitle == "" || adventureLog.LogTitle is null)
                 {
@@ -131,7 +131,7 @@ namespace Endevrian.Controllers
         {
             var adventureLog = await _context.AdventureLogs.FindAsync(id);
 
-            if (adventureLog == null || adventureLog.UserID != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            if (adventureLog == null || adventureLog.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
             {
                 return NotFound();
             }

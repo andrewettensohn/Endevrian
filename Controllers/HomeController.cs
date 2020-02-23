@@ -44,7 +44,6 @@ namespace Endevrian.Controllers
                 model.Add(logForDisplay);
 
             }
-            //model.OrderByDescending(x => x.Log.AdventureLogID);
 
             return View(model);
         }

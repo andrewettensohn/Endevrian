@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Endevrian.Migrations
 {
-    public partial class inital : Migration
+    public partial class Inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,7 @@ namespace Endevrian.Migrations
                 {
                     AdventureLogID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserID = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true),
                     LogTitle = table.Column<string>(nullable: true),
                     LogBody = table.Column<string>(nullable: true),
                     LogDate = table.Column<DateTime>(nullable: false)
@@ -63,6 +63,21 @@ namespace Endevrian.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Campaigns",
+                columns: table => new
+                {
+                    CampaignID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    CampaignName = table.Column<string>(nullable: true),
+                    CampaignCreateDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Campaigns", x => x.CampaignID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HistoricalAdventureLogCounts",
                 columns: table => new
                 {
@@ -82,6 +97,7 @@ namespace Endevrian.Migrations
                 {
                     SystemLogID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(nullable: true),
                     Message = table.Column<string>(nullable: true),
                     LogTime = table.Column<DateTime>(nullable: false)
                 },
@@ -255,6 +271,9 @@ namespace Endevrian.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Campaigns");
 
             migrationBuilder.DropTable(
                 name: "HistoricalAdventureLogCounts");

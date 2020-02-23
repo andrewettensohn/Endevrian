@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Endevrian.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200223022409_inital")]
-    partial class inital
+    [Migration("20200223171039_Inital")]
+    partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,12 +37,33 @@ namespace Endevrian.Migrations
                     b.Property<string>("LogTitle")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserID")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AdventureLogID");
 
                     b.ToTable("AdventureLogs");
+                });
+
+            modelBuilder.Entity("Endevrian.Models.Campaign", b =>
+                {
+                    b.Property<int>("CampaignID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CampaignCreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CampaignName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CampaignID");
+
+                    b.ToTable("Campaigns");
                 });
 
             modelBuilder.Entity("Endevrian.Models.HistoricalAdventureLogCount", b =>
@@ -74,6 +95,9 @@ namespace Endevrian.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SystemLogID");

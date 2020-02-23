@@ -9,7 +9,7 @@ namespace Endevrian.Models
     {
         public int AdventureLogID { get; set; }
 
-        public string UserID { get; set; }
+        public string UserId { get; set; }
 
         //public string CampaignID { get; set; }
 
