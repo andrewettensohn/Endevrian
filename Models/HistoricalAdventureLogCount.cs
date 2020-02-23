@@ -10,5 +10,7 @@ namespace Endevrian.Models
         public int HistoricalAdventureLogCountID { get; set; }
 
         public int HistoricalLogCount { get; set; }
+
+        public int HistoricalLogCountTest { get; set; }
     }
 }

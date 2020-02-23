@@ -8,17 +8,22 @@ using System.Threading.Tasks;
 
 namespace Endevrian.Data
 {
-    public static class QueryHelper
+    public class QueryHelper
     {
-        //private  SystemLogController _logController;
+        
+        private readonly SystemLogController _logger;
+        private readonly string _connectionString;
 
-            //_logController = logController;
-
-        public static string RunQuery(string query, string field)
+        public QueryHelper(IConfiguration config, SystemLogController systemLogController)
         {
-            string _connectionString = "Server=(localdb)\\mssqllocaldb" +
-                        ";Database=aspnet-Endevrian-5E06C235-D29D-4E9D-8A06-5EE32B599278;Trusted_Connection=True;MultipleActiveResultSets=true";
+            _connectionString = config.GetConnectionString("DefaultConnection");
+            _logger = systemLogController;
             
+        }
+
+        public string SelectQuery(string query, string field)
+        {
+
             string result = "No Results";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -35,17 +40,37 @@ namespace Endevrian.Data
                 }
                 catch(Exception exc)
                 {
-                    
+                    _logger.AddSystemLog($"Failed to read query: {exc}");
                 }
                 finally
                 {
-                    // Always call Close when done reading.
+
                     reader.Close();
+                    connection.Dispose();
+
                 }
 
             }
 
             return result;
+        }
+
+        public void UpdateQuery(string query)
+        {
+
+            //using SqlConnection connection = new SqlConnection(_connectionString);
+            //SqlCommand command = new SqlCommand(query, connection);
+            //connection.Open();
+            //connection.Dispose();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+
+            return;
         }
     }
 }

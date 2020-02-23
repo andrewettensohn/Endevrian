@@ -31,10 +31,10 @@ namespace Endevrian.Controllers
                 LogTime = DateTime.Now
             };
 
-            _context.SystemLogs.Add(systemLog);
-            _context.SaveChanges();
+            _context.SystemLogs.AddAsync(systemLog);
+            _context.SaveChangesAsync();
 
-            return;
+            return; 
         }
     }
 }

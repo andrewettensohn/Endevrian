@@ -10,6 +10,7 @@ using Endevrian.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Endevrian.Utility;
+using Microsoft.Extensions.Configuration;
 
 namespace Endevrian.Controllers
 {
@@ -18,15 +19,14 @@ namespace Endevrian.Controllers
     public class AdventureLogsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _UserManager;
         private readonly SystemLogController _logController;
+        private readonly QueryHelper _queryHelper;
 
-        public AdventureLogsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, SystemLogController logController)
+        public AdventureLogsController(ApplicationDbContext context, SystemLogController logController, IConfiguration configuration)
         {
             _context = context;
-            _UserManager = userManager;
             _logController = logController;
-
+            _queryHelper = new QueryHelper(configuration, logController);
         }
 
         // GET: api/AdventureLogs
@@ -113,7 +113,7 @@ namespace Endevrian.Controllers
                 adventureLog.LogDate = Utilites.NewCreateDateFormatted();
 
                 _context.AdventureLogs.Add(adventureLog);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 AddToHistoricalAdventureLogCount();
 
                 return CreatedAtAction("GetAdventureLog", new { id = adventureLog.AdventureLogID }, adventureLog);
@@ -147,9 +147,9 @@ namespace Endevrian.Controllers
             return _context.AdventureLogs.Any(e => e.AdventureLogID == id);
         }
 
-        private async void AddToHistoricalAdventureLogCount()
+        private void AddToHistoricalAdventureLogCount()
         {
-            List<HistoricalAdventureLogCount> logCounts = await _context.HistoricalAdventureLogCounts.ToListAsync();
+            List<HistoricalAdventureLogCount> logCounts = _context.HistoricalAdventureLogCounts.ToList();
 
             if (logCounts.Count() < 1)
             {
@@ -157,17 +157,25 @@ namespace Endevrian.Controllers
                 {
                     HistoricalLogCount = 1
                 };
-                await _context.HistoricalAdventureLogCounts.AddAsync(logCount);
-                await _context.SaveChangesAsync();
 
-                _logController.AddSystemLog("INFO: Created New Row In HistoricalAdventureLogCounts table.");
+                try
+                {
+                    _context.HistoricalAdventureLogCounts.Add(logCount);
+                    _context.SaveChanges();
+                    _logController.AddSystemLog("INFO: Created New Row In HistoricalAdventureLogCounts table.");
+                }
+                catch(Exception exc)
+                {
+                    _logController.AddSystemLog($"ERROR: Unable to Create New Row In HistoricalAdventureLogCounts table: {exc}");
+                }
+
             }
             else if (logCounts.Count() == 1)
             {
-                HistoricalAdventureLogCount logCount = await _context.HistoricalAdventureLogCounts.FirstAsync();
+
+                HistoricalAdventureLogCount logCount = logCounts.First();
                 logCount.HistoricalLogCount++;
-                _context.HistoricalAdventureLogCounts.Update(logCount);
-                await _context.SaveChangesAsync();
+                _queryHelper.UpdateQuery($"UPDATE HistoricalAdventureLogCounts SET HistoricalLogCount = {logCount.HistoricalLogCount}");
 
             }
             else

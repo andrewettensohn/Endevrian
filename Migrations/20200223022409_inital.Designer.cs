@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Endevrian.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200213033317_Inital")]
-    partial class Inital
+    [Migration("20200223022409_inital")]
+    partial class inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,6 +53,9 @@ namespace Endevrian.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("HistoricalLogCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HistoricalLogCountTest")
                         .HasColumnType("int");
 
                     b.HasKey("HistoricalAdventureLogCountID");
