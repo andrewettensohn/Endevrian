@@ -34,10 +34,13 @@
         <p>@logForDisplay.DisplayCreateDate</p>
         <hr class="my-4">
         <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.Log.LogBody)</div>
-        <textarea id="areaInputLogBody@(logId)" onfocusout="editLogBody(@(logId))" class="d-none form-control" rows="10" cols="50"></textarea>
+        <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
         <div class="d-flex flex-column p-2 align-items-end">
             <div>
-                <button class="btn border border-danger text-danger" onclick="deleteAdventureLog(@logId)">Delete</button>
+                <button id="btnUpdateLogBody@(logId)" class="d-none btn border border-success text-success mb-3">Update</button>
+            </div>
+            <div>
+                <button id="btnDeleteLog@(logId)" class="btn border border-danger text-danger" onclick="deleteAdventureLog(@logId)">Delete</button>
             </div>
         </div>
     </div>
@@ -49,28 +52,6 @@
         .create(document.querySelector('#textAreaLogBody'), {
             removePlugins: ['ImageUpload', 'MediaEmbed']
         })
-        .then( editor => {
-                console.log( editor );
-        } )
-        .catch( error => {
-                console.error( error );
-        });
-
-    //TODO: Attach editor to update function
-    function attachEditor(id) {
-
-        ClassicEditor
-        .create(document.querySelector('#textAreaLogBody'), {
-            removePlugins: ['ImageUpload', 'MediaEmbed']
-        })
-        .then( editor => {
-                console.log( editor );
-        } )
-        .catch( error => {
-                console.error( error );
-        });
-
-    }
 
     const logForm = $("#logForm");
     const formData = new FormData();
@@ -142,44 +123,60 @@
         })
             .then((response) => response.json())
             .then(() => location.reload())
-            .catch(() => console.log("Failed to create item"));
+            .catch(() => console.log("Failed to update log name"));
 
     }
 
     function displayEditLogBody(id) {
 
         $("#pLogBody" + id).toggleClass('d-none');
-        var currentLogBodyText = $("#pLogBody" + id).text();
-        $("#areaInputLogBody" + id).val(currentLogBodyText);
+        var currentLogBodyText = $("#pLogBody" + id).html();
+        $("#areaInputLogBody" + id).html(currentLogBodyText);
         $("#areaInputLogBody" + id).toggleClass('d-none');
         $("#areaInputLogBody" + id).focus();
+        $("#btnDeleteLog" + id).toggleClass('d-none');
+        $("#btnUpdateLogBody" + id).toggleClass('d-none');
+        attachEditor(id);
 
     }
 
-    function editLogBody(id) {
+    function attachEditor(id) {
 
-        $("#areaInputLogBody" + id).toggleClass('d-none');
-        var updatedLogBody = $("#areaInputLogBody" + id).val();
-        $("#pLogBody" + id).toggleClass('d-none');
-        $("#pLogBody" + id).text(updatedLogBody);
+        let editor;
 
-        item = {
+        ClassicEditor
+            .create( document.querySelector( '#areaInputLogBody' + id ) )
+            .then( newEditor => {
+                editor = newEditor;
+            } )
+            .catch( error => {
+                console.error( error );
+            });
+
+
+        document.querySelector( '#btnUpdateLogBody' + id).addEventListener( 'click', () => {
+            const editorData = editor.getData();
+
+            item = {
 
             adventureLogID: id,
-            logBody: updatedLogBody
+            logBody: editorData
 
-        }
+            }
 
-        fetch("api/AdventureLogs/" + id, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(item)
-        })
-            .then((response) => response.json())
-            .then(() => location.reload())
-            .catch(() => console.log("Failed to create item"));
+            console.log(item.logBody)
+
+            fetch("api/AdventureLogs/" + id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(item)
+            })
+                .then(() => location.reload())
+                .catch(error => console.error('Unable to edit log body', error));
+
+        });
 
     }
 

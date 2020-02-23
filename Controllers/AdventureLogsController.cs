@@ -158,10 +158,17 @@ namespace Endevrian.Controllers
                     HistoricalLogCount = 1
                 };
 
-                await _context.HistoricalAdventureLogCounts.AddAsync(logCount);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.HistoricalAdventureLogCounts.AddAsync(logCount);
+                    await _context.SaveChangesAsync();
+                    _logController.AddSystemLog("INFO: Created New Row In HistoricalAdventureLogCounts table.");
+                }
+                catch(Exception exc)
+                {
+                    _logController.AddSystemLog($"ERROR: Unable to Create New Row In HistoricalAdventureLogCounts table: {exc}");
+                }
 
-                _logController.AddSystemLog("INFO: Created New Row In HistoricalAdventureLogCounts table.");
             }
             else if (logCounts.Count() == 1)
             {
