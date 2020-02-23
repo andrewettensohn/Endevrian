@@ -53,6 +53,9 @@ namespace Endevrian.Migrations
                     b.Property<int>("HistoricalLogCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("HistoricalLogCountTest")
+                        .HasColumnType("int");
+
                     b.HasKey("HistoricalAdventureLogCountID");
 
                     b.ToTable("HistoricalAdventureLogCounts");

@@ -113,7 +113,7 @@ namespace Endevrian.Controllers
                 adventureLog.LogDate = Utilites.NewCreateDateFormatted();
 
                 _context.AdventureLogs.Add(adventureLog);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 AddToHistoricalAdventureLogCount();
 
                 return CreatedAtAction("GetAdventureLog", new { id = adventureLog.AdventureLogID }, adventureLog);
@@ -147,9 +147,9 @@ namespace Endevrian.Controllers
             return _context.AdventureLogs.Any(e => e.AdventureLogID == id);
         }
 
-        private async void AddToHistoricalAdventureLogCount()
+        private void AddToHistoricalAdventureLogCount()
         {
-            List<HistoricalAdventureLogCount> logCounts = await _context.HistoricalAdventureLogCounts.ToListAsync();
+            List<HistoricalAdventureLogCount> logCounts = _context.HistoricalAdventureLogCounts.ToList();
 
             if (logCounts.Count() < 1)
             {
@@ -160,8 +160,8 @@ namespace Endevrian.Controllers
 
                 try
                 {
-                    await _context.HistoricalAdventureLogCounts.AddAsync(logCount);
-                    await _context.SaveChangesAsync();
+                    _context.HistoricalAdventureLogCounts.Add(logCount);
+                    _context.SaveChanges();
                     _logController.AddSystemLog("INFO: Created New Row In HistoricalAdventureLogCounts table.");
                 }
                 catch(Exception exc)
@@ -175,7 +175,7 @@ namespace Endevrian.Controllers
 
                 HistoricalAdventureLogCount logCount = logCounts.First();
                 logCount.HistoricalLogCount++;
-                _queryHelper.UpdateQuery($"UPDATE HistoricalAdventureLogCounts SET HistoricalLogCount = {logCount.HistoricalLogCount} WHERE HistoricalAdventureLogCountID = 1");
+                _queryHelper.UpdateQuery($"UPDATE HistoricalAdventureLogCounts SET HistoricalLogCount = {logCount.HistoricalLogCount}");
 
             }
             else

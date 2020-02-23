@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Endevrian.Migrations
 {
-    public partial class Inital : Migration
+    public partial class inital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -68,7 +68,8 @@ namespace Endevrian.Migrations
                 {
                     HistoricalAdventureLogCountID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    HistoricalLogCount = table.Column<int>(nullable: false)
+                    HistoricalLogCount = table.Column<int>(nullable: false),
+                    HistoricalLogCountTest = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
