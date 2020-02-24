@@ -58,11 +58,6 @@ namespace Endevrian.Data
         public void UpdateQuery(string query)
         {
 
-            //using SqlConnection connection = new SqlConnection(_connectionString);
-            //SqlCommand command = new SqlCommand(query, connection);
-            //connection.Open();
-            //connection.Dispose();
-
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 SqlCommand command = new SqlCommand(query, connection);
