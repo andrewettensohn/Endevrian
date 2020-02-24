@@ -10,8 +10,8 @@
     </div>
 </div>
 <div class="collapse" id="collapseNewLog">
-    <div class="jumbotron">
-        <form id="logForm">
+    <div class="jumbotron bg-dark">
+        <form id="logForm" class="text-dark">
             <input type="text" class="form-control" id="inputLogTitle" placeholder="Session Title" /><br />
             <textarea class="form-control" id="textAreaLogBody" rows="10" cols="50" placeholder="When we last left our adventurers..."></textarea>
             <div class="d-flex flex-column p-2 align-items-end">
@@ -28,13 +28,15 @@
 
     var logId = logForDisplay.Log.AdventureLogID;
 
-    <div class="jumbotron">
+    <div class="jumbotron bg-dark">
         <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.Log.LogTitle</h1>
         <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
         <p>@logForDisplay.DisplayCreateDate</p>
         <hr class="my-4">
         <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.Log.LogBody)</div>
-        <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
+        <div class="text-dark">
+            <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
+        </div>
         <div class="d-flex flex-column p-2 align-items-end">
             <div>
                 <button id="btnUpdateLogBody@(logId)" class="d-none btn border border-success text-success mb-3">Update</button>
