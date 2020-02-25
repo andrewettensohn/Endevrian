@@ -2,6 +2,7 @@
     ViewData["Title"] = "Campaigns";
 }
 
+
 <div class="jumbotron bg-dark text-dark">
     <form id="formAddCampaign">
         <div class="input-group mb-3">
@@ -11,6 +12,30 @@
             </div>
         </div>
     </form>
+</div>
+
+<div class="row no-gutters">
+    <div class="col">
+        <div class="list-group">
+            @foreach (var campaign in Model)
+            {
+                <a href="#" class="list-group-item list-group-item-action">@campaign.CampaignName</a>
+            }
+            <a href="#" class="list-group-item list-group-item-action text-success">+ New</a>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="card text-dark">
+            <div class="card-body">
+                <h3 class="card-header mb-3">1st Campaign</h3>
+                <button class="btn border border-secondary">Adventure Logs</button>
+                <button class="btn border border-secondary">Session Notes</button>
+                <p class="card-text mt-3">
+                    As you understand it, these are the days of dead gods. But these are also the days of Nikomaras, the young duke of a northern duchy who has proclaimed himself the reincarnation of the god Ajax, the Conqurer. You also know these are the last days of Farris, a "great" city of a dying nation, soon to be pillaged by Nikomaras and his men. But most imporantly you know there's gold to be made, wether in Farris or below, in the burried ancient city of Freywell. Although work for mercenaries is plentiful in Farris, you've grown attracted to adventures. You've accepted a job, your first in the city.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>

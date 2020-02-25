@@ -2,12 +2,24 @@
     ViewData["Title"] = "Home Page";
 }
 
-    <div class="text-center">
-        <h1 class="display-2">Endevrian <i class="fab fa-d-and-d"></i></h1>
-    </div>
+<style>
+    body {
+        background: url("../img/cover.jpg") no-repeat center center fixed;
+        background-size: cover;
+    }
 
-    <div class="text-center">
-        <p class="text-muted">Dungeons & Dragons Campaign Tool</p>
-    </div>
+    .hero-text {
+        text-align: center;
+        position: absolute;
+        top: 33%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+    }
+</style>
 
-    <img src="~/img/cover.jpg" class="img-fluid border border-secondary" alt="Responsive image">
+<div>
+    <div class="text-center">
+        <h1 class="display-1 hero-text text-light"><b>Endevrian </b><i class="fab fa-d-and-d"></i></h1>
+    </div>
+</div>

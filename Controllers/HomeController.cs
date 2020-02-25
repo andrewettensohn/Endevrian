@@ -48,9 +48,12 @@ namespace Endevrian.Controllers
             return View(model);
         }
 
-        public IActionResult CampaignList()
+        public async Task<IActionResult> CampaignList()
         {
-            return View();
+
+            List<Campaign> model = await _context.Campaigns.ToListAsync();
+
+            return View(model);
         }
 
 

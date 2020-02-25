@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Endevrian.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200223171039_Inital")]
+    [Migration("20200225031004_Inital")]
     partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,9 @@ namespace Endevrian.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CampaignID")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LogBody")
                         .HasColumnType("nvarchar(max)");
@@ -54,6 +57,9 @@ namespace Endevrian.Migrations
 
                     b.Property<DateTime>("CampaignCreateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("CampaignDescription")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CampaignName")
                         .HasColumnType("nvarchar(max)");

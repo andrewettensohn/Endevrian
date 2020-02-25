@@ -13,6 +13,10 @@ namespace Endevrian.Models
 
         public string CampaignName { get; set; }
 
+        public string CampaignDescription { get; set; }
+
+        //public bool? IsSelectedCampaign { get; set; }
+
         public DateTime CampaignCreateDate { get; set; }
     }
 }

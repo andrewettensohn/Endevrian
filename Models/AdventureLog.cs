@@ -11,7 +11,7 @@ namespace Endevrian.Models
 
         public string UserId { get; set; }
 
-        //public string CampaignID { get; set; }
+        public string CampaignID { get; set; }
 
         public string LogTitle { get; set; }
 
