@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Endevrian.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200225031004_Inital")]
+    [Migration("20200225232231_Inital")]
     partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -63,6 +63,9 @@ namespace Endevrian.Migrations
 
                     b.Property<string>("CampaignName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsSelectedCampaign")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");

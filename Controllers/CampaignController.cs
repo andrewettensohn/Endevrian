@@ -7,6 +7,7 @@ using Endevrian.Data;
 using Endevrian.Models;
 using Endevrian.Utility;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Endevrian.Controllers
@@ -38,14 +39,9 @@ namespace Endevrian.Controllers
             return campaign;
         }
 
-        [HttpPost("{campaignName}")]
-        public async Task<ActionResult<Campaign>> PostCampaign(string campaignName)
+        [HttpPost]
+        public async Task<ActionResult<Campaign>> PostCampaign([FromBody]Campaign campaign)
         {
-
-            Campaign campaign = new Campaign()
-            {
-                CampaignName = campaignName
-            };
 
             try
             {
@@ -69,6 +65,57 @@ namespace Endevrian.Controllers
                 return BadRequest();
             }
 
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> SetCampaignToSelected(int id)
+        {
+
+            string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Campaign campaignToSelect = await _context.Campaigns.FindAsync(id);
+
+            if(campaignToSelect.UserId != requestingUser || campaignToSelect.CampaignID != id)
+            {
+                return BadRequest();
+            }
+
+
+            List<Campaign> campaignList = await _context.Campaigns.ToListAsync();
+
+            foreach(Campaign campaign in campaignList)
+            {
+                campaign.IsSelectedCampaign = false;
+                _context.Entry(campaign).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
+
+            campaignToSelect.IsSelectedCampaign = true;
+            _context.Entry(campaignToSelect).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CampaignExists(id))
+                {
+                    _logger.AddSystemLog($"WARNING: User {requestingUser} has caused a DbUpdateConcurrencyException");
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool CampaignExists(int id)
+        {
+            return _context.Campaigns.Any(e => e.CampaignID == id);
         }
     }
 }

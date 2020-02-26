@@ -8,19 +8,22 @@ using Microsoft.Extensions.Logging;
 using Endevrian.Models;
 using Microsoft.EntityFrameworkCore;
 using Endevrian.Data;
-
+using Microsoft.Extensions.Configuration;
 
 namespace Endevrian.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
+        private readonly SystemLogController _logger;
         private readonly ApplicationDbContext _context;
+        private readonly QueryHelper _queryHelper;
 
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        public HomeController(ApplicationDbContext context, IConfiguration configuration, SystemLogController logger)
         {
             _logger = logger;
             _context = context;
+            _queryHelper = new QueryHelper(configuration, logger);
         }
 
         public IActionResult Index()
@@ -51,7 +54,18 @@ namespace Endevrian.Controllers
         public async Task<IActionResult> CampaignList()
         {
 
-            List<Campaign> model = await _context.Campaigns.ToListAsync();
+            //List<Campaign> model = await _context.Campaigns.ToListAsync();
+
+            CampaignViewModel model = new CampaignViewModel();
+
+            model.Campaigns = await _context.Campaigns.ToListAsync();
+            Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery();
+
+            if(SelectedCampaign.IsSelectedCampaign == true)
+            {
+                model.SelectedCampaign = SelectedCampaign;
+            }
+            
 
             return View(model);
         }

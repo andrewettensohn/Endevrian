@@ -62,6 +62,9 @@ namespace Endevrian.Migrations
                     b.Property<string>("CampaignName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool?>("IsSelectedCampaign")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 

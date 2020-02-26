@@ -1,4 +1,5 @@
 ﻿using Endevrian.Controllers;
+using Endevrian.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -66,6 +67,43 @@ namespace Endevrian.Data
             }
 
             return;
+        }
+
+        public Campaign ActiveCampaignQuery()
+        {
+            Campaign activeCampaign = new Campaign();
+
+            string query = "SELECT * FROM Campaigns WHERE IsSelectedCampaign = 1";
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            activeCampaign = new Campaign()
+                            {
+                                CampaignID = int.Parse(reader["CampaignID"].ToString()),
+                                UserId = reader["UserId"].ToString(),
+                                IsSelectedCampaign = bool.Parse(reader["IsSelectedCampaign"].ToString()),
+                                CampaignName = reader["CampaignName"].ToString(),
+                                CampaignDescription = reader["CampaignDescription"].ToString(),
+                                CampaignCreateDate = DateTime.Parse(reader["CampaignCreateDate"].ToString())
+                            };
+                        }
+                    }
+                }
+                catch (Exception exc)
+                {
+                    _logger.AddSystemLog($"Failed to read query: {exc}");
+                }
+            }
+            return activeCampaign;
         }
     }
 }

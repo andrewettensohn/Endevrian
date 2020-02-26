@@ -72,6 +72,7 @@ namespace Endevrian.Migrations
                     UserId = table.Column<string>(nullable: true),
                     CampaignName = table.Column<string>(nullable: true),
                     CampaignDescription = table.Column<string>(nullable: true),
+                    IsSelectedCampaign = table.Column<bool>(nullable: true),
                     CampaignCreateDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
