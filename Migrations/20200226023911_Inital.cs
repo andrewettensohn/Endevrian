@@ -14,9 +14,10 @@ namespace Endevrian.Migrations
                     AdventureLogID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(nullable: true),
-                    CampaignID = table.Column<string>(nullable: true),
+                    CampaignID = table.Column<int>(nullable: false),
                     LogTitle = table.Column<string>(nullable: true),
                     LogBody = table.Column<string>(nullable: true),
+                    DisplayLogDate = table.Column<string>(nullable: true),
                     LogDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>

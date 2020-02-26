@@ -31,24 +31,26 @@ namespace Endevrian.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AdventureLog()
+        public IActionResult AdventureLog()
         {
 
-            List<AdventureLog> adventureLogList = await _context.AdventureLogs.ToListAsync();
-            adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
-            List<AdventureLogViewModel> model = new List<AdventureLogViewModel>();
-            foreach(AdventureLog log in adventureLogList)
+            AdventureLogViewModel model = new AdventureLogViewModel();
+
+            Campaign selectedCampaign = _queryHelper.ActiveCampaignQuery();
+            model.SelectedCampaign = selectedCampaign;
+
+            if (selectedCampaign.IsSelectedCampaign == true)
             {
-                AdventureLogViewModel logForDisplay = new AdventureLogViewModel
-                {
-                    Log = log,
-                    DisplayCreateDate = log.LogDate.ToString("M/d/yyyy")
-                };
-                model.Add(logForDisplay);
+                List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == selectedCampaign.CampaignID).ToList();
+                adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
+
+                model.AdventureLogs = adventureLogList;
 
             }
 
+
             return View(model);
+
         }
 
         public async Task<IActionResult> CampaignList()

@@ -26,7 +26,10 @@ namespace Endevrian.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CampaignID")
+                    b.Property<int>("CampaignID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DisplayLogDate")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LogBody")
