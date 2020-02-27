@@ -25,6 +25,7 @@
             </form>
         </div>
     </div>
+    <input id="inputCampaignID" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
 }
 else
 {
@@ -32,21 +33,20 @@ else
 }
 
 
-
 @if (Model.AdventureLogs.Count > 0)
 {
 
-    @foreach (var logForDisplay in Model)
+    @foreach (var logForDisplay in Model.AdventureLogs)
     {
 
-        var logId = logForDisplay.Log.AdventureLogID;
+        var logId = logForDisplay.AdventureLogID;
 
         <div class="jumbotron bg-dark">
-            <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.Log.LogTitle</h1>
+            <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.LogTitle</h1>
             <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
-            <p>@logForDisplay.DisplayCreateDate</p>
+            <p>@logForDisplay.DisplayLogDate</p>
             <hr class="my-4">
-            <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.Log.LogBody)</div>
+            <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.LogBody)</div>
             <div class="text-dark">
                 <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
             </div>
@@ -62,7 +62,6 @@ else
     }
 
 }
-
 
 <script>
 
@@ -81,7 +80,8 @@ else
         item = {
 
             logTitle: $("#inputLogTitle").val(),
-            logBody: $("#textAreaLogBody").val()
+            logBody: $("#textAreaLogBody").val(),
+            campaignID: parseInt($("#inputCampaignID").val(), 10)
 
         }
 

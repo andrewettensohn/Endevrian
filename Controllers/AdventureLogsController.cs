@@ -94,7 +94,7 @@ namespace Endevrian.Controllers
 
         // POST: api/AdventureLogs
         [HttpPost]
-        public async Task<ActionResult<AdventureLog>> PostAdventureLog(AdventureLog adventureLog)
+        public async Task<ActionResult<AdventureLog>> PostAdventureLog([FromBody]AdventureLog adventureLog)
         {
             try
             {
@@ -109,6 +109,7 @@ namespace Endevrian.Controllers
                 {
                     adventureLog.LogBody = "Nothing seems to be here! Click here to edit.";
                 }
+
 
                 adventureLog = Utilites.NewCreateDateFormatted(adventureLog);
 
