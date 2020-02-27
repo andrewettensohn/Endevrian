@@ -7,9 +7,11 @@ namespace Endevrian.Models
 {
     public class AdventureLogViewModel
     {
-        public AdventureLog Log { get; set; }
+        public List<AdventureLog> AdventureLogs { get; set; }
 
-        public string DisplayCreateDate { get; set; }
+        public Campaign SelectedCampaign { get; set; }
+
+        //TODO maybe just display create if there is a selected campaign, otherwise the user needs to be told there's no campaign selected.
 
     }
 }

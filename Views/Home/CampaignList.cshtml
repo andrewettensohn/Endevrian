@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Campaigns";
+}
+
+
+<div class="jumbotron bg-dark text-dark">
+    <form id="formAddCampaign">
+        <div class="input-group mb-3">
+            <input type="text" id="inputCampaignName" class="form-control" placeholder="Campaign Name">
+            <div class="input-group-append">
+                <input class="btn border-success text-success" type="submit" id="button-addon2">
+            </div>
+        </div>
+        <div>
+            <textarea id="areaCampaignDescription" class="form-control" placeholder="Campaign Description..." rows="10" cols="50"></textarea>
+        </div>
+    </form>
+</div>
+
+<div class="row no-gutters">
+    <div class="col">
+        <div class="list-group border border-secondary">
+            @foreach (var campaign in Model.Campaigns)
+            {
+                <a href="#" class="list-group-item list-group-item-action" onclick="selectCampaign(@campaign.CampaignID)">@campaign.CampaignName</a>
+            }
+            <a href="#" class="list-group-item list-group-item-action text-success">+ New Campaign</a>
+        </div>
+    </div>
+    @if (Model.SelectedCampaign != null)
+    {
+        <div class="col-lg-9">
+            <div class="card text-dark border border-secondary shadow">
+                <div class="card-body">
+                    <h3 class="card-header mb-3">@Model.SelectedCampaign.CampaignName</h3>
+                    <a href="@Url.Content($"~/Home/AdventureLog")" class="btn border border-secondary">Adventure Logs</a>
+                    <button class="btn border border-secondary">Session Notes</button>
+                    <p class="card-text mt-3">@Model.SelectedCampaign.CampaignDescription</p>
+                    <button class="float-right btn border border-danger text-danger">Delete Campagin</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+
+    const formAddCampaign = $("#formAddCampaign");
+    const formData = new FormData();
+
+    formAddCampaign.on("submit", async function (evt) {
+
+        evt.preventDefault();
+
+        item = {
+
+            campaignName: $("#inputCampaignName").val(),
+            campaignDescription: $("#areaCampaignDescription").val()
+
+        }
+
+        fetch("api/Campaigns", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
+
+        });
+
+
+    function selectCampaign(id) {
+
+
+        fetch("api/Campaigns/" + id, {
+            method: 'PUT',
+        })
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to update item"));
+    }
+
+</script>

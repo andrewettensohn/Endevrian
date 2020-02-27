@@ -9,8 +9,20 @@ namespace Endevrian.Models
     {
         public int SystemLogID { get; set; }
 
+        public string Type { get; set; }
+
         public string Message { get; set; }
 
         public DateTime LogTime { get; set; }
     }
 }
+
+
+ /* 
+  Log Type List
+  ----------
+    Error
+    Warning
+    Info
+*/ 
+ 

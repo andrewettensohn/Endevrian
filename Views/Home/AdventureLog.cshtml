@@ -2,48 +2,65 @@
     ViewData["Title"] = "Adventure Log";
 }
 
-<div class="d-flex flex-column p-2 align-items-end">
-    <div>
-        <button class="btn border border-primary text-primary" type="button" data-toggle="collapse" data-target="#collapseNewLog">
-            New Session Log
-        </button>
-    </div>
-</div>
-<div class="collapse" id="collapseNewLog">
-    <div class="jumbotron">
-        <form id="logForm">
-            <input type="text" class="form-control" id="inputLogTitle" placeholder="Session Title" /><br />
-            <textarea class="form-control" id="textAreaLogBody" rows="10" cols="50" placeholder="When we last left our adventurers..."></textarea>
-            <div class="d-flex flex-column p-2 align-items-end">
-                <div>
-                    <input class="btn border border-success text-success" type="submit" />
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
 
-@foreach (var logForDisplay in Model)
+@if (Model.SelectedCampaign.IsSelectedCampaign == true)
 {
-
-    var logId = logForDisplay.Log.AdventureLogID;
-
-    <div class="jumbotron">
-        <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.Log.LogTitle</h1>
-        <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
-        <p>@logForDisplay.DisplayCreateDate</p>
-        <hr class="my-4">
-        <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.Log.LogBody)</div>
-        <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
-        <div class="d-flex flex-column p-2 align-items-end">
-            <div>
-                <button id="btnUpdateLogBody@(logId)" class="d-none btn border border-success text-success mb-3">Update</button>
-            </div>
-            <div>
-                <button id="btnDeleteLog@(logId)" class="btn border border-danger text-danger" onclick="deleteAdventureLog(@logId)">Delete</button>
-            </div>
+    <div class="d-flex flex-column p-2 align-items-end">
+        <div>
+            <button class="btn border border-primary text-primary" type="button" data-toggle="collapse" data-target="#collapseNewLog">
+                New Session Log
+            </button>
         </div>
     </div>
+    <div class="collapse" id="collapseNewLog">
+        <div class="jumbotron bg-dark">
+            <form id="logForm" class="text-dark">
+                <input type="text" class="form-control" id="inputLogTitle" placeholder="Session Title" /><br />
+                <textarea class="form-control" id="textAreaLogBody" rows="10" cols="50" placeholder="When we last left our adventurers..."></textarea>
+                <div class="d-flex flex-column p-2 align-items-end">
+                    <div>
+                        <input class="btn border border-success text-success" type="submit" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <input id="inputCampaignID" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
+}
+else
+{
+    <p>Start a campaign first!</p>
+}
+
+
+@if (Model.AdventureLogs.Count > 0)
+{
+
+    @foreach (var logForDisplay in Model.AdventureLogs)
+    {
+
+        var logId = logForDisplay.AdventureLogID;
+
+        <div class="jumbotron bg-dark">
+            <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.LogTitle</h1>
+            <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
+            <p>@logForDisplay.DisplayLogDate</p>
+            <hr class="my-4">
+            <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.LogBody)</div>
+            <div class="text-dark">
+                <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
+            </div>
+            <div class="d-flex flex-column p-2 align-items-end">
+                <div>
+                    <button id="btnUpdateLogBody@(logId)" class="d-none btn border border-success text-success mb-3">Update</button>
+                </div>
+                <div>
+                    <button id="btnDeleteLog@(logId)" class="btn border border-danger text-danger" onclick="deleteAdventureLog(@logId)">Delete</button>
+                </div>
+            </div>
+        </div>
+    }
+
 }
 
 <script>
@@ -63,7 +80,8 @@
         item = {
 
             logTitle: $("#inputLogTitle").val(),
-            logBody: $("#textAreaLogBody").val()
+            logBody: $("#textAreaLogBody").val(),
+            campaignID: parseInt($("#inputCampaignID").val(), 10)
 
         }
 
@@ -145,22 +163,22 @@
         let editor;
 
         ClassicEditor
-            .create( document.querySelector( '#areaInputLogBody' + id ) )
-            .then( newEditor => {
+            .create(document.querySelector('#areaInputLogBody' + id))
+            .then(newEditor => {
                 editor = newEditor;
-            } )
-            .catch( error => {
-                console.error( error );
+            })
+            .catch(error => {
+                console.error(error);
             });
 
 
-        document.querySelector( '#btnUpdateLogBody' + id).addEventListener( 'click', () => {
+        document.querySelector('#btnUpdateLogBody' + id).addEventListener('click', () => {
             const editorData = editor.getData();
 
             item = {
 
-            adventureLogID: id,
-            logBody: editorData
+                adventureLogID: id,
+                logBody: editorData
 
             }
 
