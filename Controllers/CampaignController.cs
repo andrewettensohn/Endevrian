@@ -100,7 +100,7 @@ namespace Endevrian.Controllers
             }
 
 
-            List<Campaign> campaignList = await _context.Campaigns.ToListAsync();
+            List<Campaign> campaignList = await _context.Campaigns.Where(x => x.UserId == requestingUser).ToListAsync();
 
             foreach(Campaign campaign in campaignList)
             {

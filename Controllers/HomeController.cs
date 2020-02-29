@@ -9,6 +9,7 @@ using Endevrian.Models;
 using Microsoft.EntityFrameworkCore;
 using Endevrian.Data;
 using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
 
 namespace Endevrian.Controllers
 {
@@ -56,14 +57,16 @@ namespace Endevrian.Controllers
         public async Task<IActionResult> CampaignList()
         {
 
-            //List<Campaign> model = await _context.Campaigns.ToListAsync();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            CampaignViewModel model = new CampaignViewModel();
+            CampaignViewModel model = new CampaignViewModel
+            {
+                Campaigns = await _context.Campaigns.Where(x => x.UserId == userId).ToListAsync()
+            };
 
-            model.Campaigns = await _context.Campaigns.ToListAsync();
             Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery();
 
-            if(SelectedCampaign.IsSelectedCampaign == true)
+            if(SelectedCampaign.IsSelectedCampaign == true && SelectedCampaign.UserId == userId)
             {
                 model.SelectedCampaign = SelectedCampaign;
             }
