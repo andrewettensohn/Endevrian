@@ -47,7 +47,7 @@ namespace Endevrian.Controllers
             {
                 campaign.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (campaign.CampaignName is null)
+                if (campaign.CampaignName is null || campaign.CampaignName == "")
                 {
                     campaign.CampaignName = "Your Campaign";
                 }
@@ -67,6 +67,25 @@ namespace Endevrian.Controllers
 
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Campaign>> DeleteCampaign(int id)
+        {
+
+            string requestingUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Campaign campaign = await _context.Campaigns.FindAsync(id);
+
+            if(campaign.UserId != requestingUserId)
+            {
+                return BadRequest();
+            }
+
+            _context.Campaigns.Remove(campaign);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> SetCampaignToSelected(int id)
         {
@@ -81,7 +100,7 @@ namespace Endevrian.Controllers
             }
 
 
-            List<Campaign> campaignList = await _context.Campaigns.ToListAsync();
+            List<Campaign> campaignList = await _context.Campaigns.Where(x => x.UserId == requestingUser).ToListAsync();
 
             foreach(Campaign campaign in campaignList)
             {

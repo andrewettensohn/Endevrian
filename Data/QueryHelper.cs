@@ -69,11 +69,11 @@ namespace Endevrian.Data
             return;
         }
 
-        public Campaign ActiveCampaignQuery()
+        public Campaign ActiveCampaignQuery(string userId)
         {
             Campaign activeCampaign = new Campaign();
 
-            string query = "SELECT * FROM Campaigns WHERE IsSelectedCampaign = 1";
+            string query = $"SELECT * FROM Campaigns WHERE IsSelectedCampaign = 1 AND UserId = '{userId}'";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
