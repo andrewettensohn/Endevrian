@@ -37,7 +37,9 @@ namespace Endevrian.Controllers
 
             AdventureLogViewModel model = new AdventureLogViewModel();
 
-            Campaign selectedCampaign = _queryHelper.ActiveCampaignQuery();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Campaign selectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
             model.SelectedCampaign = selectedCampaign;
 
             if (selectedCampaign.IsSelectedCampaign == true)
@@ -64,7 +66,7 @@ namespace Endevrian.Controllers
                 Campaigns = await _context.Campaigns.Where(x => x.UserId == userId).ToListAsync()
             };
 
-            Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery();
+            Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
 
             if(SelectedCampaign.IsSelectedCampaign == true && SelectedCampaign.UserId == userId)
             {
