@@ -40,6 +40,7 @@ namespace Endevrian.Controllers
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             Campaign selectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
+            //Campaign selectedCampaign = _context.Campaigns.First(x => x.UserId == userId);
             model.SelectedCampaign = selectedCampaign;
 
             if (selectedCampaign.IsSelectedCampaign == true)
@@ -50,7 +51,6 @@ namespace Endevrian.Controllers
                 model.AdventureLogs = adventureLogList;
 
             }
-
 
             return View(model);
 
@@ -68,7 +68,7 @@ namespace Endevrian.Controllers
 
             Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
 
-            if(SelectedCampaign.IsSelectedCampaign == true && SelectedCampaign.UserId == userId)
+            if(SelectedCampaign.IsSelectedCampaign == true)
             {
                 model.SelectedCampaign = SelectedCampaign;
             }
