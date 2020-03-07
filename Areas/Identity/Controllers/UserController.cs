@@ -75,6 +75,11 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(model);
         }
 
+        public IActionResult SessionNotes()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

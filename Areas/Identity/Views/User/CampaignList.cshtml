@@ -35,7 +35,7 @@
                     <div class="card-body">
                         <h3 class="card-header mb-3">@Model.SelectedCampaign.CampaignName</h3>
                         <a href="@Url.Content($"~/Identity/User/AdventureLog")" class="btn border border-secondary">Adventure Logs</a>
-                        <button class="btn border border-secondary">Session Notes</button>
+                        <a href="@Url.Content($"~/Identity/User/SessionNotes")" class="btn border border-secondary">SessionNotes</a>
                         <p class="card-text mt-3">@Model.SelectedCampaign.CampaignDescription</p>
                         <button class="float-right btn border border-danger text-danger" onclick="deleteCampaign(@Model.SelectedCampaign.CampaignID)">Delete Campagin</button>
                     </div>

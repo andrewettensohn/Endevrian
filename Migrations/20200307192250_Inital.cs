@@ -96,6 +96,38 @@ namespace Endevrian.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SessionNotes",
+                columns: table => new
+                {
+                    SessionNoteID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    CampaignID = table.Column<int>(nullable: false),
+                    SessionSectionID = table.Column<int>(nullable: false),
+                    SessionNoteTitle = table.Column<string>(nullable: true),
+                    SessionNoteBody = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SessionNotes", x => x.SessionNoteID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SessionSections",
+                columns: table => new
+                {
+                    SessionSectionID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    CampaignID = table.Column<int>(nullable: false),
+                    SessionSectionName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SessionSections", x => x.SessionSectionID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SystemLogs",
                 columns: table => new
                 {
@@ -281,6 +313,12 @@ namespace Endevrian.Migrations
 
             migrationBuilder.DropTable(
                 name: "HistoricalAdventureLogCounts");
+
+            migrationBuilder.DropTable(
+                name: "SessionNotes");
+
+            migrationBuilder.DropTable(
+                name: "SessionSections");
 
             migrationBuilder.DropTable(
                 name: "SystemLogs");

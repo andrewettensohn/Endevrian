@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Endevrian.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200226023911_Inital")]
+    [Migration("20200307192250_Inital")]
     partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,6 +94,54 @@ namespace Endevrian.Migrations
                     b.HasKey("HistoricalAdventureLogCountID");
 
                     b.ToTable("HistoricalAdventureLogCounts");
+                });
+
+            modelBuilder.Entity("Endevrian.Models.SessionNote", b =>
+                {
+                    b.Property<int>("SessionNoteID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CampaignID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SessionNoteBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionNoteTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SessionSectionID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SessionNoteID");
+
+                    b.ToTable("SessionNotes");
+                });
+
+            modelBuilder.Entity("Endevrian.Models.SessionSection", b =>
+                {
+                    b.Property<int>("SessionSectionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CampaignID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SessionSectionName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SessionSectionID");
+
+                    b.ToTable("SessionSections");
                 });
 
             modelBuilder.Entity("Endevrian.Models.SystemLog", b =>
