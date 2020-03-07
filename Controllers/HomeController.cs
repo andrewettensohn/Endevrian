@@ -17,66 +17,17 @@ namespace Endevrian.Controllers
     {
         //private readonly ILogger<HomeController> _logger;
         private readonly SystemLogController _logger;
-        private readonly ApplicationDbContext _context;
-        private readonly QueryHelper _queryHelper;
 
-        public HomeController(ApplicationDbContext context, IConfiguration configuration, SystemLogController logger)
+        public HomeController(SystemLogController logger)
         {
             _logger = logger;
-            _context = context;
-            _queryHelper = new QueryHelper(configuration, logger);
+
         }
 
         public IActionResult Index()
         {
             return View();
         }
-
-        public IActionResult AdventureLog()
-        {
-
-            AdventureLogViewModel model = new AdventureLogViewModel();
-
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            Campaign selectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
-            //Campaign selectedCampaign = _context.Campaigns.First(x => x.UserId == userId);
-            model.SelectedCampaign = selectedCampaign;
-
-            if (selectedCampaign.IsSelectedCampaign == true)
-            {
-                List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == selectedCampaign.CampaignID).ToList();
-                adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
-
-                model.AdventureLogs = adventureLogList;
-
-            }
-
-            return View(model);
-
-        }
-
-        public async Task<IActionResult> CampaignList()
-        {
-
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            CampaignViewModel model = new CampaignViewModel
-            {
-                Campaigns = await _context.Campaigns.Where(x => x.UserId == userId).ToListAsync()
-            };
-
-            Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
-
-            if(SelectedCampaign.IsSelectedCampaign == true)
-            {
-                model.SelectedCampaign = SelectedCampaign;
-            }
-            
-
-            return View(model);
-        }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

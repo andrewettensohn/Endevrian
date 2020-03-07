@@ -12,7 +12,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Endevrian.Controllers
 {
-    [Route("Home/api/Campaigns")]
+    [Area("Identity")]
+    [Route("Identity/User/api/Campaigns")]
+    [ApiController]
     public class CampaignController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

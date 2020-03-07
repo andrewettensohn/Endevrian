@@ -66,6 +66,8 @@ else
 
 <script>
 
+    const uri = "api/AdventureLogs/";
+
     ClassicEditor
         .create(document.querySelector('#textAreaLogBody'), {
             removePlugins: ['ImageUpload', 'MediaEmbed']
@@ -86,7 +88,7 @@ else
 
         }
 
-        fetch("api/AdventureLogs", {
+        fetch(uri, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -101,7 +103,7 @@ else
 
     function deleteAdventureLog(id) {
 
-        fetch("api/AdventureLogs/" + id, {
+        fetch(uri + id, {
             method: 'DELETE'
         })
             .then(() => location.reload())
@@ -133,7 +135,7 @@ else
 
         }
 
-        fetch("api/AdventureLogs/" + id, {
+        fetch(uri + id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -185,7 +187,7 @@ else
 
             console.log(item.logBody)
 
-            fetch("api/AdventureLogs/" + id, {
+            fetch(uri + id, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
