@@ -36,7 +36,7 @@ namespace Endevrian
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddControllers();
-            services.AddMvc().AddControllersAsServices();
+            services.AddMvc(options => options.EnableEndpointRouting = false).AddControllersAsServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,12 +61,15 @@ namespace Endevrian
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseMvc(routes =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                routes.MapRoute(
+                  name: "Identity",
+                  template: "{area:exists}/{controller=User}/{action}/{id?}");
+
+                routes.MapRoute(
+                   name: "default",
+                   template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
