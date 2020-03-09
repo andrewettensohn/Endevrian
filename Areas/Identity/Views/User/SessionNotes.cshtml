@@ -1,1 +1,40 @@
-﻿
+﻿@{
+    ViewData["Title"] = "Session Notes";
+}
+
+    <div class="row justify-content-start">
+        <ul class="nav flex-column list-unstyled pr-5">
+            <li class="nav-item">
+                <p class="nav-link">Sections</p>
+                <hr />
+            </li>
+            <li class="nav-item">
+                <button class="text-success btn btn-link" href="#">New Section +</button>
+            </li>
+            <li class="nav-item">
+                <button class="btn btn-link text-white" data-toggle="collapse" data-target="#collapseOne">
+                    Section 1
+                </button>
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne">
+                    <ul>
+                        <li type="disc">
+                            <button class="btn btn-link text-success">New Note +</button>
+                        </li>
+                        <li type="disc">
+                            <button class="btn btn-link text-white">Session 2</button>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+        <div class="col">
+            <div class="jumbotron bg-dark">
+                <h1 class="display-4">Note 1</h1>
+                <hr />
+                <p>Lorem ipsum. Lorem ipsum. Lorem ipsum. </p>
+            </div>
+        </div>
+    </div>
+
+
+       
