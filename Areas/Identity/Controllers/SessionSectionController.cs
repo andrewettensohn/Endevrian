@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Endevrian.Data;
+using Endevrian.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -12,6 +15,13 @@ namespace Endevrian.Areas.Identity.Controllers
     [ApiController]
     public class SessionSectionController : ControllerBase
     {
+        private readonly ApplicationDbContext _context;
+
+        SessionSectionController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         // GET: api/<controller>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -28,8 +38,24 @@ namespace Endevrian.Areas.Identity.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<IActionResult> PostSessionSection([FromBody]SessionSection sessionSection)
         {
+            sessionSection.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Campaign selectedCampaign = new Campaign();
+
+            try
+            {
+                selectedCampaign = await _context.Campaigns.FindAsync(sessionSection.CampaignID);
+            }
+            catch
+            {
+
+            }
+
+            //if(sessionSection.CampaignID)
+            
+
         }
 
         // PUT api/<controller>/5

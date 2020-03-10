@@ -3,19 +3,23 @@
 }
 
     <div class="row justify-content-start">
-        <ul class="nav flex-column list-unstyled pr-5">
+        <ul class="nav flex-column col-3 list-unstyled">
             <li class="nav-item">
                 <p class="nav-link">Sections</p>
                 <hr />
             </li>
             <li class="nav-item">
-                <button class="text-success btn btn-link" href="#">New Section +</button>
+                <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newSectionArea">New Section +</button>
+            </li>
+            <li id="newSectionArea" class="nav-item collapse">
+                <input id="inputNewSection" type="text" class="form-control" onfocusout="createNewSection()" />
+                <input id="inputCampaignID" class="d-none" />
             </li>
             <li class="nav-item">
-                <button class="btn btn-link text-white" data-toggle="collapse" data-target="#collapseOne">
+                <button class="btn btn-link text-white" data-toggle="collapse" data-target="#sectionContent">
                     Section 1
                 </button>
-                <div id="collapseOne" class="collapse" aria-labelledby="headingOne">
+                <div id="sectionContent" class="collapse">
                     <ul>
                         <li type="disc">
                             <button class="btn btn-link text-success">New Note +</button>
@@ -36,5 +40,29 @@
         </div>
     </div>
 
+<script>
 
-       
+
+    const uri = "api/SessionSection/";
+
+    function createNewSection() {
+
+        item = {
+
+            sectionName = $("#inputNewSection").val(),
+            campaignID = $("#inputCampaignID").val()
+        }
+
+        fetch(uri, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
+
+    }
+</script>
