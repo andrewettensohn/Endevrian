@@ -13,8 +13,16 @@
             </li>
             <li id="newSectionArea" class="nav-item collapse">
                 <input id="inputNewSection" type="text" class="form-control" onfocusout="createNewSection()" />
-                <input id="inputCampaignID" class="d-none" />
+                <input id="inputCampaignID" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
             </li>
+            @foreach (var sessionSection in Model.SessionSections)
+            {
+
+        <li type="nav-item collapse">
+            <button class="text-white btn btn-link" data-toggle="collapse" data-target="#newSectionArea">@sessionSection.SessionSectionName</button>
+        </li>
+
+            }
             <li class="nav-item">
                 <button class="btn btn-link text-white" data-toggle="collapse" data-target="#sectionContent">
                     Section 1
@@ -23,9 +31,6 @@
                     <ul>
                         <li type="disc">
                             <button class="btn btn-link text-success">New Note +</button>
-                        </li>
-                        <li type="disc">
-                            <button class="btn btn-link text-white">Session 2</button>
                         </li>
                     </ul>
                 </div>
@@ -43,15 +48,17 @@
 <script>
 
 
-    const uri = "api/SessionSection/";
+    const uri = "api/SessionSection";
 
     function createNewSection() {
 
         item = {
 
-            sectionName = $("#inputNewSection").val(),
-            campaignID = $("#inputCampaignID").val()
+            sessionSectionName: $("#inputNewSection").val(),
+            campaignID: parseInt($("#inputCampaignID").val(), 10)
         }
+
+        console.log(item)
 
         fetch(uri, {
             method: 'POST',

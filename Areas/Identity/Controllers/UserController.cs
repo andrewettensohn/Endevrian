@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Endevrian.Controllers;
 using Endevrian.Data;
 using Endevrian.Models;
+using Endevrian.Models.SessionModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -75,9 +76,18 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(model);
         }
 
-        public IActionResult SessionNotes()
+        public async Task<IActionResult> SessionNotes()
         {
-            return View();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            SessionPlanViewModel model = new SessionPlanViewModel
+            {
+                SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId),
+                SessionSections = await _context.SessionSections.ToListAsync(),
+                SessionNotes = await _context.SessionNotes.ToListAsync()
+        };
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

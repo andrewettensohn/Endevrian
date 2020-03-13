@@ -17,57 +17,56 @@ namespace Endevrian.Areas.Identity.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        SessionSectionController(ApplicationDbContext context)
+        public SessionSectionController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/<controller>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
-        // GET api/<controller>/5
+        // GET: api/AdventureLogs/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<SessionSection>> GetSessionSection(int id)
         {
-            return "value";
+            var sessionSection = await _context.SessionSections.FindAsync(id);
+
+            if (sessionSection == null)
+            {
+                return NotFound();
+            }
+
+            return sessionSection;
         }
 
-        // POST api/<controller>
+        //POST api/<controller>
         [HttpPost]
-        public async Task<IActionResult> PostSessionSection([FromBody]SessionSection sessionSection)
+        public async Task<ActionResult<SessionSection>> PostSessionSection([FromBody]SessionSection sessionSection)
         {
-            sessionSection.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            Campaign selectedCampaign = new Campaign();
+            sessionSection.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             try
             {
-                selectedCampaign = await _context.Campaigns.FindAsync(sessionSection.CampaignID);
+
+                Campaign selectedCampaign = await _context.Campaigns.FindAsync(sessionSection.CampaignID);
+
+                if (selectedCampaign.UserId == sessionSection.UserId)
+                {
+                    await _context.SessionSections.AddAsync(sessionSection);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetSessionSection", new { id = sessionSection.SessionSectionID }, sessionSection);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
             }
-            catch
+            catch(Exception exc)
             {
-
+                return BadRequest();
             }
 
-            //if(sessionSection.CampaignID)
-            
-
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
