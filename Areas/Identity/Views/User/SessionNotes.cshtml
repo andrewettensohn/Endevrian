@@ -17,16 +17,19 @@
         </li>
         @foreach (var sessionSection in Model.SessionSections)
         {
+
+            int id = sessionSection.SessionSectionID;
+
             <li type="nav-item collapse">
-                <button class="text-white btn btn-link" data-toggle="collapse" data-target="#sectionContent@(sessionSection.SessionSectionID)">@sessionSection.SessionSectionName</button>
-                <div id="sectionContent@(sessionSection.SessionSectionID)" class="collapse">
+                <button class="text-white btn btn-link" data-toggle="collapse" data-target="#sectionContent@(id)">@sessionSection.SessionSectionName</button>
+                <div id="sectionContent@(id)" class="collapse">
                     <ul>
                         <li type="disc">
-                            <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(sessionSection.SessionSectionID)">New Note +</button>
+                            <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
                         </li>
-                        <li id="newNoteArea@(sessionSection.SessionSectionID)" type="none" class="nav-item collapse">
-                            <input id="inputNewNote@(sessionSection.SessionSectionID)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote()" />
-                            <input id="inputCampaignID@(sessionSection.SessionSectionID)" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
+                        <li id="newNoteArea@(id)" type="none" class="nav-item collapse">
+                            <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote()" />
+                            <input id="inputCampaignID@(id)" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
                         </li>
                         @if (sessionSection.SessionNotes > 0)
                         {
