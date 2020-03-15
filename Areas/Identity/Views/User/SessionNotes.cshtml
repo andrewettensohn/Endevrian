@@ -2,48 +2,66 @@
     ViewData["Title"] = "Session Notes";
 }
 
-    <div class="row justify-content-start">
-        <ul class="nav flex-column col-3 list-unstyled">
-            <li class="nav-item">
-                <p class="nav-link">Sections</p>
-                <hr />
-            </li>
-            <li class="nav-item">
-                <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newSectionArea">New Section +</button>
-            </li>
-            <li id="newSectionArea" class="nav-item collapse">
-                <input id="inputNewSection" type="text" class="form-control" onfocusout="createNewSection()" />
-                <input id="inputCampaignID" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
-            </li>
-            @foreach (var sessionSection in Model.SessionSections)
-            {
-
-        <li type="nav-item collapse">
-            <button class="text-white btn btn-link" data-toggle="collapse" data-target="#newSectionArea">@sessionSection.SessionSectionName</button>
+<div class="row justify-content-start">
+    <ul class="nav flex-column col-3 list-unstyled">
+        <li class="nav-item">
+            <p class="nav-link">Sections</p>
+            <hr />
         </li>
-
-            }
-            <li class="nav-item">
-                <button class="btn btn-link text-white" data-toggle="collapse" data-target="#sectionContent">
-                    Section 1
-                </button>
-                <div id="sectionContent" class="collapse">
+        <li class="nav-item">
+            <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newSectionArea">New Section +</button>
+        </li>
+        <li id="newSectionArea" class="nav-item collapse">
+            <input id="inputNewSection" type="text" class="form-control" placeholder="Section Title" onfocusout="createNewSection()" />
+            <input id="inputCampaignID" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
+        </li>
+        @foreach (var sessionSection in Model.SessionSections)
+        {
+            <li type="nav-item collapse">
+                <button class="text-white btn btn-link" data-toggle="collapse" data-target="#sectionContent@(sessionSection.SessionSectionID)">@sessionSection.SessionSectionName</button>
+                <div id="sectionContent@(sessionSection.SessionSectionID)" class="collapse">
                     <ul>
                         <li type="disc">
-                            <button class="btn btn-link text-success">New Note +</button>
+                            <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(sessionSection.SessionSectionID)">New Note +</button>
                         </li>
+                        <li id="newNoteArea@(sessionSection.SessionSectionID)" type="none" class="nav-item collapse">
+                            <input id="inputNewNote@(sessionSection.SessionSectionID)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote()" />
+                            <input id="inputCampaignID@(sessionSection.SessionSectionID)" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
+                        </li>
+                        @if (sessionSection.SessionNotes > 0)
+                        {
+                            @foreach (var sessionNote in sessionSection.SessionNotes)
+                            {
+                                <li type="disc">
+                                    <button class="btn btn-link text-success">@sessionNote.SessionNoteTitle</button>
+                                </li>
+                            }
+                        }
                     </ul>
                 </div>
             </li>
-        </ul>
-        <div class="col">
-            <div class="jumbotron bg-dark">
-                <h1 class="display-4">Note 1</h1>
-                <hr />
-                <p>Lorem ipsum. Lorem ipsum. Lorem ipsum. </p>
+        }
+        <li class="nav-item">
+            <button class="btn btn-link text-white" data-toggle="collapse" data-target="#sectionContent">
+                Section 1
+            </button>
+            <div id="sectionContent" class="collapse">
+                <ul>
+                    <li type="disc">
+                        <button class="btn btn-link text-success">New Note +</button>
+                    </li>
+                </ul>
             </div>
+        </li>
+    </ul>
+    <div class="col">
+        <div class="jumbotron bg-dark">
+            <h1 class="display-4">Note 1</h1>
+            <hr />
+            <p>Lorem ipsum. Lorem ipsum. Lorem ipsum. </p>
         </div>
     </div>
+</div>
 
 <script>
 

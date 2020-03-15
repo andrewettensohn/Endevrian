@@ -83,9 +83,10 @@ namespace Endevrian.Areas.Identity.Controllers
             SessionPlanViewModel model = new SessionPlanViewModel
             {
                 SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId),
-                SessionSections = await _context.SessionSections.ToListAsync(),
-                SessionNotes = await _context.SessionNotes.ToListAsync()
-        };
+            };
+
+            model.SessionSections = await _context.SessionSections.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
+            model.SessionNotes = await _context.SessionNotes.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
 
             return View(model);
         }

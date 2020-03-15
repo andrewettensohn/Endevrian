@@ -15,5 +15,7 @@ namespace Endevrian.Models
 
         public string SessionSectionName { get; set; }
 
+        public List<SessionNote> SessionNotes { get; set; }
+
     }
 }
