@@ -5,7 +5,7 @@
     <div class="row justify-content-start">
         <ul class="nav flex-column col-3 list-unstyled">
             <li class="nav-item">
-                <p class="nav-link">Sections</p>
+                <p class="nav-link">Session Plans: @Model.SelectedCampaign.CampaignName</p>
                 <hr />
             </li>
             <li class="nav-item">
@@ -22,7 +22,7 @@
 
                 <li type="nav-item collapse">
                     <button class="text-white btn btn-link" data-toggle="collapse" data-target="#sectionContent@(id)">@sessionSection.SessionSectionName</button>
-                    <div id="sectionContent@(id)" class="collapse">
+                    <div id="sectionContent@(id)" class="collapse show">
                         <ul>
                             <li type="disc">
                                 <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
