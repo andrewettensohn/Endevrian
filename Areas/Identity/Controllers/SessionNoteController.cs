@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Endevrian.Data;
 using Endevrian.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -49,9 +50,27 @@ namespace Endevrian.Areas.Identity.Controllers
                 if (selectedCampaign.UserId == sessionNote.UserId)
                 {
                     //SessionNote selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).First();
+                    //bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
+
+                    //if (selectedNoteCheck is false) { sessionNote.SelectedSessionNote = true; }
+
                     bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
 
-                    if (selectedNoteCheck is false) { sessionNote.SelectedSessionNote = true; }
+                    if (selectedNoteCheck == true)
+                    {
+                        List<SessionNote> selectedNotes = _context.SessionNotes.Where(x => x.UserId == sessionNote.UserId && x.SelectedSessionNote == true).ToList();
+
+                        foreach (SessionNote selectedNote in selectedNotes)
+                        {
+                            selectedNote.SelectedSessionNote = false;
+                        }
+
+                        sessionNote.SelectedSessionNote = true;
+                    }
+                    else
+                    {
+                        sessionNote.SelectedSessionNote = true;
+                    }
 
                     await _context.SessionNotes.AddAsync(sessionNote);
                     await _context.SaveChangesAsync();
@@ -71,7 +90,61 @@ namespace Endevrian.Areas.Identity.Controllers
             }
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> SetSelectedSessionNote(int id)
+        {
+
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            SessionNote sessionNoteToSelect = await _context.SessionNotes.FindAsync(id);
+
+            if(sessionNoteToSelect.UserId == currentUser)
+            {
+
+                bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
+
+                if (selectedNoteCheck == true)
+                {
+                    List<SessionNote> selectedNotes = _context.SessionNotes.Where(x => x.UserId == currentUser && x.SelectedSessionNote == true).ToList();
+
+                    foreach (SessionNote selectedNote in selectedNotes)
+                    {
+                        selectedNote.SelectedSessionNote = false;
+                    }
+
+                    sessionNoteToSelect.SelectedSessionNote = true;
+                }
+                else
+                {
+                    sessionNoteToSelect.SelectedSessionNote = true;
+                }
+
+                _context.Entry(sessionNoteToSelect).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SessionNoteExists(id))
+                    {
+                        //_logger.AddSystemLog($"WARNING: User {requestingUser} has caused a DbUpdateConcurrencyException");
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool SessionNoteExists(int id)
+        {
+            return _context.SessionNotes.Any(e => e.SessionNoteID == id);
+        }
     }
 }

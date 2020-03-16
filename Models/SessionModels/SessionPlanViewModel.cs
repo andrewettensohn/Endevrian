@@ -13,7 +13,7 @@ namespace Endevrian.Models.SessionModels
 
         public Campaign SelectedCampaign { get; set; }
 
-        //List 
+        public SessionNote SelectedNote { get; set; }
 
     }
 }

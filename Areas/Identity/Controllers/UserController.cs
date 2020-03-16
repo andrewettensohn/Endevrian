@@ -88,6 +88,16 @@ namespace Endevrian.Areas.Identity.Controllers
             model.SessionSections = await _context.SessionSections.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
             model.SessionNotes = await _context.SessionNotes.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
 
+            bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
+            if(selectedNoteCheck == true)
+            {
+                model.SelectedNote = await _context.SessionNotes.Where(x => x.SelectedSessionNote == true).FirstAsync();
+            }
+            else
+            {
+                model.SelectedNote = null;
+            }
+
             return View(model);
         }
 

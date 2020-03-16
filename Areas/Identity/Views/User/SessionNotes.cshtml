@@ -2,56 +2,59 @@
     ViewData["Title"] = "Session Notes";
 }
 
-<div class="row justify-content-start">
-    <ul class="nav flex-column col-3 list-unstyled">
-        <li class="nav-item">
-            <p class="nav-link">Sections</p>
-            <hr />
-        </li>
-        <li class="nav-item">
-            <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newSectionArea">New Section +</button>
-        </li>
-        <li id="newSectionArea" class="nav-item collapse">
-            <input id="inputNewSection" type="text" class="form-control" placeholder="Section Title" onfocusout="createNewSection()" />
-            <input id="inputCampaignID" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
-        </li>
-        @foreach (var sessionSection in Model.SessionSections)
-        {
-
-            int id = sessionSection.SessionSectionID;
-
-            <li type="nav-item collapse">
-                <button class="text-white btn btn-link" data-toggle="collapse" data-target="#sectionContent@(id)">@sessionSection.SessionSectionName</button>
-                <div id="sectionContent@(id)" class="collapse">
-                    <ul>
-                        <li type="disc">
-                            <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
-                        </li>
-                        <li id="newNoteArea@(id)" type="none" class="nav-item collapse">
-                            <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote(@(id))" />
-                        </li>
-                        @if (sessionSection.SessionNotes != null && sessionSection.SessionNotes.Count > 0)
-                        {
-                            @foreach (var sessionNote in sessionSection.SessionNotes)
-                            {
-                                <li type="disc">
-                                    <button class="text-white btn btn-link">@sessionNote.SessionNoteTitle</button>
-                                </li>
-                            }
-                        }
-                    </ul>
-                </div>
+    <div class="row justify-content-start">
+        <ul class="nav flex-column col-3 list-unstyled">
+            <li class="nav-item">
+                <p class="nav-link">Sections</p>
+                <hr />
             </li>
-        }
-    </ul>
-    <div class="col">
-        <div class="jumbotron bg-dark">
-            <h1 class="display-4">Note 1</h1>
-            <hr />
-            <p>Lorem ipsum. Lorem ipsum. Lorem ipsum. </p>
+            <li class="nav-item">
+                <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newSectionArea">New Section +</button>
+            </li>
+            <li id="newSectionArea" class="nav-item collapse">
+                <input id="inputNewSection" type="text" class="form-control" placeholder="Section Title" onfocusout="createNewSection()" />
+                <input id="inputCampaignID" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
+            </li>
+            @foreach (var sessionSection in Model.SessionSections)
+            {
+
+                int id = sessionSection.SessionSectionID;
+
+                <li type="nav-item collapse">
+                    <button class="text-white btn btn-link" data-toggle="collapse" data-target="#sectionContent@(id)">@sessionSection.SessionSectionName</button>
+                    <div id="sectionContent@(id)" class="collapse">
+                        <ul>
+                            <li type="disc">
+                                <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
+                            </li>
+                            <li id="newNoteArea@(id)" type="none" class="nav-item collapse">
+                                <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote(@(id))" />
+                            </li>
+                            @if (sessionSection.SessionNotes != null && sessionSection.SessionNotes.Count > 0)
+                            {
+                                @foreach (var sessionNote in sessionSection.SessionNotes)
+                                {
+                                    <li type="disc">
+                                        <button class="text-white btn btn-link" onclick="selectSessionNote(@(sessionNote.SessionNoteID))">@sessionNote.SessionNoteTitle</button>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </li>
+            }
+        </ul>
+        <div class="col">
+            @if (Model.SelectedNote != null)
+            {
+                <div class="jumbotron bg-dark">
+                    <h1 class="display-4">@Model.SelectedNote.SessionNoteTitle</h1>
+                    <hr />
+                    <p>Notes go here.</p>
+                </div>
+            }
         </div>
     </div>
-</div>
 
 <script>
 
@@ -95,4 +98,15 @@
             .then(() => location.reload())
             .catch(() => console.log("Failed to create item"));
     }
+
+    function selectSessionNote(sessionNoteID) {
+
+        fetch("api/SessionNote/" + sessionNoteID, {
+            method: 'PUT',
+        })
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to update item"));
+
+    }
+
 </script>
