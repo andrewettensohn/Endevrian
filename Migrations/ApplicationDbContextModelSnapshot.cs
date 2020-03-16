@@ -104,6 +104,9 @@ namespace Endevrian.Migrations
                     b.Property<int>("CampaignID")
                         .HasColumnType("int");
 
+                    b.Property<bool?>("SelectedSessionNote")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SessionNoteBody")
                         .HasColumnType("nvarchar(max)");
 
@@ -117,6 +120,8 @@ namespace Endevrian.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SessionNoteID");
+
+                    b.HasIndex("SessionSectionID");
 
                     b.ToTable("SessionNotes");
                 });
@@ -361,6 +366,15 @@ namespace Endevrian.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Endevrian.Models.SessionNote", b =>
+                {
+                    b.HasOne("Endevrian.Models.SessionSection", null)
+                        .WithMany("SessionNotes")
+                        .HasForeignKey("SessionSectionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

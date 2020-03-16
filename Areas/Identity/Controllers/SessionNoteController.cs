@@ -1,46 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Endevrian.Data;
+using Endevrian.Models;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Endevrian.Areas.Identity.Controllers
 {
-    [Route("api/[controller]")]
-    public class SessionNoteController : Controller
+    [Area("Identity")]
+    [Route("Identity/User/api/SessionNote")]
+    [ApiController]
+    public class SessionNoteController : ControllerBase
     {
-        // GET: api/<controller>
-        [HttpGet]
-        public IEnumerable<string> Get()
+
+        private readonly ApplicationDbContext _context;
+
+        public SessionNoteController(ApplicationDbContext context)
         {
-            return new string[] { "value1", "value2" };
+            _context = context;
         }
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<SessionNote>> GetSessionNoteAsync(int id)
         {
-            return "value";
+
+            SessionNote sessionNote = await _context.SessionNotes.FindAsync(id);
+
+            return sessionNote;
         }
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<ActionResult<SessionNote>> PostSessionNote([FromBody]SessionNote sessionNote)
         {
+
+            sessionNote.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if(sessionNote.SessionNoteTitle == ""){ sessionNote.SessionNoteTitle = "New Note"; }
+
+            try
+            {
+
+                Campaign selectedCampaign = await _context.Campaigns.FindAsync(sessionNote.CampaignID);
+
+                if (selectedCampaign.UserId == sessionNote.UserId)
+                {
+                    //SessionNote selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).First();
+                    bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
+
+                    if (selectedNoteCheck is false) { sessionNote.SelectedSessionNote = true; }
+
+                    await _context.SessionNotes.AddAsync(sessionNote);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetSessionNote", new { id = sessionNote.SessionNoteID }, sessionNote);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc);
+                return BadRequest();
+            }
         }
 
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //[HttpPut]
+        //public async Task<IActionResult>
     }
 }

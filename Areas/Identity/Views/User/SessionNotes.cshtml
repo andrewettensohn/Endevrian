@@ -28,15 +28,14 @@
                             <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
                         </li>
                         <li id="newNoteArea@(id)" type="none" class="nav-item collapse">
-                            <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote()" />
-                            <input id="inputCampaignID@(id)" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
+                            <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote(@(id))" />
                         </li>
-                        @if (sessionSection.SessionNotes > 0)
+                        @if (sessionSection.SessionNotes != null && sessionSection.SessionNotes.Count > 0)
                         {
                             @foreach (var sessionNote in sessionSection.SessionNotes)
                             {
                                 <li type="disc">
-                                    <button class="btn btn-link text-success">@sessionNote.SessionNoteTitle</button>
+                                    <button class="text-white btn btn-link">@sessionNote.SessionNoteTitle</button>
                                 </li>
                             }
                         }
@@ -44,18 +43,6 @@
                 </div>
             </li>
         }
-        <li class="nav-item">
-            <button class="btn btn-link text-white" data-toggle="collapse" data-target="#sectionContent">
-                Section 1
-            </button>
-            <div id="sectionContent" class="collapse">
-                <ul>
-                    <li type="disc">
-                        <button class="btn btn-link text-success">New Note +</button>
-                    </li>
-                </ul>
-            </div>
-        </li>
     </ul>
     <div class="col">
         <div class="jumbotron bg-dark">
@@ -68,9 +55,6 @@
 
 <script>
 
-
-    const uri = "api/SessionSection";
-
     function createNewSection() {
 
         item = {
@@ -79,9 +63,7 @@
             campaignID: parseInt($("#inputCampaignID").val(), 10)
         }
 
-        console.log(item)
-
-        fetch(uri, {
+        fetch("api/SessionSection", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,6 +73,26 @@
             .then((response) => response.json())
             .then(() => location.reload())
             .catch(() => console.log("Failed to create item"));
+    }
 
+    function createNewNote(sessionSectionID) {
+
+        item = {
+
+            sessionNoteTitle: $("#inputNewNote" + sessionSectionID).val(),
+            campaignID: parseInt($("#inputCampaignID").val(), 10),
+            sessionSectionID: parseInt(sessionSectionID, 10)
+        }
+
+        fetch("api/SessionNote", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
     }
 </script>

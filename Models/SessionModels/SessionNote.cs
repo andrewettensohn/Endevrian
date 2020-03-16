@@ -19,5 +19,7 @@ namespace Endevrian.Models
 
         public string SessionNoteBody { get; set; }
 
+        public bool? SelectedSessionNote { get; set; }
+
     }
 }

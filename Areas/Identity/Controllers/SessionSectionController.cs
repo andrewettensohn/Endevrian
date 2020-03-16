@@ -27,7 +27,7 @@ namespace Endevrian.Areas.Identity.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<SessionSection>> GetSessionSection(int id)
         {
-            var sessionSection = await _context.SessionSections.FindAsync(id);
+            SessionSection sessionSection = await _context.SessionSections.FindAsync(id);
 
             if (sessionSection == null)
             {
