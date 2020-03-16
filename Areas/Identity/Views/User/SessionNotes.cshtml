@@ -24,12 +24,6 @@
                     <button class="text-white btn btn-link" data-toggle="collapse" data-target="#sectionContent@(id)">@sessionSection.SessionSectionName</button>
                     <div id="sectionContent@(id)" class="collapse show">
                         <ul>
-                            <li type="disc">
-                                <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
-                            </li>
-                            <li id="newNoteArea@(id)" type="none" class="nav-item collapse">
-                                <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote(@(id))" />
-                            </li>
                             @if (sessionSection.SessionNotes != null && sessionSection.SessionNotes.Count > 0)
                             {
                                 @foreach (var sessionNote in sessionSection.SessionNotes)
@@ -39,6 +33,12 @@
                                     </li>
                                 }
                             }
+                            <li type="disc">
+                                <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
+                            </li>
+                            <li id="newNoteArea@(id)" type="none" class="nav-item collapse">
+                                <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote(@(id))" />
+                            </li>
                         </ul>
                     </div>
                 </li>

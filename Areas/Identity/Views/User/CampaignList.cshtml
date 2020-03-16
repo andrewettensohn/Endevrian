@@ -19,6 +19,7 @@
                     <h3 class="card-header mb-3">@Model.SelectedCampaign.CampaignName</h3>
                     <a href="@Url.Content($"~/Identity/User/AdventureLog")" class="btn border border-secondary">Adventure Logs</a>
                     <a href="@Url.Content($"~/Identity/User/SessionNotes")" class="btn border border-secondary">Session Notes</a>
+                    <a href="#" class="btn border border-secondary">Maps</a>
                     <p class="card-text mt-3">@Model.SelectedCampaign.CampaignDescription</p>
                     <button class="float-right btn border border-danger text-danger" onclick="deleteCampaign(@Model.SelectedCampaign.CampaignID)">Delete Campagin</button>
                 </div>
@@ -32,15 +33,13 @@
         <form id="formAddCampaign">
             <div class="input-group mb-3">
                 <input type="text" id="inputCampaignName" class="form-control" placeholder="Campaign Name">
-                <div class="input-group-append">
-                    <input class="btn border-success text-success" type="submit" id="button-addon2">
-                </div>
             </div>
             <div>
                 <textarea id="areaCampaignDescription" class="form-control" placeholder="Campaign Description..." rows="10" cols="50"></textarea>
             </div>
+            <input class="btn border-success text-success mt-3" type="submit" id="button-addon2">
+            <button class="btn border-danger text-danger mt-3 float-right" data-toggle="collapse" data-target="#collapseNewCampaign">Cancel</button>
         </form>
-        <button class="btn border-danger text-danger mt-3" data-toggle="collapse" data-target="#collapseNewCampaign">Cancel</button>
     </div>
 </div>
 
