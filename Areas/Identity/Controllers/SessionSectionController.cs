@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Endevrian.Data;
 using Endevrian.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -35,6 +35,49 @@ namespace Endevrian.Areas.Identity.Controllers
             }
 
             return sessionSection;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<SessionSection>> PutSessionSection(int id, SessionSection sentSessionSection)
+        {
+
+            string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            SessionSection sessionSection = await _context.SessionSections.FindAsync(id);
+
+            if (id != sentSessionSection.SessionSectionID || sessionSection.UserId != requestingUser)
+            {
+                return BadRequest();
+            }
+            if (sentSessionSection.SessionSectionName != null)
+            {
+                sessionSection.SessionSectionName = sentSessionSection.SessionSectionName;
+            }
+
+            _context.Entry(sessionSection).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SessionSectionExists(id))
+                {
+                    //_logController.AddSystemLog($"WARNING: User {requestingUser} has caused a DbUpdateConcurrencyException");
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        private bool SessionSectionExists(int id)
+        {
+            return _context.SessionSections.Any(e => e.SessionSectionID == id);
         }
 
         //POST api/<controller>

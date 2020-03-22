@@ -3,6 +3,8 @@
 }
 
 <style>
+
+
     .modal-backdrop {
         opacity: 0 !important;
     }
@@ -87,15 +89,15 @@
         <!-- toggler -->
         <a data-toggle="collapse" data-target="#planSideNav" role="button" class="p-1">
             Sections
-            <i class="far fa-arrow-alt-circle-right fa-lg text-white"></i>
+            <i class="far fa-arrow-alt-circle-right fa-lg text-white" type="button"></i>
         </a>
 
     </div>
 </div>
-<div class="row vh-100 collapse show no-gutters d-flex h-100 position-relative">
-    <div id="planSideNav" class="col-3 p-0 vh-100 h-100 w-sidebar navbar-collapse collapse d-none d-md-flex sidebar">
+<div class="row vh-100 collapse show no-gutters d-flex h-100 position-relative bg-dark">
+    <div id="planSideNav" class="col-3 p-0 h-100 w-sidebar navbar-collapse collapse d-none d-md-flex sidebar bg-dark">
         <!-- fixed sidebar -->
-        <div class="position-fixed bg-dark text-white h-100 w-sidebar pl-2">
+        <div class="position-fixed text-white h-100 w-sidebar pl-2">
             <ul class="list-unstyled mt-3">
                 <li class="nav-item">
                     <a data-toggle="modal" data-target="#manageSectionsModal" role="button" class="p-1">
@@ -193,18 +195,28 @@
                         <tr>
                             <th>Manage Sections</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tbodyManageSections">
                         @foreach (var sessionSection in Model.SessionSections)
                         {
+                            var id = sessionSection.SessionSectionID;
+
                             <tr>
                                 <td>
-                                    @sessionSection.SessionSectionName
+                                    <div id="manageSectionName@(id)">@sessionSection.SessionSectionName</div>
+                                    <input id="inputManageSectionName@(id)" class="form-control d-none" />
                                 </td>
                                 <td>
-                                    <i class="fas fa-edit fa-sm" type="button"></i>
-                                    <i class="fa fa-trash fa-sm ml-3" type="button"></i>
+                                    <button id="btnEditSectionName@(id)" class="btn text-white" type="button" onclick="displayEditSectionName(@(id))">
+                                        <i class="fas fa-edit fa-sm"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button id="btnDeleteSectionName@(id)" class="btn text-white" onclick="displayDeleteSectionName(@id)" type="button">
+                                        <i class="fa fa-trash fa-sm"></i>
+                                    </button>
                                 </td>
                             </tr>
                         }
@@ -212,7 +224,10 @@
                 </table>
             </div>
             <div class="modal-footer">
+                <div id="manageSectionMessage" class="d-none text-warning"></div>
                 <button type="button" class="btn border border-secondary text-white" data-dismiss="modal">Close</button>
+                <button id="btnManageSectionUpdate" type="button" class="btn border border-success text-success d-none">Update</button>
+                <button id="btnManageSectionDelete" type="button" class="btn border border-danger text-danger d-none">Delete</button>
             </div>
         </div>
     </div>
@@ -220,6 +235,86 @@
 
 
 <script>
+
+    function displayDeleteSectionName(sessionSectionId) {
+
+        let sectionName = $("#manageSectionName" + sessionSectionId)
+        let input = $("#inputManageSectionName" + sessionSectionId)
+        let message = $("#manageSectionMessage");
+        let btnDelete = $("#btnDeleteSectionName" + sessionSectionId);
+        let btnEdit = $("#btnEditSectionName" + sessionSectionId);
+
+        message.text("Enter the name of the section and click delete to confirm");
+
+        sectionName.toggleClass("d-none");
+        input.toggleClass("d-none")
+        message.toggleClass("d-none");
+        $("#btnManageSectionDelete").toggleClass("d-none");
+
+        if (btnEdit.prop("disabled")) {
+
+            $("#tbodyManageSections").find("button").prop("disabled", false);
+
+        } else {
+
+            $("#tbodyManageSections").find("button").prop("disabled", true);
+            btnDelete.prop("disabled", false)
+
+        }
+
+        input.attr("placeholder", sectionName.text())
+        input.focus()
+
+    }
+
+    function displayEditSectionName(sessionSectionId) {
+
+        let currentName = $("#manageSectionName" + sessionSectionId);
+        let input = $("#inputManageSectionName" + sessionSectionId);
+        let btnDelete = $("#btnDeleteSectionName" + sessionSectionId);
+        let btnEdit = $("#btnEditSectionName" + sessionSectionId);
+
+        currentName.toggleClass("d-none");
+        input.toggleClass("d-none");
+        $("#btnManageSectionUpdate").toggleClass("d-none");
+
+        if (btnDelete.prop("disabled")) {
+
+            $("#tbodyManageSections").find("button").prop("disabled", false);
+
+        } else {
+
+            $("#tbodyManageSections").find("button").prop("disabled", true);
+            btnEdit.prop("disabled", false)
+
+        }
+        
+        input.val(currentName.text())
+        input.focus();
+
+        $("#btnManageSectionUpdate").on("click", async function (evt) {
+
+            let updatedSessionSectionName = $("#inputManageSectionName" + sessionSectionId).val();
+
+            item = {
+
+                sessionSectionID: parseInt(sessionSectionId, 10),
+                sessionSectionName: updatedSessionSectionName
+
+            }
+
+            fetch("api/SessionSection/" + sessionSectionId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(item)
+            })
+                .then(() => location.reload())
+                .catch(() => console.log("Failed to update session section name"));
+
+        });
+    }
 
     function deleteSelectedNote(selectedNoteId) {
 
