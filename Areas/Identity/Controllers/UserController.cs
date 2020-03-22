@@ -91,7 +91,7 @@ namespace Endevrian.Areas.Identity.Controllers
             bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
             if(selectedNoteCheck == true)
             {
-                model.SelectedNote = await _context.SessionNotes.Where(x => x.SelectedSessionNote == true).FirstAsync();
+                model.SelectedNote = await _context.SessionNotes.Where(x => x.SelectedSessionNote == true && x.UserId == userId).FirstAsync();
             }
             else
             {

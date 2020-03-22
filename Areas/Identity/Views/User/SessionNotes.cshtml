@@ -50,13 +50,75 @@
                 <div class="jumbotron bg-dark">
                     <h1 class="display-4">@Model.SelectedNote.SessionNoteTitle</h1>
                     <hr />
-                    <p>Notes go here.</p>
+                    <div id="sectionNoteBody">
+                        <button class="btn border border-primary text-primary mb-3 float-right" onclick="displayEditNote()">Edit Notes</button>
+                        <div id="noteBody">@Html.Raw(Model.SelectedNote.SessionNoteBody)</div>
+                    </div>
+                    <div id="sectionEditNote" class="text-dark d-none">
+                        <form id="sessionNoteForm">
+                            <textarea class="form-control" id="textAreaLogBody" rows="10" cols="50" placeholder="When we last left our adventurers..."></textarea>
+                            <button class="btn border border-success text-success mt-3 float-right" type="submit">Update</button>
+                            <input class="d-none" id="sessionNoteFormId" value="@Model.SelectedNote.SessionNoteID" />
+                        </form>
+                    </div>
                 </div>
             }
         </div>
     </div>
 
 <script>
+
+   
+    function displayEditNote() {
+
+        $("#sectionNoteBody").toggleClass("d-none");
+        $("#sectionEditNote").toggleClass("d-none");
+        var currentNoteBodyText = $("#noteBody").html();
+        $("#textAreaLogBody").html(currentNoteBodyText);
+        attachEditor();
+
+    }
+
+    function attachEditor() {
+
+        let editor;
+
+        ClassicEditor
+            .create(document.querySelector('#textAreaLogBody'))
+            .then(newEditor => {
+                editor = newEditor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        let logForm = $("#sessionNoteForm");
+
+        logForm.on("submit", async function (evt) {
+            let editorData = editor.getData();
+
+            evt.preventDefault();
+
+            item = {
+
+                sessionNoteBody: editorData,
+                sessionNoteID: parseInt($("#sessionNoteFormId").val(), 10)
+            }
+
+            fetch("api/SessionNote/EditNote", {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(item)
+            })
+                .then(() => location.reload())
+                .catch(() => console.log("Failed to update item"));
+
+        });
+
+    }
+
 
     function createNewSection() {
 

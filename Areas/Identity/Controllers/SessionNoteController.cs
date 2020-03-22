@@ -33,6 +33,42 @@ namespace Endevrian.Areas.Identity.Controllers
             return sessionNote;
         }
 
+        [HttpPut("EditNote")]
+        public async Task<ActionResult<SessionNote>> EditSessionNote([FromBody]SessionNote sentSessionNote)
+        {
+
+            string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            SessionNote sessionNote = await _context.SessionNotes.FindAsync(sentSessionNote.SessionNoteID);
+
+            if(requestingUser != sessionNote.UserId)
+            {
+                return BadRequest();
+            }
+
+            sessionNote.SessionNoteBody = sentSessionNote.SessionNoteBody;
+
+            _context.Entry(sessionNote).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SessionNoteExists(sessionNote.SessionNoteID))
+                {
+                    //_logController.AddSystemLog($"WARNING: User {requestingUser} has caused a DbUpdateConcurrencyException");
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
         // POST api/<controller>
         [HttpPost]
         public async Task<ActionResult<SessionNote>> PostSessionNote([FromBody]SessionNote sessionNote)

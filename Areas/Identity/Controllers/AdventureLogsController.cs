@@ -111,8 +111,7 @@ namespace Endevrian.Controllers
                     adventureLog.LogBody = "Nothing seems to be here! Click here to edit.";
                 }
 
-
-                adventureLog = Utilites.NewCreateDateFormatted(adventureLog);
+                adventureLog = Utilities.NewCreateDateFormatted(adventureLog);
 
                 _context.AdventureLogs.Add(adventureLog);
                 _context.SaveChanges();
