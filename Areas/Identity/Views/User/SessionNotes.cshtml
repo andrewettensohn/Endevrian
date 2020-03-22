@@ -4,11 +4,9 @@
 
 <style>
 
-
     .modal-backdrop {
         opacity: 0 !important;
     }
-
 
     body {
         height: 100vh;
@@ -87,11 +85,10 @@
     </div>
     <div class="col px-2 px-md-0">
         <!-- toggler -->
-        <a data-toggle="collapse" data-target="#planSideNav" role="button" class="p-1">
+        <a id="openSideNav" onclick="toggleScrolling()" data-toggle="collapse" data-target="#planSideNav" role="button" class="p-1 d-lg-none">
             Sections
             <i class="far fa-arrow-alt-circle-right fa-lg text-white" type="button"></i>
         </a>
-
     </div>
 </div>
 <div class="row vh-100 collapse show no-gutters d-flex h-100 position-relative bg-dark">
@@ -149,7 +146,7 @@
             <!-- Modal -->
             <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content bg-dark">
+                    <div class="modal-content bg-dark border border-white">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Session Note Deletion</h5>
                         </div>
@@ -188,7 +185,7 @@
 
 <div class="modal fade" id="manageSectionsModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
-        <div class="modal-content bg-dark">
+        <div class="modal-content bg-dark border border-white">
             <div class="modal-body">
                 <table class="table table-dark table-hover">
                     <thead>
@@ -235,6 +232,24 @@
 
 
 <script>
+
+    function toggleScrolling() {
+
+        if ($('html, body').css("overflow") == "hidden") {
+
+            $('html, body').css({
+                overflow: 'auto',
+                height: 'auto'
+            });
+
+        } else {
+
+            $('html, body').css({
+                overflow: 'hidden',
+                height: '100%'
+            });
+        }
+    }
 
     function displayDeleteSectionName(sessionSectionId) {
 
