@@ -9,6 +9,9 @@
                 <hr />
             </li>
             <li class="nav-item">
+                <i class="fas fa-tasks fa-lg" type="button" data-toggle="modal" data-target="#manageSectionsModal"></i>
+            </li>
+            <li class="nav-item">
                 <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newSectionArea">New Section +</button>
             </li>
             <li id="newSectionArea" class="nav-item collapse">
@@ -44,6 +47,42 @@
                 </li>
             }
         </ul>
+
+        <!-- Modal -->
+        <div class="modal fade" id="manageSectionsModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content bg-dark">
+                    <div class="modal-body">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Manage Sections</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sessionSection in Model.SessionSections)
+                                {
+                                    <tr>
+                                        <td>
+                                            @sessionSection.SessionSectionName
+                                        </td>
+                                        <td>
+                                            <i class="fas fa-edit fa-sm" type="button"></i>
+                                            <i class="fa fa-trash fa-sm ml-3" type="button" data-toggle="modal" data-target="#confirmDeleteModal"></i>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn border border-secondary text-white" data-dismiss="modal">Close</button>
+                        @*<button type="button" class="btn btn-danger" onclick="deleteSelectedNote(@sessionSection.SessionSectionID)">Delete</button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!--Session Note Body-->
         <div class="col">

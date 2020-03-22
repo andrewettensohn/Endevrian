@@ -44,6 +44,11 @@ namespace Endevrian.Areas.Identity.Controllers
 
             sessionSection.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            if(sessionSection.SessionSectionName == "" || sessionSection is null)
+            {
+                sessionSection.SessionSectionName = "Section";
+            }
+
             try
             {
 
