@@ -41,7 +41,7 @@ else
 
         var logId = logForDisplay.AdventureLogID;
 
-        <div class="jumbotron bg-dark">
+        <div class="jumbotron" style="background-color: #121212">
             <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.LogTitle</h1>
             <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
             <p>@logForDisplay.DisplayLogDate</p>

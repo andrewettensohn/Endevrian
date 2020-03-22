@@ -88,7 +88,8 @@
             <!-- toggler -->
             <a id="openSideNav" onclick="toggleScrolling()" data-toggle="collapse" data-target="#planSideNav" role="button" class="p-1 d-lg-none">
                 Sections
-                <i class="far fa-arrow-alt-circle-right fa-lg text-white" type="button"></i>
+                <i id="iconNavBarOpen" class="far fa-arrow-alt-circle-right fa-lg text-white" type="button"></i>
+                <i id="iconNavBarClose" class="far fa-arrow-alt-circle-left fa-lg text-white d-none" type="button"></i>
             </a>
         </div>
     </div>
@@ -244,6 +245,9 @@
 <script>
 
     function toggleScrolling() {
+
+            $("#iconNavBarClose").toggleClass("d-none");
+            $("#iconNavBarOpen").toggleClass("d-none");
 
         if ($('html, body').css("overflow") == "hidden") {
 
