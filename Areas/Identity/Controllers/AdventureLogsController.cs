@@ -130,7 +130,7 @@ namespace Endevrian.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<AdventureLog>> DeleteAdventureLog(int id)
         {
-            var adventureLog = await _context.AdventureLogs.FindAsync(id);
+            AdventureLog adventureLog = await _context.AdventureLogs.FindAsync(id);
 
             if (adventureLog == null || adventureLog.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
             {

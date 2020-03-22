@@ -178,6 +178,22 @@ namespace Endevrian.Areas.Identity.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<SessionNote>> DeleteSessionNote(int id)
+        {
+            SessionNote sessionNote = await _context.SessionNotes.FindAsync(id);
+
+            if (sessionNote == null || sessionNote.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound();
+            }
+
+            _context.SessionNotes.Remove(sessionNote);
+            await _context.SaveChangesAsync();
+
+            return sessionNote;
+        }
+
         private bool SessionNoteExists(int id)
         {
             return _context.SessionNotes.Any(e => e.SessionNoteID == id);
