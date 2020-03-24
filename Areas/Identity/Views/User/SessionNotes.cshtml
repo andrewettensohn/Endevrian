@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Session Notes";
 }
 
@@ -86,7 +87,7 @@
         </div>
         <div class="col px-2 px-md-0">
             <!-- toggler -->
-            <a id="openSideNav" onclick="toggleScrolling()" data-toggle="collapse" data-target="#planSideNav" role="button" class="p-1 d-lg-none">
+            <a id="openSideNav" onclick="toggleNavBarScrollAndIcons()" data-toggle="collapse" data-target="#planSideNav" role="button" class="p-1 d-lg-none">
                 Sections
                 <i id="iconNavBarOpen" class="far fa-arrow-alt-circle-right fa-lg text-white" type="button"></i>
                 <i id="iconNavBarClose" class="far fa-arrow-alt-circle-left fa-lg text-white d-none" type="button"></i>
@@ -134,7 +135,7 @@
                                         <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
                                     </li>
                                     <li id="newNoteArea@(id)" type="none" class="nav-item collapse">
-                                        <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onfocusout="createNewNote(@(id))" />
+                                        <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onenter onfocusout="createNewNote(@(id))" />
                                     </li>
                                 </ul>
                             </div>
@@ -151,10 +152,7 @@
                 <!-- Modal Confirm Delete -->
                 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
-                        <div class="modal-content bg-dark border border-white">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Session Note Deletion</h5>
-                            </div>
+                        <div class="modal-content" style="background-color: #1F1B24">
                             <div class="modal-body">
                                 Are you sure you want to delete this note?
                             </div>
@@ -170,6 +168,7 @@
                 <!-- Session Note Content -->
                 <div class="jumbotron" style="background-color: #121212">
                     <h1 class="display-4">@Model.SelectedNote.SessionNoteTitle</h1>
+                    <input id="inputUpdateSessionNoteName" class="form-control d-none" />
                     <hr />
                     <div id="sectionNoteBody">
                         <div class="d-flex flex-row-reverse mb-3">
@@ -193,9 +192,9 @@
     <!-- Modal Manage Sections -->
     <div class="modal fade" id="manageSectionsModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
-            <div class="modal-content bg-dark border border-white">
+            <div class="modal-content" style="background-color: #1F1B24">
                 <div class="modal-body">
-                    <table class="table table-dark table-hover">
+                    <table class="table table-dark table-hover" style="background-color: #1F1B24">
                         <thead>
                             <tr>
                                 <th>Manage Sections</th>
@@ -240,11 +239,9 @@
     <!-- Modal Manage Sections -->
 </body>
 
-
-
 <script>
-
-    function toggleScrolling() {
+    //TODO: Update both session note title and body on update. Also ability to delete Session sections.
+    function toggleNavBarScrollAndIcons() {
 
             $("#iconNavBarClose").toggleClass("d-none");
             $("#iconNavBarOpen").toggleClass("d-none");
