@@ -47,6 +47,15 @@ namespace Endevrian.Areas.Identity.Controllers
 
             sessionNote.SessionNoteBody = sentSessionNote.SessionNoteBody;
 
+            if(sentSessionNote.SessionNoteTitle != null)
+            {
+                sessionNote.SessionNoteTitle = sentSessionNote.SessionNoteTitle;
+            }
+            else
+            {
+                sessionNote.SessionNoteTitle = "New Note";
+            }
+
             _context.Entry(sessionNote).State = EntityState.Modified;
 
             try

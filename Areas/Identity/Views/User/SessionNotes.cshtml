@@ -167,7 +167,7 @@
 
                 <!-- Session Note Content -->
                 <div class="jumbotron" style="background-color: #121212">
-                    <h1 class="display-4">@Model.SelectedNote.SessionNoteTitle</h1>
+                    <h1 id="sessionNoteName" class="display-4">@Model.SelectedNote.SessionNoteTitle</h1>
                     <input id="inputUpdateSessionNoteName" class="form-control d-none" />
                     <hr />
                     <div id="sectionNoteBody">
@@ -388,7 +388,7 @@
 
         $("#sectionNoteBody").toggleClass("d-none");
         $("#sectionEditNote").toggleClass("d-none");
-        var currentNoteBodyText = $("#noteBody").html();
+        let currentNoteBodyText = $("#noteBody").html();
         $("#textAreaLogBody").html(currentNoteBodyText);
         attachEditor();
 
@@ -407,6 +407,13 @@
                 console.error(error);
             });
 
+        let nameInput = $("#inputUpdateSessionNoteName");
+        let noteName = $("#sessionNoteName");
+
+        nameInput.toggleClass("d-none")
+        noteName.toggleClass("d-none");
+        nameInput.val(noteName.text());
+
         let logForm = $("#sessionNoteForm");
 
         logForm.on("submit", async function (evt) {
@@ -416,6 +423,7 @@
 
             item = {
 
+                sessionNoteTitle: $("#inputUpdateSessionNoteName").val(),
                 sessionNoteBody: editorData,
                 sessionNoteID: parseInt($("#sessionNoteFormId").val(), 10)
             }
