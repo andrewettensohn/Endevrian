@@ -194,38 +194,47 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content" style="background-color: #1F1B24">
                 <div class="modal-body">
-                    <table class="table table-dark table-hover" style="background-color: #1F1B24">
-                        <thead>
-                            <tr>
-                                <th>Manage Sections</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbodyManageSections">
-                            @foreach (var sessionSection in Model.SessionSections)
-                            {
-                                var id = sessionSection.SessionSectionID;
 
+                    @if (Model.SessionSections.Count > 0)
+                    {
+                        <table class="table table-dark table-hover" style="background-color: #1F1B24">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <div id="manageSectionName@(id)">@sessionSection.SessionSectionName</div>
-                                        <input id="inputManageSectionName@(id)" class="form-control d-none" />
-                                    </td>
-                                    <td>
-                                        <button id="btnEditSectionName@(id)" class="btn text-white" type="button" onclick="displayEditSectionName(@(id))">
-                                            <i class="fas fa-edit fa-sm"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button id="btnDeleteSectionName@(id)" class="btn text-white" onclick="displayDeleteSectionName(@id)" type="button">
-                                            <i class="fa fa-trash fa-sm"></i>
-                                        </button>
-                                    </td>
+                                    <th>Manage Sections</th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody id="tbodyManageSections">
+                                @foreach (var sessionSection in Model.SessionSections)
+                                {
+                                    var id = sessionSection.SessionSectionID;
+
+                                    <tr>
+                                        <td>
+                                            <div id="manageSectionName@(id)">@sessionSection.SessionSectionName</div>
+                                            <input id="inputManageSectionName@(id)" class="form-control d-none" />
+                                        </td>
+                                        <td>
+                                            <button id="btnEditSectionName@(id)" class="btn text-white" type="button" onclick="displayEditSectionName(@(id))">
+                                                <i class="fas fa-edit fa-sm"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button id="btnDeleteSectionName@(id)" class="btn text-white" onclick="displayDeleteSectionName(@id)" type="button">
+                                                <i class="fa fa-trash fa-sm"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <h5 class="text-center">No Sections Found.</h5>
+                    }
+
                 </div>
                 <div class="modal-footer">
                     <div id="manageSectionMessage" class="d-none text-warning"></div>
@@ -240,7 +249,7 @@
 </body>
 
 <script>
-    //TODO: Update both session note title and body on update. Also ability to delete Session sections.
+    //TODO: Update both session note title and body on update.
     function toggleNavBarScrollAndIcons() {
 
             $("#iconNavBarClose").toggleClass("d-none");
@@ -290,6 +299,29 @@
 
         input.attr("placeholder", sectionName.text())
         input.focus()
+
+        $("#btnManageSectionDelete").on("click", async function (evt) {
+
+            let confirmSectionName = $("#inputManageSectionName" + sessionSectionId).val();
+
+            if (confirmSectionName == sectionName.text()) {
+
+                fetch("api/SessionSection/" + sessionSectionId, {
+                    method: 'DELETE',
+                })
+                    .then(() => location.reload())
+                    .catch(() => console.log("Failed to delete session section"));
+
+
+            } else {
+
+                message.text("Name does not match.");
+                message.addClass("text-danger");
+
+            }
+
+        });
+
 
     }
 

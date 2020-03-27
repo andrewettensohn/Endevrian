@@ -75,11 +75,6 @@ namespace Endevrian.Areas.Identity.Controllers
             return NoContent();
         }
 
-        private bool SessionSectionExists(int id)
-        {
-            return _context.SessionSections.Any(e => e.SessionSectionID == id);
-        }
-
         //POST api/<controller>
         [HttpPost]
         public async Task<ActionResult<SessionSection>> PostSessionSection([FromBody]SessionSection sessionSection)
@@ -115,6 +110,30 @@ namespace Endevrian.Areas.Identity.Controllers
                 return BadRequest();
             }
 
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<SessionSection>> DeleteSessionSection(int id)
+        {
+            string requestingUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            SessionSection sessionSection = await _context.SessionSections.FindAsync(id);
+
+            if(sessionSection.UserId != requestingUserId)
+            {
+                return BadRequest();
+            }
+
+            _context.SessionSections.Remove(sessionSection);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+
+        }
+
+        private bool SessionSectionExists(int id)
+        {
+            return _context.SessionSections.Any(e => e.SessionSectionID == id);
         }
     }
 }
