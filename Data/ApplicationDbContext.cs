@@ -21,5 +21,9 @@ namespace Endevrian.Data
         public DbSet<SystemLog> SystemLogs { get; set; }
 
         public DbSet<Campaign> Campaigns { get; set; }
+
+        public DbSet<SessionNote> SessionNotes { get; set; }
+
+        public DbSet<SessionSection> SessionSections { get; set; }
     }
 }

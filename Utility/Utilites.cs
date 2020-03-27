@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Endevrian.Utility
 {
-    public static class Utilites
+    public static class Utilities
     {
         public static AdventureLog NewCreateDateFormatted(AdventureLog adventureLog)
         {

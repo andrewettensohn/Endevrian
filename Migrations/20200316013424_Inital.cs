@@ -96,6 +96,21 @@ namespace Endevrian.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SessionSections",
+                columns: table => new
+                {
+                    SessionSectionID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    CampaignID = table.Column<int>(nullable: false),
+                    SessionSectionName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SessionSections", x => x.SessionSectionID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SystemLogs",
                 columns: table => new
                 {
@@ -216,6 +231,30 @@ namespace Endevrian.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SessionNotes",
+                columns: table => new
+                {
+                    SessionNoteID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    CampaignID = table.Column<int>(nullable: false),
+                    SessionSectionID = table.Column<int>(nullable: false),
+                    SessionNoteTitle = table.Column<string>(nullable: true),
+                    SessionNoteBody = table.Column<string>(nullable: true),
+                    SelectedSessionNote = table.Column<bool>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SessionNotes", x => x.SessionNoteID);
+                    table.ForeignKey(
+                        name: "FK_SessionNotes_SessionSections_SessionSectionID",
+                        column: x => x.SessionSectionID,
+                        principalTable: "SessionSections",
+                        principalColumn: "SessionSectionID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -254,6 +293,11 @@ namespace Endevrian.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SessionNotes_SessionSectionID",
+                table: "SessionNotes",
+                column: "SessionSectionID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -283,6 +327,9 @@ namespace Endevrian.Migrations
                 name: "HistoricalAdventureLogCounts");
 
             migrationBuilder.DropTable(
+                name: "SessionNotes");
+
+            migrationBuilder.DropTable(
                 name: "SystemLogs");
 
             migrationBuilder.DropTable(
@@ -290,6 +337,9 @@ namespace Endevrian.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "SessionSections");
         }
     }
 }

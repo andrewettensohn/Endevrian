@@ -111,8 +111,7 @@ namespace Endevrian.Controllers
                     adventureLog.LogBody = "Nothing seems to be here! Click here to edit.";
                 }
 
-
-                adventureLog = Utilites.NewCreateDateFormatted(adventureLog);
+                adventureLog = Utilities.NewCreateDateFormatted(adventureLog);
 
                 _context.AdventureLogs.Add(adventureLog);
                 _context.SaveChanges();
@@ -131,7 +130,7 @@ namespace Endevrian.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<AdventureLog>> DeleteAdventureLog(int id)
         {
-            var adventureLog = await _context.AdventureLogs.FindAsync(id);
+            AdventureLog adventureLog = await _context.AdventureLogs.FindAsync(id);
 
             if (adventureLog == null || adventureLog.UserId != User.FindFirstValue(ClaimTypes.NameIdentifier))
             {

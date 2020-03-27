@@ -54,7 +54,7 @@ namespace Endevrian.Controllers
                     campaign.CampaignName = "Your Campaign";
                 }
 
-                campaign.CampaignCreateDate = Utilites.NewCreateDateFormatted();
+                campaign.CampaignCreateDate = Utilities.NewCreateDateFormatted();
 
                 await _context.AddAsync(campaign);
                 await _context.SaveChangesAsync();
