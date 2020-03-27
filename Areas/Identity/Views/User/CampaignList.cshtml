@@ -1,7 +1,148 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Campaigns";
 }
-<div class="row no-gutters">
+
+    <style>
+
+        .modal-backdrop {
+            opacity: 0 !important;
+        }
+
+        body {
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* set the sidebar width */
+        .w-sidebar {
+            width: 200px;
+            max-width: 200px;
+        }
+
+        .row.collapse {
+            margin-left: -200px;
+            left: 0;
+            transition: margin-left .15s linear;
+        }
+
+            .row.collapse.show {
+                margin-left: 0 !important;
+            }
+
+        .row.collapsing {
+            margin-left: -200px;
+            left: -0.05%;
+            transition: all .15s linear;
+        }
+
+        /* optional */
+        .vh-100 {
+            min-height: 100vh;
+        }
+
+        /* optional for overlay sidebar on small screens */
+        @@media (max-width:768px) {
+
+            .row.collapse,
+            .row.collapsing {
+                margin-left: 0 !important;
+                left: 0 !important;
+                overflow: visible;
+            }
+
+            .row > .sidebar.collapse {
+                display: flex !important;
+                margin-left: -100% !important;
+                transition: all .3s linear;
+                position: fixed;
+                z-index: 1050;
+                max-width: 0;
+                min-width: 0;
+                flex-basis: auto;
+            }
+
+            .row > .sidebar.collapse.show {
+                margin-left: 0 !important;
+                width: 100%;
+                max-width: 100%;
+                min-width: initial;
+            }
+
+            .row > .sidebar.collapsing {
+                display: flex !important;
+                margin-left: -10% !important;
+                transition: all .2s linear !important;
+                position: fixed;
+                z-index: 1050;
+                min-width: initial;
+            }
+        }
+    </style>
+
+    <body>
+        <div class="row collapse show no-gutters d-flex h-100 position-relative">
+            <div class="col-3 px-0 w-sidebar navbar-collapse collapse d-none d-md-flex">
+                <!-- spacer col -->
+            </div>
+            <div class="col px-2 px-md-0">
+                <!-- toggler -->
+                <a id="openSideNav" onclick="toggleNavBarScrollAndIcons()" data-toggle="collapse" data-target="#planSideNav" role="button" class="p-1 d-lg-none">
+                    Campaign List
+                    <i id="iconNavBarOpen" class="far fa-arrow-alt-circle-right fa-lg text-white" type="button"></i>
+                    <i id="iconNavBarClose" class="far fa-arrow-alt-circle-left fa-lg text-white d-none" type="button"></i>
+                </a>
+            </div>
+        </div>
+        <div class="row vh-100 collapse show no-gutters d-flex h-100 position-relative">
+
+            <div id="planSideNav" class="col-3 p-0 h-100 w-sidebar navbar-collapse collapse d-none d-md-flex sidebar" style="background-color: #121212">
+                <!-- fixed sidebar -->
+                <div class="position-fixed text-white h-100 w-sidebar pl-2">
+                    <ul class="list-unstyled mt-3">
+                        <li class="nav-item mb-3">
+                            <a data-toggle="modal" data-target="#manageSectionsModal" role="button" class="p-1">
+                                Manage Campaigns
+                                <i class="fas fa-tasks fa-lg text-white" type="button"></i>
+                            </a>
+                        </li>
+                        @foreach (var campaign in Model.Campaigns)
+                        {
+                        <li type="disc mb-3">
+                            <button class="btn btn-link text-white" href="#" onclick="selectCampaign(@campaign.CampaignID)">@campaign.CampaignName</button>
+                        </li>
+                        }
+                        <li class="nav-item">
+                            <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newCampaignArea">New Campaign +</button>
+                        </li>
+                        <li id="newCampaignArea" class="nav-item collapse">
+                            <input id="inputCampaignName" type="text" class="form-control" placeholder="Campaign Name" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col p-3">
+                @if (Model.SelectedCampaign != null)
+                {
+                    <div class="jumbotron" style="background-color: #121212">
+                        <h4 id="sessionNoteName" class="display-5 text-center">@Model.SelectedCampaign.CampaignName</h4>
+                        <hr />
+                        <div class="row justify-content-center align-items-center">
+                            <nav class="nav navbar-dark">
+                                <a href="@Url.Content($"~/Identity/User/SessionNotes")" class="nav-link">Session Notes</a>
+                                <a class="nav-link" href="#">Maps</a>
+                                <a href="@Url.Content($"~/Identity/User/AdventureLog")" class="nav-link">Adventure Logs</a>
+                            </nav>
+                        </div>
+                        <p>@Model.SelectedCampaign.CampaignDescription</p>
+                    </div>
+                }
+            </div>
+        </div>
+        <!-- fixed sidebar -->
+</body>
+
+@*<div class="row no-gutters">
     <div class="col">
         <div class="list-group border border-secondary">
             @foreach (var campaign in Model.Campaigns)
@@ -41,22 +182,23 @@
             <button class="btn border-danger text-danger mt-3 float-right" data-toggle="collapse" data-target="#collapseNewCampaign">Cancel</button>
         </form>
     </div>
-</div>
+</div>*@
 
 <script>
 
     const uri = "api/Campaigns/";
-    const formAddCampaign = $("#formAddCampaign");
+    const inputAddCampaign = $("#inputCampaignName");
     const formData = new FormData();
 
-    formAddCampaign.on("submit", async function (evt) {
+    inputAddCampaign.on("keypress focusout", async function (evt) {
+        var key = evt.which;
+        if (key == 13 || key == 0) {
 
         evt.preventDefault();
 
         item = {
 
-            campaignName: $("#inputCampaignName").val(),
-            campaignDescription: $("#areaCampaignDescription").val()
+            campaignName: inputAddCampaign.val(),
 
         }
 
@@ -70,6 +212,7 @@
             .then((response) => response.json())
             .then(() => location.reload())
             .catch(() => console.log("Failed to create item"));
+        }
 
     });
 
