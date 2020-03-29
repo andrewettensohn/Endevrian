@@ -88,6 +88,44 @@ namespace Endevrian.Controllers
             return NoContent();
         }
 
+        [HttpPut]
+        public async Task<IActionResult> PutCampaign([FromBody]Campaign sentCampaign)
+        {
+
+            string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Campaign campaign = await _context.Campaigns.FindAsync(sentCampaign.CampaignID);
+
+            if(requestingUser != campaign.UserId)
+            {
+                return BadRequest();
+            }
+
+            campaign.CampaignName = sentCampaign.CampaignName;
+            campaign.CampaignDescription = sentCampaign.CampaignDescription;
+
+            _context.Entry(campaign).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CampaignExists(campaign.CampaignID))
+                {
+                    _logger.AddSystemLog($"WARNING: User {requestingUser} has caused a DbUpdateConcurrencyException");
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> SetCampaignToSelected(int id)
         {
@@ -100,7 +138,6 @@ namespace Endevrian.Controllers
             {
                 return BadRequest();
             }
-
 
             List<Campaign> campaignList = await _context.Campaigns.Where(x => x.UserId == requestingUser).ToListAsync();
 
