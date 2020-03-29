@@ -96,6 +96,23 @@ namespace Endevrian.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Maps",
+                columns: table => new
+                {
+                    MapID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CampaignID = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
+                    MapName = table.Column<string>(nullable: true),
+                    FileName = table.Column<string>(nullable: true),
+                    FilePath = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Maps", x => x.MapID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SessionSections",
                 columns: table => new
                 {
@@ -325,6 +342,9 @@ namespace Endevrian.Migrations
 
             migrationBuilder.DropTable(
                 name: "HistoricalAdventureLogCounts");
+
+            migrationBuilder.DropTable(
+                name: "Maps");
 
             migrationBuilder.DropTable(
                 name: "SessionNotes");

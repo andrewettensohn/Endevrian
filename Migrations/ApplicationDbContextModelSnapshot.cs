@@ -94,6 +94,33 @@ namespace Endevrian.Migrations
                     b.ToTable("HistoricalAdventureLogCounts");
                 });
 
+            modelBuilder.Entity("Endevrian.Models.MapModels.Map", b =>
+                {
+                    b.Property<int>("MapID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CampaignID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MapName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MapID");
+
+                    b.ToTable("Maps");
+                });
+
             modelBuilder.Entity("Endevrian.Models.SessionNote", b =>
                 {
                     b.Property<int>("SessionNoteID")

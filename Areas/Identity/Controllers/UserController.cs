@@ -76,6 +76,12 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(model);
         }
 
+        public IActionResult Maps()
+        {
+
+            return View();
+        }
+
         public async Task<IActionResult> SessionNotes()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

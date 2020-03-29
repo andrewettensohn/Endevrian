@@ -12,6 +12,7 @@ using Endevrian.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
 
 namespace Endevrian
 {
@@ -37,6 +38,10 @@ namespace Endevrian
             services.AddRazorPages();
             services.AddControllers();
             services.AddMvc(options => options.EnableEndpointRouting = false).AddControllersAsServices();
+
+            // To list physical files from a path provided by configuration:
+            PhysicalFileProvider physicalProvider = new PhysicalFileProvider(Configuration.GetValue<string>("StoredFilesPath"));
+            services.AddSingleton<IFileProvider>(physicalProvider);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

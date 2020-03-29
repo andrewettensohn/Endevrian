@@ -1,0 +1,29 @@
+﻿<h1>Maps!</h1>
+
+
+<form>
+    <div id="former" class="form-group">
+        <label for="fileInput">Example file input</label>
+        <input type="file" class="form-control-file" id="fileInput">
+    </div>
+    <button id="fileUploadButton">Upload</button>
+</form>
+
+<script>
+
+    let file = document.getElementById("fileInput");
+    let formData = new FormData();
+
+    /*UPLOAD ON FILE SELECTION*/
+    $("#fileUploadButton").on("click", async function (evt) {
+        formData.append("file", file.files[0]);
+        evt.preventDefault();
+            fetch("api/File/" + "Andrew",
+                {
+                    method: 'POST',
+                    body: formData
+                })
+                //.then(() => location.reload())
+                .catch("Failed to upload file.")
+        });
+</script>
