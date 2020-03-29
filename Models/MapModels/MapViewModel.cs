@@ -7,6 +7,7 @@ namespace Endevrian.Models.MapModels
 {
     public class MapViewModel
     {
-        public List<Map> Maps { get; set; }
+        public List<List<Map>> UserMaps { get; set; }
+
     }
 }

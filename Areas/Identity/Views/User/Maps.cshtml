@@ -9,6 +9,26 @@
     <button id="fileUploadButton">Upload</button>
 </form>
 
+
+@if(Model.UserMaps != null)
+{
+    <div class="container">
+        @foreach (var maps in Model.UserMaps)
+        {
+            <div class="row">
+                @foreach (var map in maps)
+                {
+                    <div class="col-sm">
+                        <img src="~/UserContent/@map.FilePath" class="img-thumbnail img-fluid">
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+
+
+
 <script>
 
     let file = document.getElementById("fileInput");
@@ -18,12 +38,12 @@
     $("#fileUploadButton").on("click", async function (evt) {
         formData.append("file", file.files[0]);
         evt.preventDefault();
-            fetch("api/File/" + "Andrew",
+            fetch("api/File",
                 {
                     method: 'POST',
                     body: formData
                 })
-                //.then(() => location.reload())
+                .then(() => location.reload())
                 .catch("Failed to upload file.")
         });
 </script>

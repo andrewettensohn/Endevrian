@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Endevrian.Data;
 using Endevrian.Models.MapModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -25,20 +26,38 @@ namespace Endevrian.Areas.Identity.Controllers
         public FileController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider)
         {
             // To save physical files to a path provided by configuration:
-            _targetFilePath = config.GetValue<string>("StoredFilesPath");
+            _context = context;
+            //_targetFilePath = config.GetValue<string>("StoredFilesPath");
+            _targetFilePath = config.GetValue<string>(WebHostDefaults.ContentRootKey) + "\\wwwroot\\UserContent\\Maps";
             _fileProvider = fileProvider;
         }
 
+        //[HttpGet]
+        //public IActionResult GetMapFiles()
+        //{
+        //    string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        //    var fileList = _fileProvider.GetDirectoryContents("\\Maps\\" + userName);
+
+        //    return PhysicalFile(f)
+        //}
+
         // POST: api/Streaming
-        [HttpPost("{folderName}")]
-        public async Task<IActionResult> PostNewFile(string folderName)
+        [HttpPost]
+        public async Task<IActionResult> PostNewFile()
         {
             IFormFile postedFile = Request.Form.Files[0];
-            string filePath = _targetFilePath;
+            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (folderName != "Root")
+            //if (folderName != "Root")
+            //{
+            //    filePath = _targetFilePath + "\\" + folderName;
+            //}
+            string filePath = _targetFilePath + "\\" + userName;
+
+            if(!Directory.Exists(filePath))
             {
-                filePath = _targetFilePath + "\\" + folderName;
+                Directory.CreateDirectory(filePath);
             }
 
             using (FileStream targetStream = System.IO.File.Create(
@@ -48,11 +67,13 @@ namespace Endevrian.Areas.Identity.Controllers
 
             }
 
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             Map map = new Map
             {
                 FileName = postedFile.FileName,
-                FilePath = filePath,
-                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                FilePath = $"Maps\\{currentUser}\\{postedFile.FileName}",
+                UserId = currentUser
             };
 
             await _context.AddAsync(map);

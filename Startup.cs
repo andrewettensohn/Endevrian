@@ -13,12 +13,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace Endevrian
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
         }
@@ -40,8 +42,11 @@ namespace Endevrian
             services.AddMvc(options => options.EnableEndpointRouting = false).AddControllersAsServices();
 
             // To list physical files from a path provided by configuration:
-            PhysicalFileProvider physicalProvider = new PhysicalFileProvider(Configuration.GetValue<string>("StoredFilesPath"));
+            //PhysicalFileProvider physicalProvider = new PhysicalFileProvider(Configuration.GetValue<string>("StoredFilesPath"));
+            //PhysicalFileProvider physicalProvider = new PhysicalFileProvider(environment);
+            PhysicalFileProvider physicalProvider = new PhysicalFileProvider(Configuration.GetValue<string>(WebHostDefaults.ContentRootKey));
             services.AddSingleton<IFileProvider>(physicalProvider);
+            services.AddDirectoryBrowser();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +65,24 @@ namespace Endevrian
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UserContent")),
+                RequestPath = "/UserContent",
+                EnableDirectoryBrowsing = true
+            });
+
+            // Set up custom content types - associating file extension to MIME type
+            var provider = new FileExtensionContentTypeProvider();
+            // Add new mappings
+            //provider.Mappings[".myapp"] = "application/x-msdownload";
+            //provider.Mappings[".htm3"] = "text/html";
+            //provider.Mappings[".image"] = "image/png";
+            // Replace an existing mapping
+            //provider.Mappings[".rtf"] = "application/x-msdownload";
+            // Remove MP4 videos.
+            provider.Mappings.Remove(".mp4");
 
             app.UseRouting();
 

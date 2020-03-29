@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Endevrian.Controllers;
 using Endevrian.Data;
 using Endevrian.Models;
+using Endevrian.Models.MapModels;
 using Endevrian.Models.SessionModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -78,8 +79,38 @@ namespace Endevrian.Areas.Identity.Controllers
 
         public IActionResult Maps()
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return View();
+            MapViewModel model = new MapViewModel();
+            model.UserMaps = new List<List<Map>>();
+
+            List<Map> allMaps = _context.Maps.Where(x => x.UserId == userId).ToList();
+
+
+            for(int i = 0; i < allMaps.Count; i += 3)
+            {
+                List<Map> mapCol = new List<Map>();
+
+                if(allMaps.Count > i)
+                {
+                    mapCol.Add(allMaps[i]);
+                }
+
+                if(allMaps.Count > i + 1)
+                {
+                    mapCol.Add(allMaps[i + 1]);
+                }
+
+                if (allMaps.Count > i + 2)
+                {
+                    mapCol.Add(allMaps[i + 2]);
+                }
+
+                model.UserMaps.Add(mapCol);
+            }
+
+
+            return View(model);
         }
 
         public async Task<IActionResult> SessionNotes()
