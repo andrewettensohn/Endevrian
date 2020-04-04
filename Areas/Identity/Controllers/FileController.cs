@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -49,19 +51,15 @@ namespace Endevrian.Areas.Identity.Controllers
             IFormFile postedFile = Request.Form.Files[0];
             string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            //if (folderName != "Root")
-            //{
-            //    filePath = _targetFilePath + "\\" + folderName;
-            //}
-            string filePath = _targetFilePath + "\\" + userName;
+            string targetfilePath = _targetFilePath + "\\" + userName;
 
-            if(!Directory.Exists(filePath))
+            if(!Directory.Exists(targetfilePath))
             {
-                Directory.CreateDirectory(filePath);
+                Directory.CreateDirectory(targetfilePath);
             }
 
             using (FileStream targetStream = System.IO.File.Create(
-                            Path.Combine(filePath, postedFile.FileName)))
+                            Path.Combine(targetfilePath, postedFile.FileName)))
             {
                 await postedFile.CopyToAsync(targetStream);
 
@@ -69,17 +67,53 @@ namespace Endevrian.Areas.Identity.Controllers
 
             string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            string filePath = $"{_targetFilePath}\\{currentUser}\\{postedFile.FileName}";
+
+            Bitmap bmp = new Bitmap(filePath);
+            VaryQualityLevel(bmp, currentUser, postedFile.FileName);
+
             Map map = new Map
             {
                 FileName = postedFile.FileName,
                 FilePath = $"Maps\\{currentUser}\\{postedFile.FileName}",
-                UserId = currentUser
+                UserId = currentUser,
+                PreviewFilePath = $"Maps\\{ currentUser}\\Preview{ postedFile.FileName}",
+                PreviewFileName = $"Preview{postedFile.FileName}"
             };
 
             await _context.AddAsync(map);
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        private void VaryQualityLevel(Bitmap bmp, string currentUser, string fileName)
+        {
+            using (bmp)
+            {
+                ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+  
+                Encoder myEncoder = Encoder.Quality;
+                EncoderParameters myEncoderParameters = new EncoderParameters(1);
+
+                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 0L);
+                myEncoderParameters.Param[0] = myEncoderParameter;
+                bmp.Save(@$"{_targetFilePath}\\{currentUser}\\Preview{fileName}", jpgEncoder, myEncoderParameters);
+            }
+
+        }
+
+        private ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
         }
     }
 }

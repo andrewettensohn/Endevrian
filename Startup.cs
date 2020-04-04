@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace Endevrian
 {
@@ -71,6 +72,15 @@ namespace Endevrian
             Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UserContent")),
                 RequestPath = "/UserContent",
                 EnableDirectoryBrowsing = true
+            });
+
+            //This will control the max file upload size. It probably needs to be 100 MB
+            app.Use(async (context, next) =>
+            {
+                context.Features.Get<IHttpMaxRequestBodySizeFeature>()
+                    .MaxRequestBodySize = null;
+
+                await next.Invoke();
             });
 
             // Set up custom content types - associating file extension to MIME type

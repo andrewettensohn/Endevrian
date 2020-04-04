@@ -19,5 +19,9 @@ namespace Endevrian.Models.MapModels
 
         public string FilePath { get; set; }
 
+        public string PreviewFileName { get; set; }
+
+        public string PreviewFilePath { get; set; }
+
     }
 }

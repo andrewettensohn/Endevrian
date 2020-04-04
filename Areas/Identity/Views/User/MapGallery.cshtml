@@ -1,0 +1,74 @@
+﻿<style>
+    img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .borderless td, .borderless th {
+        border: none;
+    }
+</style>
+
+<h1 class="display-4 text-center">Maps</h1>
+
+@*<div class="list-group list-group-flush">
+    <h3 class="list-group-item">
+        Alexor
+    </h3>
+    <a href="#" class="list-group-item list-group-item-action">asdasdasd</a>
+    <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+    <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+    <a href="#" class="list-group-item list-group-item-action disabled">Vestibulum at eros</a>
+</div>*@
+
+@*<table class="table table-dark" style="background-color: #1F1B24">
+    <tbody>
+        <tr>
+            <td>Map Name</td>
+            <td>Tag</td>
+            <td><i class="fas fa-edit fa-lg mr-3" type="button"></i></td>
+            <td><i class="fa fa-trash fa-lg mr-3" type="button"></i></td>
+        </tr>
+        <tr>
+            <td>Map Name</td>
+            <td>Tag</td>
+            <td><i class="fas fa-edit fa-lg mr-3" type="button"></i></td>
+            <td><i class="fa fa-trash fa-lg mr-3" type="button"></i></td>
+        </tr>
+        <tr>
+            <td>Map Name</td>
+            <td>Tag</td>
+            <td><i class="fas fa-edit fa-lg mr-3" type="button"></i></td>
+            <td><i class="fa fa-trash fa-lg mr-3" type="button"></i></td>
+        </tr>
+    </tbody>
+</table>
+
+<button class="btn btn-success">New</button>*@
+
+
+@if (Model.UserMaps != null)
+{
+    <div class="container mt-5">
+        @foreach (var maps in Model.UserMaps)
+        {
+            <div class="row">
+                @foreach (var map in maps)
+                {
+                    <div class="col-sm mb-3">
+                        <div class="card border-0 shadow" style="width: 18rem; background-color: #121212;">
+                            <a href="~/UserContent/@map.FilePath"><img src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
+                            <div class="card-body">
+                                <h5 class="card-title text-light">Card title</h5>
+                                <i class="fa fa-trash fa-lg mr-3" type="button"></i>
+                                <i class="fas fa-edit fa-lg mr-3" type="button"></i>
+                                <a href="#" class="btn-sm btn-primary">Tag</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}

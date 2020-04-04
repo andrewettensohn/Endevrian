@@ -77,7 +77,12 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(model);
         }
 
-        public IActionResult Maps()
+        public IActionResult NewMap()
+        {
+            return View();
+        }
+
+        public IActionResult MapGallery()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -86,27 +91,27 @@ namespace Endevrian.Areas.Identity.Controllers
 
             List<Map> allMaps = _context.Maps.Where(x => x.UserId == userId).ToList();
 
-
+            //Put images  in rows of 3
             for(int i = 0; i < allMaps.Count; i += 3)
             {
-                List<Map> mapCol = new List<Map>();
+                List<Map> mapRow = new List<Map>();
 
                 if(allMaps.Count > i)
                 {
-                    mapCol.Add(allMaps[i]);
+                    mapRow.Add(allMaps[i]);
                 }
 
                 if(allMaps.Count > i + 1)
                 {
-                    mapCol.Add(allMaps[i + 1]);
+                    mapRow.Add(allMaps[i + 1]);
                 }
 
                 if (allMaps.Count > i + 2)
                 {
-                    mapCol.Add(allMaps[i + 2]);
+                    mapRow.Add(allMaps[i + 2]);
                 }
 
-                model.UserMaps.Add(mapCol);
+                model.UserMaps.Add(mapRow);
             }
 
 

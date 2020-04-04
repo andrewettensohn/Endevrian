@@ -105,7 +105,9 @@ namespace Endevrian.Migrations
                     UserId = table.Column<string>(nullable: true),
                     MapName = table.Column<string>(nullable: true),
                     FileName = table.Column<string>(nullable: true),
-                    FilePath = table.Column<string>(nullable: true)
+                    FilePath = table.Column<string>(nullable: true),
+                    PreviewFileName = table.Column<string>(nullable: true),
+                    PreviewFilePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

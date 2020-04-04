@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Endevrian.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200329020148_Inital")]
+    [Migration("20200402181838_Inital")]
     partial class Inital
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -113,6 +113,12 @@ namespace Endevrian.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MapName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreviewFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreviewFilePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")

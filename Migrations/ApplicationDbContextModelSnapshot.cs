@@ -113,6 +113,12 @@ namespace Endevrian.Migrations
                     b.Property<string>("MapName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PreviewFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreviewFilePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
