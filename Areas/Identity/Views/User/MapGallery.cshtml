@@ -1,9 +1,14 @@
-﻿<style>
-    img {
-        width: 200px;
-        height: 200px;
+﻿
+@{
+    ViewData["Title"] = "Map Gallery";
+}
+
+<style>
+    /*img {
+        width: 500px;
+        height: 500px;
         object-fit: cover;
-    }
+    }*/
 
     .borderless td, .borderless th {
         border: none;
@@ -11,41 +16,29 @@
 </style>
 
 <h1 class="display-4 text-center">Maps</h1>
-
-@*<div class="list-group list-group-flush">
-    <h3 class="list-group-item">
-        Alexor
-    </h3>
-    <a href="#" class="list-group-item list-group-item-action">asdasdasd</a>
-    <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
-    <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
-    <a href="#" class="list-group-item list-group-item-action disabled">Vestibulum at eros</a>
-</div>*@
-
-@*<table class="table table-dark" style="background-color: #1F1B24">
-    <tbody>
-        <tr>
-            <td>Map Name</td>
-            <td>Tag</td>
-            <td><i class="fas fa-edit fa-lg mr-3" type="button"></i></td>
-            <td><i class="fa fa-trash fa-lg mr-3" type="button"></i></td>
-        </tr>
-        <tr>
-            <td>Map Name</td>
-            <td>Tag</td>
-            <td><i class="fas fa-edit fa-lg mr-3" type="button"></i></td>
-            <td><i class="fa fa-trash fa-lg mr-3" type="button"></i></td>
-        </tr>
-        <tr>
-            <td>Map Name</td>
-            <td>Tag</td>
-            <td><i class="fas fa-edit fa-lg mr-3" type="button"></i></td>
-            <td><i class="fa fa-trash fa-lg mr-3" type="button"></i></td>
-        </tr>
-    </tbody>
-</table>
-
-<button class="btn btn-success">New</button>*@
+<container>
+    <div class="row justify-content-center">
+        <div class="col-lg-4">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Enter Map Name or tag to search">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="fa fa-search text-white" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col">
+            <div>
+                <a class="btn btn-link btn-outline-success text-white" href="@Url.Content($"~/Identity/User/NewMap")">
+                    Upload New Map <i class="fas fa-upload"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</container>
 
 
 @if (Model.UserMaps != null)
@@ -60,7 +53,7 @@
                         <div class="card border-0 shadow" style="width: 18rem; background-color: #121212;">
                             <a href="~/UserContent/@map.FilePath"><img src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
                             <div class="card-body">
-                                <h5 class="card-title text-light">Card title</h5>
+                                <h5 class="card-title text-light">@map.MapName</h5>
                                 <i class="fa fa-trash fa-lg mr-3" type="button"></i>
                                 <i class="fas fa-edit fa-lg mr-3" type="button"></i>
                                 <a href="#" class="btn-sm btn-primary">Tag</a>

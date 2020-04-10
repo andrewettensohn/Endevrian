@@ -82,14 +82,14 @@ namespace Endevrian.Areas.Identity.Controllers
             return View();
         }
 
-        public IActionResult MapGallery()
+        public async Task<IActionResult> MapGallery()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             MapViewModel model = new MapViewModel();
             model.UserMaps = new List<List<Map>>();
 
-            List<Map> allMaps = _context.Maps.Where(x => x.UserId == userId).ToList();
+            List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId).ToListAsync();
 
             //Put images  in rows of 3
             for(int i = 0; i < allMaps.Count; i += 3)
