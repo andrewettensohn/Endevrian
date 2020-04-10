@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Primitives;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -46,9 +47,19 @@ namespace Endevrian.Areas.Identity.Controllers
 
         // POST: api/Streaming
         [HttpPost]
-        public async Task<IActionResult> PostNewFile()
+        public async Task<IActionResult> PostNewMap()
         {
             IFormFile postedFile = Request.Form.Files[0];
+            bool foundMapName = Request.Form.TryGetValue("MapName", out StringValues mapNameFromRequest);
+
+            if(!foundMapName)
+            {
+                return BadRequest();
+            }
+            
+            string mapName = mapNameFromRequest.ToString();
+
+
             string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             string targetfilePath = _targetFilePath + "\\" + userName;
@@ -84,7 +95,16 @@ namespace Endevrian.Areas.Identity.Controllers
             await _context.AddAsync(map);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            //return Ok();
+            return CreatedAtAction("GetMap", new { id = map.MapID }, map);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Map>> GetMap(int id)
+        {
+
+            Map map = await _context.Maps.FindAsync(id);
+            return map;
         }
 
         private void VaryQualityLevel(Bitmap bmp, string currentUser, string fileName)

@@ -1,22 +1,52 @@
-﻿<form>
+﻿@*<form>
     <div id="former" class="form-group">
         <label for="fileInput">Example file input</label>
         <input type="file" class="form-control-file" id="fileInput">
     </div>
     <button id="fileUploadButton">Upload</button>
-</form>
+</form>*@
 
-<div class="row justify-content-center">
-    <div class="col-lg-4">
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" id="inputGroupFile04">
-            <label class="custom-file-label" for="inputGroupFile04">Choose file</label>
-        </div>
-        <div>
-            <button class="btn broder border-success text-white mt-3">Upload <i class="fas fa-upload"></i></button>
+<h1 class="display-4 text-center mb-3">New Map</h1>
+<form novalidate>
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="input-group mb-3">
+                <input id="inputMapName" type="text" class="form-control" placeholder="Map Name" required>
+                <div class="invalid-feedback">
+                    Please choose a username.
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Session Section to Link">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Select</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Action</a>
+                    </div>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Session Note to Link">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Select</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Action</a>
+                    </div>
+                </div>
+            </div>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="fileInput">
+                <label class="custom-file-label" for="inputGroupFile04">Choose File</label>
+            </div>
+            <div class="mt-5">
+                <center>
+                    <button id="fileUploadButton" class="btn btn-lg broder border-success text-white mt-3">Upload <i class="fas fa-upload"></i></button>
+                </center>
+            </div>
         </div>
     </div>
-</div>
+</form>
+
 
 <script>
 
@@ -27,7 +57,7 @@
     /*UPLOAD ON FILE SELECTION*/
     $("#fileUploadButton").on("click", async function (evt) {
         formData.append("file", file.files[0]);
-        evt.preventDefault();
+        formData.append("MapName", $("#inputMapName").val());
         fetch("api/File",
             {
                 method: 'POST',
