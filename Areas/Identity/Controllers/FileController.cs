@@ -50,14 +50,22 @@ namespace Endevrian.Areas.Identity.Controllers
         public async Task<IActionResult> PostNewMap()
         {
             IFormFile postedFile = Request.Form.Files[0];
-            bool foundMapName = Request.Form.TryGetValue("MapName", out StringValues mapNameFromRequest);
+            bool foundMap = Request.Form.TryGetValue("mapName", out StringValues mapValues);
 
-            if(!foundMapName)
+            if(!foundMap)
             {
                 return BadRequest();
             }
-            
-            string mapName = mapNameFromRequest.ToString();
+
+            string mapName = mapValues.AsEnumerable().First();
+            //bool foundMapName = Request.Form.TryGetValue("MapName", out StringValues mapNameFromRequest);
+
+            //if(!foundMapName)
+            //{
+            //    return BadRequest();
+            //}
+
+            //string mapName = mapNameFromRequest.ToString();
 
 
             string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -88,6 +96,7 @@ namespace Endevrian.Areas.Identity.Controllers
                 FileName = postedFile.FileName,
                 FilePath = $"Maps\\{currentUser}\\{postedFile.FileName}",
                 UserId = currentUser,
+                MapName = mapName,
                 PreviewFilePath = $"Maps\\{ currentUser}\\Preview{ postedFile.FileName}",
                 PreviewFileName = $"Preview{postedFile.FileName}"
             };
@@ -95,8 +104,8 @@ namespace Endevrian.Areas.Identity.Controllers
             await _context.AddAsync(map);
             await _context.SaveChangesAsync();
 
-            //return Ok();
-            return CreatedAtAction("GetMap", new { id = map.MapID }, map);
+            return Ok();
+            //return CreatedAtAction("GetMap", new { id = map.MapID }, map);
         }
 
         [HttpGet("{id}")]

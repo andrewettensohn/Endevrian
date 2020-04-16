@@ -51,13 +51,15 @@
 <script>
 
     const mapGalleryUrl = "@Url.Content("~/Identity/User/MapGallery")";
-    let file = document.getElementById("fileInput");
+    let fileInput = document.getElementById("fileInput");
+    let nameInput = $("#inputMapName");
     let formData = new FormData();
 
     /*UPLOAD ON FILE SELECTION*/
     $("#fileUploadButton").on("click", async function (evt) {
-        formData.append("file", file.files[0]);
-        formData.append("MapName", $("#inputMapName").val());
+        formData.append("file", fileInput.files[0]);
+        evt.preventDefault();
+        formData.append("mapName", nameInput.val());
         fetch("api/File",
             {
                 method: 'POST',

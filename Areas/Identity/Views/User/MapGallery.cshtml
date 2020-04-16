@@ -10,6 +10,7 @@
         object-fit: cover;
     }*/
 
+
     .borderless td, .borderless th {
         border: none;
     }
@@ -51,7 +52,7 @@
                 {
                     <div class="col-sm mb-3">
                         <div class="card border-0 shadow" style="width: 18rem; background-color: #121212;">
-                            <a href="~/UserContent/@map.FilePath"><img src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
+                            <a href="~/UserContent/@map.FilePath"><img loading="lazy" src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
                             <div class="card-body">
                                 <h5 class="card-title text-light">@map.MapName</h5>
                                 <i class="fa fa-trash fa-lg mr-3" type="button"></i>
