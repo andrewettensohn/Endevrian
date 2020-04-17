@@ -1,23 +1,21 @@
-﻿@*<form>
-    <div id="former" class="form-group">
-        <label for="fileInput">Example file input</label>
-        <input type="file" class="form-control-file" id="fileInput">
-    </div>
-    <button id="fileUploadButton">Upload</button>
-</form>*@
+﻿
+@{
+    ViewData["Title"] = "New Map";
+}
+
 
 <h1 class="display-4 text-center mb-3">New Map</h1>
-<form novalidate>
+
+<form id="newMapForm">
     <div class="row justify-content-center">
         <div class="col-lg-6">
+            <label for="inputMapName">Map Name</label>
             <div class="input-group mb-3">
-                <input id="inputMapName" type="text" class="form-control" placeholder="Map Name" required>
-                <div class="invalid-feedback">
-                    Please choose a username.
-                </div>
+                <input id="inputMapName" type="text" class="form-control" placeholder="Map Name" required />
             </div>
+            <label for="inputSessionSection">Related Session Section</label>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Session Section to Link">
+                <input id="inputSessionSection" type="text" class="form-control" placeholder="Session Section to Link" />
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Select</button>
                     <div class="dropdown-menu">
@@ -25,8 +23,9 @@
                     </div>
                 </div>
             </div>
+            <label for="inputSessionNote">Related Note</label>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Session Note to Link">
+                <input id="inputSessionNote" type="text" class="form-control" placeholder="Session Note to Link" />
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Select</button>
                     <div class="dropdown-menu">
@@ -34,19 +33,19 @@
                     </div>
                 </div>
             </div>
+            <label for="fileInput">Map File</label>
             <div class="custom-file">
-                <input type="file" class="custom-file-input" id="fileInput">
+                <input type="file" class="custom-file-input" id="fileInput" required />
                 <label class="custom-file-label" for="inputGroupFile04">Choose File</label>
             </div>
             <div class="mt-5">
                 <center>
-                    <button id="fileUploadButton" class="btn btn-lg broder border-success text-white mt-3">Upload <i class="fas fa-upload"></i></button>
+                    <button id="fileUploadButton" type="submit" class="btn btn-lg broder border-success text-white mt-3">Upload <i class="fas fa-upload"></i></button>
                 </center>
             </div>
         </div>
     </div>
 </form>
-
 
 <script>
 
@@ -56,10 +55,12 @@
     let formData = new FormData();
 
     /*UPLOAD ON FILE SELECTION*/
-    $("#fileUploadButton").on("click", async function (evt) {
-        formData.append("file", fileInput.files[0]);
+    $("#newMapForm").on("submit", async function (evt) {
         evt.preventDefault();
+
+        formData.append("file", fileInput.files[0]);
         formData.append("mapName", nameInput.val());
+
         fetch("api/File",
             {
                 method: 'POST',
@@ -68,4 +69,4 @@
             .then(() => location.href = mapGalleryUrl)
             .catch("Failed to upload file.")
     });
-    </script>
+</script>

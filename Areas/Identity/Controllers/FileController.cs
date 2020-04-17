@@ -58,15 +58,6 @@ namespace Endevrian.Areas.Identity.Controllers
             }
 
             string mapName = mapValues.AsEnumerable().First();
-            //bool foundMapName = Request.Form.TryGetValue("MapName", out StringValues mapNameFromRequest);
-
-            //if(!foundMapName)
-            //{
-            //    return BadRequest();
-            //}
-
-            //string mapName = mapNameFromRequest.ToString();
-
 
             string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

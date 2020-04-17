@@ -91,29 +91,41 @@ namespace Endevrian.Areas.Identity.Controllers
 
             List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId).ToListAsync();
 
-            //Put images  in rows of 3
-            for(int i = 0; i < allMaps.Count; i += 3)
+            model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> MapSearch(string userSearchQuery)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            MapViewModel model = new MapViewModel();
+            model.UserMaps = new List<List<Map>>();
+
+            List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, userSearchQuery);
+
+            for (int i = 0; i < foundMaps.Count; i += 3)
             {
                 List<Map> mapRow = new List<Map>();
 
-                if(allMaps.Count > i)
+                if (foundMaps.Count > i)
                 {
-                    mapRow.Add(allMaps[i]);
+                    mapRow.Add(foundMaps[i]);
                 }
 
-                if(allMaps.Count > i + 1)
+                if (foundMaps.Count > i + 1)
                 {
-                    mapRow.Add(allMaps[i + 1]);
+                    mapRow.Add(foundMaps[i + 1]);
                 }
 
-                if (allMaps.Count > i + 2)
+                if (foundMaps.Count > i + 2)
                 {
-                    mapRow.Add(allMaps[i + 2]);
+                    mapRow.Add(foundMaps[i + 2]);
                 }
 
                 model.UserMaps.Add(mapRow);
             }
-
 
             return View(model);
         }
