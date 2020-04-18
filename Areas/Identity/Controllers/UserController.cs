@@ -78,20 +78,33 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(model);
         }
 
-        public IActionResult NewMap()
+        public async Task<IActionResult> NewMap()
         {
-            return View();
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
+
+            NewMapViewModel model = new NewMapViewModel
+            {
+                SelectedCampaignID = SelectedCampaign.CampaignID,
+                SelectedCampaignSessionSections = await _context.SessionSections.Where(x => x.CampaignID == SelectedCampaign.CampaignID && userId == x.UserId).ToListAsync(),
+                SelectedCampaignSessionNotes = await _context.SessionNotes.Where(x => x.CampaignID == SelectedCampaign.CampaignID && userId == x.UserId).ToListAsync()
+            };
+
+            return View(model);
         }
 
         public async Task<IActionResult> MapGallery(string searchString)
         {
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             MapViewModel model = new MapViewModel
             {
-                UserMaps = new List<List<Map>>()
+                UserMaps = new List<List<Map>>(),
+                SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId)
             };
-
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (searchString != null)
             {
@@ -104,7 +117,7 @@ namespace Endevrian.Areas.Identity.Controllers
             else
             {
 
-                List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId).ToListAsync();
+                List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId && x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
 
                 model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
             }

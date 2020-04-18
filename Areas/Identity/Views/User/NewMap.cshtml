@@ -45,13 +45,13 @@
             </div>
         </div>
     </div>
+    <input id="inputCampaignId" class="d-none" value="@Model.SelectedCampaignID" />
 </form>
 
 <script>
 
     const mapGalleryUrl = "@Url.Content("~/Identity/User/MapGallery")";
     let fileInput = document.getElementById("fileInput");
-    let nameInput = $("#inputMapName");
     let formData = new FormData();
 
     /*UPLOAD ON FILE SELECTION*/
@@ -59,7 +59,8 @@
         evt.preventDefault();
 
         formData.append("file", fileInput.files[0]);
-        formData.append("mapName", nameInput.val());
+        formData.append("mapName", $("#inputMapName").val());
+        //formData.append("campaignId", $("#inputCampaignId").val());
 
         fetch("api/File",
             {

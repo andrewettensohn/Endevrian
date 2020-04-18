@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
+using Endevrian.Controllers;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -25,14 +26,17 @@ namespace Endevrian.Areas.Identity.Controllers
         private readonly string _targetFilePath;
         private readonly IFileProvider _fileProvider;
         private readonly ApplicationDbContext _context;
+        private readonly QueryHelper _queryHelper;
 
-        public FileController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider)
+        public FileController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider, SystemLogController logger)
         {
             // To save physical files to a path provided by configuration:
             _context = context;
             //_targetFilePath = config.GetValue<string>("StoredFilesPath");
             _targetFilePath = config.GetValue<string>(WebHostDefaults.ContentRootKey) + "\\wwwroot\\UserContent\\Maps";
             _fileProvider = fileProvider;
+            _queryHelper = new QueryHelper(config, logger);
+
         }
 
         //[HttpGet]
@@ -49,14 +53,21 @@ namespace Endevrian.Areas.Identity.Controllers
         public async Task<IActionResult> PostNewMap()
         {
             IFormFile postedFile = Request.Form.Files[0];
-            bool foundMap = Request.Form.TryGetValue("mapName", out StringValues mapValues);
+            bool foundMapName = Request.Form.TryGetValue("mapName", out StringValues mapNameValues);
+            //bool foundCampaignID = Request.Form.TryGetValue("campaignId", out StringValues mapCampaignIdValues);
 
-            if(!foundMap)
+            if (!foundMapName)
             {
                 return BadRequest();
             }
 
-            string mapName = mapValues.AsEnumerable().First();
+            string mapName = mapNameValues.AsEnumerable().First();
+            //bool parseCampaignID = int.TryParse(mapCampaignIdValues.AsEnumerable().First(), out int campaignID);
+
+            //if(!parseCampaignID)
+            //{
+            //    return BadRequest();
+            //}
 
             string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -83,6 +94,7 @@ namespace Endevrian.Areas.Identity.Controllers
 
             Map map = new Map
             {
+                CampaignID = _queryHelper.ActiveCampaignQuery(currentUser).CampaignID,
                 FileName = postedFile.FileName,
                 FilePath = $"Maps\\{currentUser}\\{postedFile.FileName}",
                 UserId = currentUser,
@@ -115,7 +127,7 @@ namespace Endevrian.Areas.Identity.Controllers
                 Encoder myEncoder = Encoder.Quality;
                 EncoderParameters myEncoderParameters = new EncoderParameters(1);
 
-                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 0L);
+                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 25L);
                 myEncoderParameters.Param[0] = myEncoderParameter;
                 bmp.Save(@$"{_targetFilePath}\\{currentUser}\\Preview{fileName}", jpgEncoder, myEncoderParameters);
             }

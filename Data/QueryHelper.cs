@@ -74,7 +74,9 @@ namespace Endevrian.Data
         {
             List<Map> foundMaps = new List<Map>();
 
-            string query = $"SELECT * FROM Maps WHERE MapName LIKE '%{userSearchQuery}%' AND UserId = '{userId}'";
+            int selectedCampaignID = ActiveCampaignQuery(userId).CampaignID;
+
+            string query = $"SELECT * FROM Maps WHERE MapName LIKE '%{userSearchQuery}%' AND UserId = '{userId}' AND CampaignID = {selectedCampaignID}";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
