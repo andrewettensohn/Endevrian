@@ -46,7 +46,6 @@ namespace Endevrian.Areas.Identity.Controllers
         //}
 
         // POST: api/Streaming
-        [HttpPost]
         public async Task<IActionResult> PostNewMap()
         {
             IFormFile postedFile = Request.Form.Files[0];

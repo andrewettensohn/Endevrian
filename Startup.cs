@@ -92,7 +92,7 @@ namespace Endevrian
             // Replace an existing mapping
             //provider.Mappings[".rtf"] = "application/x-msdownload";
             // Remove MP4 videos.
-            provider.Mappings.Remove(".mp4");
+            provider.Mappings.Remove(".html");
 
             app.UseRouting();
 

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -82,49 +83,30 @@ namespace Endevrian.Areas.Identity.Controllers
             return View();
         }
 
-        public async Task<IActionResult> MapGallery()
+        public async Task<IActionResult> MapGallery(string searchString)
         {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            MapViewModel model = new MapViewModel();
-            model.UserMaps = new List<List<Map>>();
-
-            List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId).ToListAsync();
-
-            model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
-
-            return View(model);
-        }
-
-        public async Task<IActionResult> MapSearch(string userSearchQuery)
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            MapViewModel model = new MapViewModel();
-            model.UserMaps = new List<List<Map>>();
-
-            List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, userSearchQuery);
-
-            for (int i = 0; i < foundMaps.Count; i += 3)
+            MapViewModel model = new MapViewModel
             {
-                List<Map> mapRow = new List<Map>();
+                UserMaps = new List<List<Map>>()
+            };
 
-                if (foundMaps.Count > i)
-                {
-                    mapRow.Add(foundMaps[i]);
-                }
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (foundMaps.Count > i + 1)
-                {
-                    mapRow.Add(foundMaps[i + 1]);
-                }
+            if (searchString != null)
+            {
 
-                if (foundMaps.Count > i + 2)
-                {
-                    mapRow.Add(foundMaps[i + 2]);
-                }
+                List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, searchString);
 
-                model.UserMaps.Add(mapRow);
+                model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
+
+            }
+            else
+            {
+
+                List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId).ToListAsync();
+
+                model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
             }
 
             return View(model);
