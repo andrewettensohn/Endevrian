@@ -19,7 +19,7 @@ using Endevrian.Controllers;
 namespace Endevrian.Areas.Identity.Controllers
 {
     [Area("Identity")]
-    [Route("Identity/User/api/File")]
+    [Route("Identity/User/api/Map")]
     [ApiController]
     public class MapController : ControllerBase
     {
@@ -37,6 +37,14 @@ namespace Endevrian.Areas.Identity.Controllers
             _fileProvider = fileProvider;
             _queryHelper = new QueryHelper(config, logger);
 
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Map>> GetMap(int id)
+        {
+
+            Map map = await _context.Maps.FindAsync(id);
+            return map;
         }
 
         [HttpDelete]
@@ -97,14 +105,6 @@ namespace Endevrian.Areas.Identity.Controllers
             //return CreatedAtAction("GetMap", new { id = map.MapID }, map);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Map>> GetMap(int id)
-        {
-
-            Map map = await _context.Maps.FindAsync(id);
-            return map;
-        }
-
         private void VaryQualityLevel(Bitmap bmp, string currentUser, string fileName)
         {
             using (bmp)
@@ -118,7 +118,6 @@ namespace Endevrian.Areas.Identity.Controllers
                 myEncoderParameters.Param[0] = myEncoderParameter;
                 bmp.Save(@$"{_targetFilePath}\\{currentUser}\\Preview{fileName}", jpgEncoder, myEncoderParameters);
             }
-
         }
 
         private ImageCodecInfo GetEncoder(ImageFormat format)
