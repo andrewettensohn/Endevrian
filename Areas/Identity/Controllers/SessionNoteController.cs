@@ -23,6 +23,26 @@ namespace Endevrian.Areas.Identity.Controllers
             _context = context;
         }
 
+        [HttpGet("{sessionSectionId}")]
+        public async Task<ActionResult<List<SessionNote>>> GetNotesForSection(int sessionSectionId)
+        {
+            string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            List<SessionNote> sessionNotes = new List<SessionNote>();
+
+            try
+            {
+                sessionNotes = await _context.SessionNotes.Where(x => x.SessionSectionID == sessionSectionId && x.UserId == requestingUser).ToListAsync();
+            }
+            catch(Exception exc)
+            {
+                //TODO: Add Logger
+            }
+
+            return sessionNotes;
+        
+        }
+
         // GET api/<controller>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<SessionNote>> GetSessionNoteAsync(int id)

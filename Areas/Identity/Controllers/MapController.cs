@@ -21,14 +21,14 @@ namespace Endevrian.Areas.Identity.Controllers
     [Area("Identity")]
     [Route("Identity/User/api/File")]
     [ApiController]
-    public class FileController : ControllerBase
+    public class MapController : ControllerBase
     {
         private readonly string _targetFilePath;
         private readonly IFileProvider _fileProvider;
         private readonly ApplicationDbContext _context;
         private readonly QueryHelper _queryHelper;
 
-        public FileController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider, SystemLogController logger)
+        public MapController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider, SystemLogController logger)
         {
             // To save physical files to a path provided by configuration:
             _context = context;
@@ -39,22 +39,19 @@ namespace Endevrian.Areas.Identity.Controllers
 
         }
 
-        //[HttpGet]
-        //public IActionResult GetMapFiles()
-        //{
-        //    string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        [HttpDelete]
+        public async Task<IActionResult> DeleteMap()
+        {
 
-        //    var fileList = _fileProvider.GetDirectoryContents("\\Maps\\" + userName);
+            return Ok();
+        }
 
-        //    return PhysicalFile(f)
-        //}
 
-        // POST: api/Streaming
+        [HttpPost]
         public async Task<IActionResult> PostNewMap()
         {
             IFormFile postedFile = Request.Form.Files[0];
             bool foundMapName = Request.Form.TryGetValue("mapName", out StringValues mapNameValues);
-            //bool foundCampaignID = Request.Form.TryGetValue("campaignId", out StringValues mapCampaignIdValues);
 
             if (!foundMapName)
             {
@@ -62,16 +59,8 @@ namespace Endevrian.Areas.Identity.Controllers
             }
 
             string mapName = mapNameValues.AsEnumerable().First();
-            //bool parseCampaignID = int.TryParse(mapCampaignIdValues.AsEnumerable().First(), out int campaignID);
-
-            //if(!parseCampaignID)
-            //{
-            //    return BadRequest();
-            //}
-
-            string userName = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            string targetfilePath = _targetFilePath + "\\" + userName;
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string targetfilePath = $"{_targetFilePath}\\{currentUser}";
 
             if(!Directory.Exists(targetfilePath))
             {
@@ -84,8 +73,6 @@ namespace Endevrian.Areas.Identity.Controllers
                 await postedFile.CopyToAsync(targetStream);
 
             }
-
-            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             string filePath = $"{_targetFilePath}\\{currentUser}\\{postedFile.FileName}";
 

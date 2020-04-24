@@ -22,6 +22,13 @@ namespace Endevrian.Areas.Identity.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<SessionSection>>> GetAllSessionSections()
+        {
+            List<SessionSection> sessionSections = await _context.SessionSections.ToListAsync();
+
+            return sessionSections;
+        }
 
         // GET: api/AdventureLogs/5
         [HttpGet("{id}")]

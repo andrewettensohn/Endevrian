@@ -19,7 +19,10 @@
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Select</button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
+                        @foreach (var sessionSection in Model.SelectedCampaignSessionSections)
+                        {
+                            <button class="dropdown-item" onclick="DisplaySessionNotesForSection(@(sessionSection.SessionSectionID))">@sessionSection.SessionSectionName</button>
+                        }
                     </div>
                 </div>
             </div>
@@ -29,7 +32,10 @@
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Select</button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Action</a>
+                        @foreach (var sessionNote in Model.SelectedCampaignSessionNotes)
+                        {
+                            <button class="dropdown-item">@sessionNote.SessionNoteTitle</button>
+                        }
                     </div>
                 </div>
             </div>
@@ -50,6 +56,16 @@
 
 <script>
 
+    function DisplaySessionNotesForSection(sessionSectionId) {
+
+        var sessionNotes = [];
+        fetch("api/SessionSection/" + sessionSectionId).then(response => sessionNotes = response.json)
+
+        sessionNotes.forEach(note => console.log(note))
+
+
+    }
+
     const mapGalleryUrl = "@Url.Content("~/Identity/User/MapGallery")";
     let fileInput = document.getElementById("fileInput");
     let formData = new FormData();
@@ -60,7 +76,6 @@
 
         formData.append("file", fileInput.files[0]);
         formData.append("mapName", $("#inputMapName").val());
-        //formData.append("campaignId", $("#inputCampaignId").val());
 
         fetch("api/File",
             {
