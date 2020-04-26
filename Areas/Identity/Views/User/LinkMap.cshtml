@@ -85,12 +85,14 @@
 }
 
 <script>
+    const sessionNoteUrl = "@Url.Content($"~/Identity/User/SessionNotes")"
 
     function LinkMapToNote(mapId) {
 
         fetch("api/Map/LinkMap/" + mapId, {
             method: 'POST'
-        });
+        })
+        .then(() => window.location.href = sessionNoteUrl);
         
     }
 
@@ -100,7 +102,7 @@
         fetch("api/SessionNote/" + sessionNoteID, {
             method: 'PUT',
         })
-            .then(() => window.location.href = "@Url.Content($"~/Identity/User/SessionNotes")");
+            .then(() => window.location.href = sessionNoteUrl);
 
     }
 
