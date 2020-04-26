@@ -171,9 +171,9 @@
                     <input id="inputUpdateSessionNoteName" class="form-control d-none" />
                     <hr />
                     <div id="sectionNoteBody">
-                        <div class="d-flex flex-row-reverse mb-3">
+                        <div class="d-flex flex-row-reverse">
                             <i class="fa fa-trash fa-lg ml-3" type="button" data-toggle="modal" data-target="#confirmDeleteModal"></i>
-                            <i class="fas fa-edit fa-lg" type="button" onclick="displayEditNote()"></i>
+                            <i class="fas fa-edit fa-lg ml-3" type="button" onclick="displayEditNote()"></i>
                         </div>
                         <div id="noteBody">@Html.Raw(Model.SelectedNote.SessionNoteBody)</div>
                     </div>
@@ -183,6 +183,8 @@
                             <button class="btn border border-success text-success mt-3 float-right" type="submit">Update</button>
                             <input class="d-none" id="sessionNoteFormId" value="@Model.SelectedNote.SessionNoteID" />
                         </form>
+                        <a class="btn border border-primary text-primary mt-3" href="@Url.Content($"~/Identity/User/LinkMap?note={Model.SelectedNote.SessionNoteID}")">Add an Existing Map</a>
+                        <a class="btn border border-primary text-primary mt-3" href="@Url.Content($"~/Identity/User/NewMap?note={Model.SelectedNote.SessionNoteID}")">Add a New Map</a>
                     </div>
                 </div>
                 <!-- Session Note Content -->

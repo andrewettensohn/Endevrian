@@ -6,12 +6,11 @@
 <h1 class="display-4 text-center mb-3">New Map</h1>
 <div class="row justify-content-center">
     <div class="col-lg-6">
-        @*<form id="sectionForm">*@
-            <label for="inputSessionSection">Related Session Section</label>
+            @*<label for="inputSessionSection"><b>Related Session Section: </b>Linking a Map to your notes is optional.</label>
             <div class="input-group mb-3">
-                <input id="inputSessionSection" type="text" class="form-control" placeholder="Session Section to Link" />
+                <input id="inputSessionSection" type="text" class="form-control disabled" placeholder="Select a Session Section Using the Dropdown" disabled/>
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Select</button>
+                    <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Section</button>
                     <div class="dropdown-menu">
                         @foreach (var sessionSection in Model.SelectedCampaignSessionSections)
                         {
@@ -20,21 +19,15 @@
                     </div>
                 </div>
             </div>
-            <label for="inputSessionNote">Related Note</label>
+            <label for="inputSessionNote"><b>Related Note</b></label>
             <div class="input-group mb-3">
-                <input id="inputSessionNote" type="text" class="form-control" placeholder="Session Note to Link" />
+                <input id="inputSessionNote" type="text" class="form-control disabled" placeholder="Session Note to Link" disabled/>
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Select</button>
+                    <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Note</button>
                     <div id="dropDownNotes" class="dropdown-menu">
-
-                        @*@foreach (var sessionNote in Model.SelectedCampaignSessionNotes)
-                        {
-                            <button class="dropdown-item">@sessionNote.SessionNoteTitle</button>
-                        }*@
                     </div>
                 </div>
-            </div>
-        @*</form>*@
+            </div>*@
         <form id="newMapForm">
             <label for="fileInput">Map File</label>
             <div class="custom-file mb-3">
@@ -43,7 +36,7 @@
             </div>
             <label for="inputMapName">Map Name</label>
             <div class="input-group mb-3">
-                <input id="inputMapName" type="text" class="form-control" placeholder="Map Name" required autocomplete="off" />
+                <input id="inputMapName" type="text" class="form-control" placeholder="Enter a Map Name" required autocomplete="off" />
             </div>
             <div class="mt-5">
                 <center>
@@ -57,37 +50,24 @@
 
 <script>
 
-    //function DisplaySessionNotesForSection(sessionSectionId) {
+    //function DisplayNotesForSection(sessionSectionId) {
 
-    //    var sessionNotes = [];
-    //    fetch("api/SessionSection/" + sessionSectionId).then(response => sessionNotes = response.json)
-
-    //    sessionNotes.forEach(note => console.log(note))
-
+    //    fetch("api/SessionNote/SectionNotes/" + sessionSectionId)
+    //        .then(response => response.json())
+    //        .then(data => AddNotesToDropDown(data));
     //}
 
-    //$("#sectionForm").on("submit", async function (evt) {
-    function DisplayNotesForSection(sessionSectionId) {
-        //evt.preventDefault();
+    //function AddNotesToDropDown(data) {
 
-        fetch("api/SessionNote/SectionNotes/" + sessionSectionId)
-            .then(response => response.json())
-            .then(data => AddNotesToDropDown(data));
-    }
+    //    let noteDropDown = $("#dropDownNotes");
+    //    noteDropDown.empty();
 
-    //});
+    //    data.forEach(note => {
+    //        var noteHtml = "<button class='dropdown-item'>" + note.sessionNoteTitle + "</button>";
 
-    function AddNotesToDropDown(data) {
-
-        let noteDropDown = $("#dropDownNotes");
-        noteDropDown.empty();
-
-        data.forEach(note => {
-            var noteHtml = "<button class='dropdown-item'>" + note.sessionNoteTitle + "</button>";
-
-            noteDropDown.append(noteHtml);
-        });
-    }
+    //        noteDropDown.append(noteHtml);
+    //    });
+    //}
 
     const mapGalleryUrl = "@Url.Content("~/Identity/User/MapGallery")";
     
@@ -100,6 +80,14 @@
 
         formData.append("file", fileInput.files[0]);
         formData.append("mapName", $("#inputMapName").val());
+
+        let searchParam = new URLSearchParams(window.location.search)
+        if (searchParam.has("note")) {
+
+            noteId = searchParam.get("note");
+            formData.append("NoteId", noteId)
+            
+        }
 
         fetch("api/Map",
             {

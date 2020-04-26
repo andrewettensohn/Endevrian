@@ -23,5 +23,7 @@ namespace Endevrian.Models.MapModels
 
         public string PreviewFilePath { get; set; }
 
+        public List<SessionNote> RelatedSessionNotes { get; set; } 
+
     }
 }

@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Endevrian.Controllers;
+using Endevrian.Models;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -97,6 +98,22 @@ namespace Endevrian.Areas.Identity.Controllers
                 PreviewFilePath = $"Maps\\{ currentUser}\\Preview{ postedFile.FileName}",
                 PreviewFileName = $"Preview{postedFile.FileName}"
             };
+
+            bool foundNote = Request.Form.TryGetValue("noteId", out StringValues noteValues);
+            if (foundNote)
+            {
+                string noteIdString = noteValues.AsEnumerable().First();
+                bool parseNoteId = int.TryParse(noteIdString, out int noteId);
+
+                if(parseNoteId)
+                {
+                    SessionNote noteToLink = await _context.SessionNotes.FindAsync(noteId);
+                    if(noteToLink.UserId == currentUser)
+                    {
+                        map.RelatedSessionNotes.Add(noteToLink);
+                    }
+                }
+            }
 
             await _context.AddAsync(map);
             await _context.SaveChangesAsync();

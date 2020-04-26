@@ -95,6 +95,13 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> LinkMap()
+        {
+
+
+            return View();
+        }
+
         public async Task<IActionResult> MapGallery(string searchString)
         {
 
