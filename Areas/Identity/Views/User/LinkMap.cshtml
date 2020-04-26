@@ -39,8 +39,7 @@
                                 <h5 class="card-title text-light">@map.MapName</h5>
                                 @if (map.RelatedSessionNote != null)
                                 {
-                                    <a href="#" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</a>
-                                    <!--TODO: Change selected Note on selection and navigate to the note.-->
+                                    <button onclick="NavigateToSessionNote(@map.SessionNoteID)" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</button>
                                 }
                                 <button class="btn text-success" onclick="LinkMapToNote(@map.MapID)">Link to @Model.SelectedSessionNote.SessionNoteTitle <i class="fas fa-plus"></i></button>
                             </div>
@@ -93,7 +92,16 @@
             method: 'POST'
         });
         
-        
+    }
+
+    
+    function NavigateToSessionNote(sessionNoteID) {
+
+        fetch("api/SessionNote/" + sessionNoteID, {
+            method: 'PUT',
+        })
+            .then(() => window.location.href = "@Url.Content($"~/Identity/User/SessionNotes")");
+
     }
 
 </script>

@@ -58,8 +58,7 @@
                                 <h5 class="card-title text-light">@map.MapName</h5>
                                 @if (map.RelatedSessionNote != null)
                                 {
-                                    <a href="#" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</a>
-                                    <!--TODO: Change selected Note on selection and navigate to the note.-->
+                                    <button onclick="NavigateToSessionNote(@map.SessionNoteID)" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</button>
                                 }
                             </div>
                             <a href="~/UserContent/@map.FilePath"><img loading="lazy" src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
@@ -107,6 +106,15 @@
     function deleteMap(mapId) {
 
     //TODO: Don't ask me for confirmation again
+
+    }
+
+    function NavigateToSessionNote(sessionNoteID) {
+
+        fetch("api/SessionNote/" + sessionNoteID, {
+            method: 'PUT',
+        })
+            .then(() => window.location.href = "@Url.Content($"~/Identity/User/SessionNotes")");
 
     }
 </script>
