@@ -102,6 +102,7 @@ namespace Endevrian.Migrations
                     MapID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CampaignID = table.Column<int>(nullable: false),
+                    SessionNoteID = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
                     MapName = table.Column<string>(nullable: true),
                     FileName = table.Column<string>(nullable: true),

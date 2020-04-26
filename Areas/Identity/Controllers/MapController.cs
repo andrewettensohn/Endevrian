@@ -102,17 +102,7 @@ namespace Endevrian.Areas.Identity.Controllers
             bool foundNote = Request.Form.TryGetValue("noteId", out StringValues noteValues);
             if (foundNote)
             {
-                string noteIdString = noteValues.AsEnumerable().First();
-                bool parseNoteId = int.TryParse(noteIdString, out int noteId);
-
-                if(parseNoteId)
-                {
-                    SessionNote noteToLink = await _context.SessionNotes.FindAsync(noteId);
-                    if(noteToLink.UserId == currentUser)
-                    {
-                        map.RelatedSessionNotes.Add(noteToLink);
-                    }
-                }
+                map = await LinkNoteToMap(noteValues, map);
             }
 
             await _context.AddAsync(map);
@@ -120,6 +110,24 @@ namespace Endevrian.Areas.Identity.Controllers
 
             return Ok();
             //return CreatedAtAction("GetMap", new { id = map.MapID }, map);
+        }
+
+        private async Task<Map> LinkNoteToMap(StringValues noteValues, Map map)
+        {
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string noteIdString = noteValues.AsEnumerable().First();
+            bool parseNoteId = int.TryParse(noteIdString, out int noteId);
+
+            if (parseNoteId)
+            {
+                SessionNote noteToLink = await _context.SessionNotes.FindAsync(noteId);
+                if (noteToLink.UserId == currentUser)
+                {
+                    map.SessionNoteID = noteToLink.SessionNoteID;
+                }
+            }
+
+            return map;
         }
 
         private void VaryQualityLevel(Bitmap bmp, string currentUser, string fileName)

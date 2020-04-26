@@ -119,6 +119,9 @@ namespace Endevrian.Migrations
                     b.Property<string>("PreviewFilePath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SessionNoteID")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 

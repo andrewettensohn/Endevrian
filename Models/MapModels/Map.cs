@@ -11,6 +11,8 @@ namespace Endevrian.Models.MapModels
 
         public int CampaignID { get; set; }
 
+        public int SessionNoteID { get; set; }
+
         public string UserId { get; set; }
 
         public string MapName { get; set; }
@@ -21,9 +23,7 @@ namespace Endevrian.Models.MapModels
 
         public string PreviewFileName { get; set; }
 
-        public string PreviewFilePath { get; set; }
-
-        public List<SessionNote> RelatedSessionNotes { get; set; } 
+        public string PreviewFilePath { get; set; } 
 
     }
 }

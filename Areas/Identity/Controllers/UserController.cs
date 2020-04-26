@@ -148,6 +148,11 @@ namespace Endevrian.Areas.Identity.Controllers
             if(selectedNoteCheck == true)
             {
                 model.SelectedNote = await _context.SessionNotes.Where(x => x.SelectedSessionNote == true && x.UserId == userId && x.CampaignID == model.SelectedCampaign.CampaignID).FirstAsync();
+                bool foundRelatedMap = await _context.Maps.Where(x => x.SessionNoteID == model.SelectedNote.SessionNoteID).AnyAsync();
+                if(foundRelatedMap)
+                {
+                    model.SelectedNoteRelatedMap = await _context.Maps.Where(x => x.SessionNoteID == model.SelectedNote.SessionNoteID).FirstAsync();
+                }
             }
             else
             {

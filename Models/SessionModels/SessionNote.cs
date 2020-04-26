@@ -14,6 +14,8 @@ namespace Endevrian.Models
 
         public int CampaignID { get; set; }
 
+        //public int MapID { get; set; }
+
         public int SessionSectionID { get; set; }
 
         public string SessionNoteTitle { get; set; }
