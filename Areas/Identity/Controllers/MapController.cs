@@ -43,8 +43,14 @@ namespace Endevrian.Areas.Identity.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Map>> GetMap(int id)
         {
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             Map map = await _context.Maps.FindAsync(id);
+            if (map.UserId != currentUser)
+            {
+                return NotFound();
+            }
+
             return map;
         }
 
@@ -55,6 +61,25 @@ namespace Endevrian.Areas.Identity.Controllers
             return Ok();
         }
 
+        [HttpPost("{id}")]
+        public async Task<IActionResult> LinkExistingMapToNote(int id)
+        {
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Map mapToLink = await _context.Maps.FindAsync(id);
+
+            if(currentUser != mapToLink.UserId)
+            {
+                return BadRequest();
+            }
+
+            Campaign activeCampaign = _queryHelper.ActiveCampaignQuery(currentUser);
+            SessionNote relatedSessionNote = await _context.SessionNotes.FindAsync();
+
+            mapToLink.SessionNoteID = relatedSessionNote.SessionNoteID;
+
+            return Ok();
+        }
 
         [HttpPost]
         public async Task<IActionResult> PostNewMap()
@@ -102,7 +127,7 @@ namespace Endevrian.Areas.Identity.Controllers
             bool foundNote = Request.Form.TryGetValue("noteId", out StringValues noteValues);
             if (foundNote)
             {
-                map = await LinkNoteToMap(noteValues, map);
+                map = await LinkNewMapToNote(noteValues, map);
             }
 
             await _context.AddAsync(map);
@@ -112,7 +137,7 @@ namespace Endevrian.Areas.Identity.Controllers
             //return CreatedAtAction("GetMap", new { id = map.MapID }, map);
         }
 
-        private async Task<Map> LinkNoteToMap(StringValues noteValues, Map map)
+        private async Task<Map> LinkNewMapToNote(StringValues noteValues, Map map)
         {
             string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
             string noteIdString = noteValues.AsEnumerable().First();

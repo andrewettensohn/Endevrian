@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,5 +26,7 @@ namespace Endevrian.Models.MapModels
 
         public string PreviewFilePath { get; set; } 
 
+        [NotMapped]
+        public SessionNote RelatedSessionNote { get; set; }
     }
 }

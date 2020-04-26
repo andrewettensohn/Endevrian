@@ -95,11 +95,40 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> LinkMap()
+        public async Task<IActionResult> LinkMap(string searchString)
         {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            MapViewModel model = new MapViewModel
+            {
+                UserMaps = new List<List<Map>>(),
+            };
 
-            return View();
+            if (searchString != null)
+            {
+
+                List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, searchString);
+
+                model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
+
+            }
+            else
+            {
+
+                List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId).ToListAsync();
+                foreach(Map map in allMaps)
+                {
+                    bool foundRelatedNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).AnyAsync();
+
+                    if(foundRelatedNote)
+                    {
+                        map.RelatedSessionNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).FirstAsync();
+                    }
+                }
+                model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
+            }
+
+            return View(model);
         }
 
         public async Task<IActionResult> MapGallery(string searchString)
@@ -125,7 +154,15 @@ namespace Endevrian.Areas.Identity.Controllers
             {
 
                 List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId && x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
+                foreach (Map map in allMaps)
+                {
+                    bool foundRelatedNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).AnyAsync();
 
+                    if (foundRelatedNote)
+                    {
+                        map.RelatedSessionNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).FirstAsync();
+                    }
+                }
                 model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
             }
 

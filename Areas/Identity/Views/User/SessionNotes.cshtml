@@ -171,9 +171,15 @@
                     <input id="inputUpdateSessionNoteName" class="form-control d-none" />
                     <hr />
                     <div id="sectionNoteBody">
-                        <div class="d-flex flex-row-reverse">
-                            <i class="fa fa-trash fa-lg ml-3" type="button" data-toggle="modal" data-target="#confirmDeleteModal"></i>
-                            <i class="fas fa-edit fa-lg ml-3" type="button" onclick="displayEditNote()"></i>
+                        <div class="d-flex flex-row-reverse mb-3">
+                            <button class="btn border text-white" data-toggle="modal" data-target="#confirmDeleteModal">
+                                Delete
+                                <i class="fa fa-trash fa-lg ml-3" type="button"></i>
+                            </button>
+                            <button class="btn border text-white mr-1" onclick="displayEditNote()">
+                                Edit
+                                <i class="fas fa-edit fa-lg ml-3" type="button"></i>
+                            </button>
                         </div>
                         <div id="noteBody">
                             @Html.Raw(Model.SelectedNote.SessionNoteBody)

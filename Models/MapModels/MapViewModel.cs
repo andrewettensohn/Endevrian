@@ -12,7 +12,5 @@ namespace Endevrian.Models.MapModels
 
         public List<List<Map>> UserMaps { get; set; }
 
-        public string UserSearchQuery { get; set; }
-
     }
 }
