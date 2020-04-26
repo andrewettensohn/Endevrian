@@ -12,5 +12,7 @@ namespace Endevrian.Models.MapModels
 
         public List<List<Map>> UserMaps { get; set; }
 
+        public SessionNote SelectedSessionNote { get; set; }
+
     }
 }

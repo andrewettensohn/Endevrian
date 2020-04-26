@@ -16,6 +16,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Endevrian.Controllers;
 using Endevrian.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -61,7 +62,7 @@ namespace Endevrian.Areas.Identity.Controllers
             return Ok();
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("LinkMap/{id}")]
         public async Task<IActionResult> LinkExistingMapToNote(int id)
         {
             string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -74,9 +75,12 @@ namespace Endevrian.Areas.Identity.Controllers
             }
 
             Campaign activeCampaign = _queryHelper.ActiveCampaignQuery(currentUser);
-            SessionNote relatedSessionNote = await _context.SessionNotes.FindAsync();
+            SessionNote relatedSessionNote = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).First();
 
             mapToLink.SessionNoteID = relatedSessionNote.SessionNoteID;
+
+            _context.Entry(mapToLink).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             return Ok();
         }

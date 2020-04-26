@@ -114,7 +114,7 @@ namespace Endevrian.Areas.Identity.Controllers
             }
             else
             {
-
+                model.SelectedSessionNote = await _context.SessionNotes.Where(x => x.UserId == userId && x.SelectedSessionNote == true).FirstAsync();
                 List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId).ToListAsync();
                 foreach(Map map in allMaps)
                 {
