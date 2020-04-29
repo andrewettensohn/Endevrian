@@ -194,11 +194,18 @@
                     <div id="sectionEditNote" class="text-dark d-none">
                         <form id="sessionNoteForm">
                             <textarea class="form-control" id="textAreaLogBody" rows="10" cols="50" placeholder="When we last left our adventurers..."></textarea>
-                            <button class="btn border border-success text-success mt-3 float-right" type="submit">Update</button>
+                            <button class="btn border border-success text-success mt-3" type="submit">Update</button>
                             <input class="d-none" id="sessionNoteFormId" value="@Model.SelectedNote.SessionNoteID" />
                         </form>
-                        <a class="btn border border-primary text-primary mt-3" href="@Url.Content($"~/Identity/User/LinkMap?note={Model.SelectedNote.SessionNoteID}")">Add an Existing Map</a>
-                        <a class="btn border border-primary text-primary mt-3" href="@Url.Content($"~/Identity/User/NewMap?note={Model.SelectedNote.SessionNoteID}")">Add a New Map</a>
+                        <div class="dropdown">
+                            <button class="btn border text-white dropdown-toggle mt-3" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                                Map
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="@Url.Content($"~/Identity/User/LinkMap?note={Model.SelectedNote.SessionNoteID}")">Add an Existing Map</a>
+                                <a class="dropdown-item" href="@Url.Content($"~/Identity/User/NewMap?note={Model.SelectedNote.SessionNoteID}")">Add a New Map</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Session Note Content -->

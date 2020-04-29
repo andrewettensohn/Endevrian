@@ -70,6 +70,7 @@
     //}
 
     const mapGalleryUrl = "@Url.Content("~/Identity/User/MapGallery")";
+    const sessionNotesUrl = "@Url.Content("~/Identity/User/SessionNotes")";
     
     /*UPLOAD ON FILE SELECTION*/
     $("#newMapForm").on("submit", async function (evt) {
@@ -86,15 +87,21 @@
 
             noteId = searchParam.get("note");
             formData.append("NoteId", noteId)
+            afterUploadUrl = sessionNotesUrl;
             
         }
+        else {
+
+            afterUploadUrl = mapGalleryUrl;
+        }
+
 
         fetch("api/Map",
             {
                 method: 'POST',
                 body: formData
             })
-            .then(() => location.href = mapGalleryUrl)
+            .then(() => location.href = afterUploadUrl)
             .catch("Failed to upload file.")
     });
 </script>
