@@ -75,7 +75,7 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <button class="dropdown-item" href="#">Rename Map</button>
-                                        <button class="dropdown-item" href="#">Delete</button>
+                                        <button class="dropdown-item" onclick="deleteMap(@map.MapID)">Delete</button>
                                     </div>
                                 </div>
                                 <div class="btn-group">
@@ -111,6 +111,10 @@
     function deleteMap(mapId) {
 
     //TODO: Don't ask me for confirmation again
+        fetch("api/Map/" + mapId, {
+            method: 'DELETE',
+        })
+            .then(() => window.location.reload());
 
     }
 

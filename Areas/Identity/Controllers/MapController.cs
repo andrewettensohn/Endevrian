@@ -29,6 +29,7 @@ namespace Endevrian.Areas.Identity.Controllers
         private readonly IFileProvider _fileProvider;
         private readonly ApplicationDbContext _context;
         private readonly QueryHelper _queryHelper;
+        private SystemLogController _logger;
 
         public MapController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider, SystemLogController logger)
         {
@@ -37,6 +38,7 @@ namespace Endevrian.Areas.Identity.Controllers
             //_targetFilePath = config.GetValue<string>("StoredFilesPath");
             _targetFilePath = config.GetValue<string>(WebHostDefaults.ContentRootKey) + "\\wwwroot\\UserContent\\Maps";
             _fileProvider = fileProvider;
+            _logger = logger;
             _queryHelper = new QueryHelper(config, logger);
 
         }
@@ -55,9 +57,33 @@ namespace Endevrian.Areas.Identity.Controllers
             return map;
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteMap()
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMap(int id)
         {
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Map mapToDelete = await _context.Maps.FindAsync(id);
+            
+            if(mapToDelete.UserId != currentUser)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                string targetfilePath = $"{_targetFilePath}\\{currentUser}\\{mapToDelete.FileName}";
+                System.IO.File.Delete(targetfilePath);
+                string targetPreviewFilePath = $"{_targetFilePath}\\{currentUser}\\{mapToDelete.PreviewFileName}";
+                System.IO.File.Delete(targetPreviewFilePath);
+            }
+            catch(Exception exc)
+            {
+                _logger.AddSystemLog($"An Exception occured while deleting a map file: {exc}");
+                return StatusCode(500);
+            }
+
+            _context.Remove(mapToDelete);
+            await _context.SaveChangesAsync();
 
             return Ok();
         }
