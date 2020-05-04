@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using Endevrian.Controllers;
 using Endevrian.Data;
 using Endevrian.Models;
+using Endevrian.Models.MapModels;
 using Endevrian.Models.SessionModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -76,6 +78,97 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> NewMap()
+        {
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
+
+            NewMapViewModel model = new NewMapViewModel
+            {
+                SelectedCampaignID = SelectedCampaign.CampaignID,
+                SelectedCampaignSessionSections = await _context.SessionSections.Where(x => x.CampaignID == SelectedCampaign.CampaignID && userId == x.UserId).ToListAsync(),
+                SelectedCampaignSessionNotes = await _context.SessionNotes.Where(x => x.CampaignID == SelectedCampaign.CampaignID && userId == x.UserId).ToListAsync()
+            };
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> LinkMap(string searchString)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            MapViewModel model = new MapViewModel
+            {
+                UserMaps = new List<List<Map>>(),
+            };
+
+            if (searchString != null)
+            {
+
+                List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, searchString);
+
+                model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
+
+            }
+            else
+            {
+                model.SelectedSessionNote = await _context.SessionNotes.Where(x => x.UserId == userId && x.SelectedSessionNote == true).FirstAsync();
+                List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId).ToListAsync();
+                foreach(Map map in allMaps)
+                {
+                    bool foundRelatedNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).AnyAsync();
+
+                    if(foundRelatedNote)
+                    {
+                        map.RelatedSessionNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).FirstAsync();
+                    }
+                }
+                model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> MapGallery(string searchString)
+        {
+
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            MapViewModel model = new MapViewModel
+            {
+                UserMaps = new List<List<Map>>(),
+                SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId)
+            };
+
+            if (searchString != null)
+            {
+
+                List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, searchString);
+
+                model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
+
+            }
+            else
+            {
+
+                List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId && x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
+                foreach (Map map in allMaps)
+                {
+                    bool foundRelatedNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).AnyAsync();
+
+                    if (foundRelatedNote)
+                    {
+                        map.RelatedSessionNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).FirstAsync();
+                    }
+                }
+                model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
+            }
+
+            return View(model);
+        }
+
         public async Task<IActionResult> SessionNotes()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -88,10 +181,15 @@ namespace Endevrian.Areas.Identity.Controllers
             model.SessionSections = await _context.SessionSections.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
             model.SessionNotes = await _context.SessionNotes.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
 
-            bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true && x.UserId == userId).Any();
+            bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true && x.UserId == userId && x.CampaignID == model.SelectedCampaign.CampaignID).Any();
             if(selectedNoteCheck == true)
             {
-                model.SelectedNote = await _context.SessionNotes.Where(x => x.SelectedSessionNote == true && x.UserId == userId).FirstAsync();
+                model.SelectedNote = await _context.SessionNotes.Where(x => x.SelectedSessionNote == true && x.UserId == userId && x.CampaignID == model.SelectedCampaign.CampaignID).FirstAsync();
+                bool foundRelatedMap = await _context.Maps.Where(x => x.SessionNoteID == model.SelectedNote.SessionNoteID).AnyAsync();
+                if(foundRelatedMap)
+                {
+                    model.SelectedNoteRelatedMap = await _context.Maps.Where(x => x.SessionNoteID == model.SelectedNote.SessionNoteID).FirstAsync();
+                }
             }
             else
             {

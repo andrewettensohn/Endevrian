@@ -1,0 +1,109 @@
+﻿<h6 class="display-4 text-center mb-3">Link Map</h6>
+<container>
+    <div class="row justify-content-center">
+        <div class="col-lg-4">
+            <form id="formSearch" asp-controller="User" asp-action="MapGallery">
+                <div class="input-group mb-3">
+                    <input id="inputUserSearch" type="text" class="form-control" placeholder="Enter Map Name or tag to search" name="searchString" autocomplete="off">
+                    <div class="input-group-append">
+                        <button id="btnSearch" class="btn btn-outline-secondary" type="submit">
+                            <i class="fa fa-search text-white" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col">
+            <div>
+                <a class="btn btn-outline-success text-white" href="@Url.Content($"~/Identity/User/NewMap")">
+                    Upload New Map <i class="fas fa-upload"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</container>
+
+@if (Model.UserMaps != null)
+{
+    <div class="container mt-5">
+        @foreach (var maps in Model.UserMaps)
+        {
+            <div class="row">
+                @foreach (var map in maps)
+                {
+                    <div class="col-sm mb-3">
+                        <div class="card border-0 shadow" style="width: 18rem; background-color: #121212;">
+                            <div class="card-header">
+                                <h5 class="card-title text-light">@map.MapName</h5>
+                                @if (map.RelatedSessionNote != null)
+                                {
+                                    <button onclick="NavigateToSessionNote(@map.SessionNoteID)" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</button>
+                                }
+                                <button class="btn text-success" onclick="LinkMapToNote(@map.MapID)">Link to @Model.SelectedSessionNote.SessionNoteTitle <i class="fas fa-plus"></i></button>
+                            </div>
+                            <a href="~/UserContent/@map.FilePath"><img loading="lazy" src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
+                            <div class="card-body">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Edit
+                                        <i class="fas fa-edit fa-lg" type="button"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button class="dropdown-item" href="#">Rename Map</button>
+                                        <button class="dropdown-item" href="#">Delete</button>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-tags"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <div class="dropdown-item">
+                                            <input type="checkbox" id="exampleCheck1">
+                                            <label for="exampleCheck1">Underdark</label>
+                                        </div>
+                                        <div class="dropdown-item">
+                                            <input type="checkbox" id="exampleCheck2">
+                                            <label for="exampleCheck2">World Map</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+
+@if (Model.UserMaps.Count == 0)
+{
+    <h6 class="display-4 text-center">Could not find any maps.</h6>
+}
+
+<script>
+    const sessionNoteUrl = "@Url.Content($"~/Identity/User/SessionNotes")"
+
+    function LinkMapToNote(mapId) {
+
+        fetch("api/Map/LinkMap/" + mapId, {
+            method: 'POST'
+        })
+        .then(() => window.location.href = sessionNoteUrl);
+        
+    }
+
+    
+    function NavigateToSessionNote(sessionNoteID) {
+
+        fetch("api/SessionNote/" + sessionNoteID, {
+            method: 'PUT',
+        })
+            .then(() => window.location.href = sessionNoteUrl);
+
+    }
+
+</script>

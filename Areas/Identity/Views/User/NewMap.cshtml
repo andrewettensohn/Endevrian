@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewData["Title"] = "New Map";
+}
+
+<h1 class="display-4 text-center mb-3">New Map</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+            @*<label for="inputSessionSection"><b>Related Session Section: </b>Linking a Map to your notes is optional.</label>
+            <div class="input-group mb-3">
+                <input id="inputSessionSection" type="text" class="form-control disabled" placeholder="Select a Session Section Using the Dropdown" disabled/>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Section</button>
+                    <div class="dropdown-menu">
+                        @foreach (var sessionSection in Model.SelectedCampaignSessionSections)
+                        {
+                            <button class="dropdown-item" onclick="DisplayNotesForSection(@(sessionSection.SessionSectionID))" value="@(sessionSection.SessionSectionID)">@sessionSection.SessionSectionName</button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <label for="inputSessionNote"><b>Related Note</b></label>
+            <div class="input-group mb-3">
+                <input id="inputSessionNote" type="text" class="form-control disabled" placeholder="Session Note to Link" disabled/>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary dropdown-toggle text-white" type="button" data-toggle="dropdown">Note</button>
+                    <div id="dropDownNotes" class="dropdown-menu">
+                    </div>
+                </div>
+            </div>*@
+        <form id="newMapForm">
+            <label for="fileInput">Map File</label>
+            <div class="custom-file mb-3">
+                <input type="file" class="custom-file-input" id="fileInput" required />
+                <label class="custom-file-label" for="inputGroupFile04">Choose File</label>
+            </div>
+            <label for="inputMapName">Map Name</label>
+            <div class="input-group mb-3">
+                <input id="inputMapName" type="text" class="form-control" placeholder="Enter a Map Name" required autocomplete="off" />
+            </div>
+            <div class="mt-5">
+                <center>
+                    <button id="fileUploadButton" type="submit" class="btn btn-lg broder border-success text-white mt-3">Upload <i class="fas fa-upload"></i></button>
+                </center>
+            </div>
+            <input id="inputCampaignId" class="d-none" value="@Model.SelectedCampaignID" />
+        </form>
+    </div>
+</div>
+
+<script>
+
+    //function DisplayNotesForSection(sessionSectionId) {
+
+    //    fetch("api/SessionNote/SectionNotes/" + sessionSectionId)
+    //        .then(response => response.json())
+    //        .then(data => AddNotesToDropDown(data));
+    //}
+
+    //function AddNotesToDropDown(data) {
+
+    //    let noteDropDown = $("#dropDownNotes");
+    //    noteDropDown.empty();
+
+    //    data.forEach(note => {
+    //        var noteHtml = "<button class='dropdown-item'>" + note.sessionNoteTitle + "</button>";
+
+    //        noteDropDown.append(noteHtml);
+    //    });
+    //}
+
+    const mapGalleryUrl = "@Url.Content("~/Identity/User/MapGallery")";
+    const sessionNotesUrl = "@Url.Content("~/Identity/User/SessionNotes")";
+    
+    /*UPLOAD ON FILE SELECTION*/
+    $("#newMapForm").on("submit", async function (evt) {
+        evt.preventDefault();
+
+        let fileInput = document.getElementById("fileInput");
+        let formData = new FormData();
+
+        formData.append("file", fileInput.files[0]);
+        formData.append("mapName", $("#inputMapName").val());
+
+        let searchParam = new URLSearchParams(window.location.search)
+        if (searchParam.has("note")) {
+
+            noteId = searchParam.get("note");
+            formData.append("NoteId", noteId)
+            afterUploadUrl = sessionNotesUrl;
+            
+        }
+        else {
+
+            afterUploadUrl = mapGalleryUrl;
+        }
+
+
+        fetch("api/Map",
+            {
+                method: 'POST',
+                body: formData
+            })
+            .then(() => location.href = afterUploadUrl)
+            .catch("Failed to upload file.")
+    });
+</script>

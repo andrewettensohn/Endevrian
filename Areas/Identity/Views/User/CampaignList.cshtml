@@ -26,9 +26,9 @@
             transition: margin-left .15s linear;
         }
 
-            .row.collapse.show {
-                margin-left: 0 !important;
-            }
+        .row.collapse.show {
+            margin-left: 0 !important;
+        }
 
         .row.collapsing {
             margin-left: -200px;
@@ -125,7 +125,7 @@
                         <div class="row justify-content-center align-items-center">
                             <nav class="nav navbar-dark">
                                 <a href="@Url.Content($"~/Identity/User/SessionNotes")" class="nav-link">Session Notes</a>
-                                <a class="nav-link" href="#">Maps</a>
+                                <a class="nav-link" href="@Url.Content($"~/Identity/User/MapGallery")">Maps</a>
                                 <a href="@Url.Content($"~/Identity/User/AdventureLog")" class="nav-link">Adventure Logs</a>
                             </nav>
                         </div>
@@ -163,48 +163,6 @@
             </div>
         </div>
     </body>
-
-@*<div class="row no-gutters">
-    <div class="col">
-        <div class="list-group border border-secondary">
-            @foreach (var campaign in Model.Campaigns)
-            {
-                <a href="#" class="list-group-item list-group-item-action" onclick="selectCampaign(@campaign.CampaignID)">@campaign.CampaignName</a>
-            }
-            <a href="#" data-toggle="collapse" data-target="#collapseNewCampaign" class="list-group-item list-group-item-action text-success">+ New Campaign</a>
-        </div>
-    </div>
-    @if (Model.SelectedCampaign != null)
-    {
-        <div class="col-lg-9">
-            <div class="card text-dark border border-light shadow">
-                <div class="card-body">
-                    <h3 class="card-header mb-3">@Model.SelectedCampaign.CampaignName</h3>
-                    <a href="@Url.Content($"~/Identity/User/AdventureLog")" class="btn border border-secondary">Adventure Logs</a>
-                    <a href="@Url.Content($"~/Identity/User/SessionNotes")" class="btn border border-secondary">Session Notes</a>
-                    <a href="#" class="btn border border-secondary">Maps</a>
-                    <p class="card-text mt-3">@Model.SelectedCampaign.CampaignDescription</p>
-                    <button class="float-right btn border border-danger text-danger" onclick="deleteCampaign(@Model.SelectedCampaign.CampaignID)">Delete Campagin</button>
-                </div>
-            </div>
-        </div>
-    }
-</div>
-
-<div class="collapse" id="collapseNewCampaign">
-    <div class="jumbotron bg-dark text-dark">
-        <form id="formAddCampaign">
-            <div class="input-group mb-3">
-                <input type="text" id="inputCampaignName" class="form-control" placeholder="Campaign Name">
-            </div>
-            <div>
-                <textarea id="areaCampaignDescription" class="form-control" placeholder="Campaign Description..." rows="10" cols="50"></textarea>
-            </div>
-            <input class="btn border-success text-success mt-3" type="submit" id="button-addon2">
-            <button class="btn border-danger text-danger mt-3 float-right" data-toggle="collapse" data-target="#collapseNewCampaign">Cancel</button>
-        </form>
-    </div>
-</div>*@
 
 <script>
 
