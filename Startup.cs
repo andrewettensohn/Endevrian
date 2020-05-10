@@ -66,10 +66,17 @@ namespace Endevrian
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            string userContentPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UserContent");
+
+            if (!Directory.Exists(userContentPath))
+            {
+                Directory.CreateDirectory(userContentPath);
+            }
+
             app.UseFileServer(new FileServerOptions
             {
-                FileProvider = new PhysicalFileProvider(
-            Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UserContent")),
+                FileProvider = new PhysicalFileProvider(userContentPath),
                 RequestPath = "/UserContent",
                 EnableDirectoryBrowsing = true
             });
