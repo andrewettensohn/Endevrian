@@ -3,13 +3,11 @@
     ViewData["Title"] = "Map Gallery";
 }
 
-
 <style>
     .borderless td, .borderless th {
         border: none;
     }
 </style>
-
 
 <h6 class="display-4 text-center mb-3">@Model.SelectedCampaign.CampaignName Maps</h6>
 <div class="row justify-content-center">
@@ -36,7 +34,7 @@
     </div>
     <div class="col-sm-2 ml-auto">
         <div>
-            <a class="btn btn-outline-primary text-white" href="@Url.Content($"~/Identity/User/NewMap")">
+            <a class="btn btn-outline-primary text-white" href="@Url.Content($"~/Identity/User/Tags")">
                 Tags <i class="fas fa-tags"></i>
             </a>
         </div>
