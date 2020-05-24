@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Endevrian.Models.TagModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -25,6 +26,8 @@ namespace Endevrian.Models.MapModels
         public string PreviewFileName { get; set; }
 
         public string PreviewFilePath { get; set; } 
+
+        public List<Tag> Tags { get; set; }
 
         [NotMapped]
         public SessionNote RelatedSessionNote { get; set; }

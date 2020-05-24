@@ -9,6 +9,7 @@ using Endevrian.Data;
 using Endevrian.Models;
 using Endevrian.Models.MapModels;
 using Endevrian.Models.SessionModels;
+using Endevrian.Models.TagModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -199,9 +200,13 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(model);
         }
 
-        public IActionResult Tags()
+        public async Task<IActionResult> Tags()
         {
-            return View();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            List<Tag> userTags = await _context.Tags.Where(x => x.UserId == userId).ToListAsync();
+
+            return View(userTags);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

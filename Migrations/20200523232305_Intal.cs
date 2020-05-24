@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Endevrian.Migrations
 {
-    public partial class Inital : Migration
+    public partial class Intal : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -252,6 +252,27 @@ namespace Endevrian.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    TagID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true),
+                    MapID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.TagID);
+                    table.ForeignKey(
+                        name: "FK_Tags_Maps_MapID",
+                        column: x => x.MapID,
+                        principalTable: "Maps",
+                        principalColumn: "MapID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SessionNotes",
                 columns: table => new
                 {
@@ -318,6 +339,11 @@ namespace Endevrian.Migrations
                 name: "IX_SessionNotes_SessionSectionID",
                 table: "SessionNotes",
                 column: "SessionSectionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tags_MapID",
+                table: "Tags",
+                column: "MapID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -347,13 +373,13 @@ namespace Endevrian.Migrations
                 name: "HistoricalAdventureLogCounts");
 
             migrationBuilder.DropTable(
-                name: "Maps");
-
-            migrationBuilder.DropTable(
                 name: "SessionNotes");
 
             migrationBuilder.DropTable(
                 name: "SystemLogs");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -363,6 +389,9 @@ namespace Endevrian.Migrations
 
             migrationBuilder.DropTable(
                 name: "SessionSections");
+
+            migrationBuilder.DropTable(
+                name: "Maps");
         }
     }
 }

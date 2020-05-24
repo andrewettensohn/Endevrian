@@ -12,38 +12,61 @@
     }
 </style>
 <!--Input Form-->
-<div class="row mb-3">
-    <div class="col-sm-5">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="New Tag Name">
+<form id="newTagForm">
+    <div class="row mb-3">
+        <div class="col-sm-5">
+            <div class="input-group mb-3">
+                <input type="text" id="inputNewTagName" class="form-control" placeholder="New Tag Name">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <button class="btn btn-outline-success text-white" type="submit">Create New Tag</button>
         </div>
     </div>
-    <div class="col-sm-6">
-        <button class="btn btn-outline-success text-white" type="button">Create New Tag</button>
-    </div>
-</div>
+</form>
 <!--Input Form-->
 
-<div class="row mb-3">
-    <div class="col-sm-7">
-        <div class="list-group-item">
-            <div class="row justify-content-between">
-                <div class="col-sm-auto">
-                    <h5>Vestibulum at eros</h5>
-                </div>
-                <div class="col-sm-auto">
-                    <button id="btnEditSectionName" class="btn text-white border-primary" type="button" onclick="displayEditSectionName()">
-                        Edit <i class="fas fa-edit fa-sm"></i>
-                    </button>
-                    <button id="btnDeleteSectionName" class="btn text-white border-danger ml-3" onclick="displayDeleteSectionName()" type="button">
-                        Delete <i class="fa fa-trash fa-sm"></i>
-                    </button>
+@foreach (var tag in Model)
+{
+    <div class="row mb-3">
+        <div class="col-sm-7">
+            <div class="list-group-item">
+                <div class="row justify-content-between">
+                    <div class="col-sm-auto">
+                        <h5>@tag.Name</h5>
+                    </div>
+                    <div class="col-sm-auto">
+                        <button id="btnEditSectionName" class="btn text-white border-primary" type="button" onclick="displayEditSectionName()">
+                            Edit <i class="fas fa-edit fa-sm"></i>
+                        </button>
+                        <button id="btnDeleteSectionName" class="btn text-white border-danger ml-3" onclick="displayDeleteSectionName()" type="button">
+                            Delete <i class="fa fa-trash fa-sm"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<non
+}
+
+
 <script>
-    
+
+    $("newTagForm").on("submit", async function (evt) {
+
+        evt.preventDefault();
+        $("inputNewTagName").val();
+        fetch(uri, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
+
+    });
+
 </script>

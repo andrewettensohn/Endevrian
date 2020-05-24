@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Endevrian.Models;
 using Endevrian.Models.MapModels;
+using Endevrian.Models.TagModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,5 +29,7 @@ namespace Endevrian.Data
         public DbSet<SessionSection> SessionSections { get; set; }
 
         public DbSet<Map> Maps { get; set; }
+
+        public DbSet<Tag> Tags { get; set; }
     }
 }

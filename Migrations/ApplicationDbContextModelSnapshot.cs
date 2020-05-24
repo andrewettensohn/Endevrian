@@ -204,6 +204,29 @@ namespace Endevrian.Migrations
                     b.ToTable("SystemLogs");
                 });
 
+            modelBuilder.Entity("Endevrian.Models.TagModels.Tag", b =>
+                {
+                    b.Property<int>("TagID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("MapID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TagID");
+
+                    b.HasIndex("MapID");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -411,6 +434,13 @@ namespace Endevrian.Migrations
                         .HasForeignKey("SessionSectionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Endevrian.Models.TagModels.Tag", b =>
+                {
+                    b.HasOne("Endevrian.Models.MapModels.Map", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("MapID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
