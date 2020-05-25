@@ -102,7 +102,7 @@ namespace Endevrian.Areas.Identity.Controllers
 
             MapViewModel model = new MapViewModel
             {
-                UserMaps = new List<List<Map>>(),
+                UserMaps = new List<List<Map>>()
             };
 
             if (searchString != null)
@@ -140,8 +140,11 @@ namespace Endevrian.Areas.Identity.Controllers
             MapViewModel model = new MapViewModel
             {
                 UserMaps = new List<List<Map>>(),
-                SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId)
+                SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId),
+                Tags = new List<Tag>()
             };
+
+            model.Tags = await _context.Tags.ToListAsync();
 
             if (searchString != null)
             {

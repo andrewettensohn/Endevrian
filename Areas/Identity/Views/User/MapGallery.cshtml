@@ -76,14 +76,13 @@
                                         <i class="fas fa-tags"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        <div class="dropdown-item">
-                                            <input type="checkbox" id="exampleCheck1">
-                                            <label for="exampleCheck1">Underdark</label>
-                                        </div>
-                                        <div class="dropdown-item">
-                                            <input type="checkbox" id="exampleCheck2">
-                                            <label for="exampleCheck2">World Map</label>
-                                        </div>
+                                        @foreach (var tag in Model.Tags)
+                                        {
+                                            <div class="dropdown-item">
+                                                <input type="checkbox">
+                                                <label for="exampleCheck1">@tag.Name</label>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>

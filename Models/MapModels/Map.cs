@@ -27,8 +27,6 @@ namespace Endevrian.Models.MapModels
 
         public string PreviewFilePath { get; set; } 
 
-        public List<Tag> Tags { get; set; }
-
         [NotMapped]
         public SessionNote RelatedSessionNote { get; set; }
     }
