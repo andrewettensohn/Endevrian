@@ -81,12 +81,21 @@ namespace Endevrian.Data
 
             //string query = $"SELECT * FROM Maps WHERE MapName LIKE '%{userSearchQuery}%' AND UserId = '{userId}' AND CampaignID = {selectedCampaignID}";
             string query = $@"
-                SELECT *
-                FROM Maps AS m
-                JOIN TagRelations AS r ON r.MapID = m.MapID
+                SELECT DISTINCT m.MapID
+                , m.CampaignID
+                , m.SessionNoteID
+                , m.UserId
+                , m.MapName
+                , m.FileName
+                , m.FilePath
+                , m.PreviewFileName
+                , m.PreviewFilePath
+                FROM Maps as m
+                LEFT JOIN TagRelations as t on t.MapID = m.MapID
                 WHERE m.MapName LIKE '%{userSearchQuery}%'
+                OR t.TagName LIKE '%{userSearchQuery}%'
                 AND m.UserId = '{userId}'
-                AND CampaignID = {selectedCampaignID}";
+                AND m.CampaignID = {selectedCampaignID}";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {

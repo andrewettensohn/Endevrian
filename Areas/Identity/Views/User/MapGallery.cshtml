@@ -86,7 +86,7 @@
                                         @foreach (var inactiveTag in map.InactiveTags)
                                         {
                                             <div class="dropdown-item">
-                                                <input type="checkbox" onclick="ActivateTag(@inactiveTag.MapID, @inactiveTag.TagID)">
+                                                <input type="checkbox" onclick="ActivateTag(@map.MapID, @inactiveTag.TagID)">
                                                 <label>@inactiveTag.Name</label>
                                             </div>
                                         }
@@ -112,10 +112,40 @@
 
         //POST Tag Relation
 
+        item = {
+                tagID: tagId,
+                mapID: mapId
+        }
+
+            fetch("api/Tag/Relate", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(item)
+            })
+                .catch(() => console.log("Failed to create item"));
         
     }
 
     function DeactivateTag(mapId, tagId) {
+
+        //item = {
+
+        //        campaignID: parseInt($("#selectedCampaignID").val(), 10),
+        //        campaignName: $("#inputEditCampaignName").val(),
+        //        campaignDescription: editorData,
+        //    }
+
+        //    fetch("api/Campaigns", {
+        //        method: 'PUT',
+        //        headers: {
+        //            'Content-Type': 'application/json',
+        //        },
+        //        body: JSON.stringify(item)
+        //    })
+        //        .then(() => location.reload())
+        //        .catch(() => console.log("Failed to update item"));
 
         //DELETE Tag relation
     }
