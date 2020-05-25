@@ -1,6 +1,7 @@
 ﻿using Endevrian.Controllers;
 using Endevrian.Data;
 using Endevrian.Models;
+using Endevrian.Models.MapModels;
 using Endevrian.Models.TagModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,7 @@ namespace Endevrian.Areas.Identity.Controllers
         {
             _context = context;
             _logController = logController;
-            _queryHelper = new QueryHelper(configuration, logController);
+            _queryHelper = new QueryHelper(configuration, logController, context);
         }
 
         // GET: api/Tags
@@ -57,6 +58,28 @@ namespace Endevrian.Areas.Identity.Controllers
             await _context.SaveChangesAsync();
 
             return tag;
+        }
+
+        [HttpPost("Relate")]
+        public async Task<ActionResult<TagRelation>> PostTagRelation([FromBody]TagRelation relation)
+        {
+            relation.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Map map = await _context.Maps.FindAsync(relation.MapID);
+            Tag tag = await _context.Tags.FindAsync(relation.TagID);
+
+            if(map is null || map.UserId != relation.UserId || tag.UserId != relation.UserId || tag is null)
+            {
+                return BadRequest();
+            }
+
+            relation.MapName = map.MapName;
+            relation.TagName = tag.Name;
+
+            await _context.AddAsync(relation);
+            await _context.SaveChangesAsync();
+
+            return relation;
         }
     }
 }

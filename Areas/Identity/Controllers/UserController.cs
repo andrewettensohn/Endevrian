@@ -31,7 +31,7 @@ namespace Endevrian.Areas.Identity.Controllers
         {
             _logger = logger;
             _context = context;
-            _queryHelper = new QueryHelper(configuration, logger);
+            _queryHelper = new QueryHelper(configuration, logger, context);
         }
 
         public IActionResult AdventureLog()
@@ -140,19 +140,13 @@ namespace Endevrian.Areas.Identity.Controllers
             MapViewModel model = new MapViewModel
             {
                 UserMaps = new List<List<Map>>(),
-                SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId),
-                Tags = new List<Tag>()
+                SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId)
             };
-
-            model.Tags = await _context.Tags.ToListAsync();
 
             if (searchString != null)
             {
-
                 List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, searchString);
-
                 model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
-
             }
             else
             {
@@ -161,11 +155,13 @@ namespace Endevrian.Areas.Identity.Controllers
                 foreach (Map map in allMaps)
                 {
                     bool foundRelatedNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).AnyAsync();
-
                     if (foundRelatedNote)
                     {
                         map.RelatedSessionNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).FirstAsync();
                     }
+
+                    map.ActiveTags = await _context.TagRelations.Where(x => x.MapID == map.MapID).ToListAsync();
+                    map.InactiveTags = _queryHelper.GetInactiveTagsForMap(map);
                 }
                 model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
             }

@@ -1,6 +1,7 @@
 ﻿using Endevrian.Controllers;
 using Endevrian.Models;
 using Endevrian.Models.MapModels;
+using Endevrian.Models.TagModels;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -16,11 +17,13 @@ namespace Endevrian.Data
         
         private readonly SystemLogController _logger;
         private readonly string _connectionString;
+        private ApplicationDbContext _context;
 
-        public QueryHelper(IConfiguration config, SystemLogController systemLogController)
+        public QueryHelper(IConfiguration config, SystemLogController systemLogController, ApplicationDbContext context)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
             _logger = systemLogController;
+            _context = context;
             
         }
 
@@ -76,7 +79,14 @@ namespace Endevrian.Data
 
             int selectedCampaignID = ActiveCampaignQuery(userId).CampaignID;
 
-            string query = $"SELECT * FROM Maps WHERE MapName LIKE '%{userSearchQuery}%' AND UserId = '{userId}' AND CampaignID = {selectedCampaignID}";
+            //string query = $"SELECT * FROM Maps WHERE MapName LIKE '%{userSearchQuery}%' AND UserId = '{userId}' AND CampaignID = {selectedCampaignID}";
+            string query = $@"
+                SELECT *
+                FROM Maps AS m
+                JOIN TagRelations AS r ON r.MapID = m.MapID
+                WHERE m.MapName LIKE '%{userSearchQuery}%'
+                AND m.UserId = '{userId}'
+                AND CampaignID = {selectedCampaignID}";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -99,7 +109,11 @@ namespace Endevrian.Data
                         MapName = row.Field<string>("MapName"),
                         PreviewFileName = row.Field<string>("PreviewFileName"),
                         PreviewFilePath = row.Field<string>("PreviewFilePath"),
+                       
                     };
+
+                    map.ActiveTags = _context.TagRelations.Where(x => x.MapID == map.MapID).ToList();
+                    map.InactiveTags = GetInactiveTagsForMap(map);
 
                     foundMaps.Add(map);
                 }
@@ -107,6 +121,23 @@ namespace Endevrian.Data
 
             return foundMaps;
 
+        }
+
+        public List<Tag> GetInactiveTagsForMap(Map map)
+        {
+            List<Tag> InactiveTags = new List<Tag>();
+            List<Tag> allTags = _context.Tags.Where(x => x.UserId == map.UserId).ToList();
+            foreach (Tag tag in allTags)
+            {
+                List<TagRelation> matchingTags = map.ActiveTags.Where(x => x.TagID == tag.TagID).ToList();
+
+                if (!matchingTags.Any())
+                {
+                    InactiveTags.Add(tag);
+                }
+            }
+
+            return InactiveTags;
         }
 
         public Campaign ActiveCampaignQuery(string userId)

@@ -146,6 +146,37 @@ namespace Endevrian.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TagRelations",
+                columns: table => new
+                {
+                    TagRelationID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    MapID = table.Column<int>(nullable: false),
+                    MapName = table.Column<string>(nullable: true),
+                    TagID = table.Column<int>(nullable: false),
+                    TagName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TagRelations", x => x.TagRelationID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    TagID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.TagID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -252,27 +283,6 @@ namespace Endevrian.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tags",
-                columns: table => new
-                {
-                    TagID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: true),
-                    MapID = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tags", x => x.TagID);
-                    table.ForeignKey(
-                        name: "FK_Tags_Maps_MapID",
-                        column: x => x.MapID,
-                        principalTable: "Maps",
-                        principalColumn: "MapID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "SessionNotes",
                 columns: table => new
                 {
@@ -339,11 +349,6 @@ namespace Endevrian.Migrations
                 name: "IX_SessionNotes_SessionSectionID",
                 table: "SessionNotes",
                 column: "SessionSectionID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tags_MapID",
-                table: "Tags",
-                column: "MapID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -373,10 +378,16 @@ namespace Endevrian.Migrations
                 name: "HistoricalAdventureLogCounts");
 
             migrationBuilder.DropTable(
+                name: "Maps");
+
+            migrationBuilder.DropTable(
                 name: "SessionNotes");
 
             migrationBuilder.DropTable(
                 name: "SystemLogs");
+
+            migrationBuilder.DropTable(
+                name: "TagRelations");
 
             migrationBuilder.DropTable(
                 name: "Tags");
@@ -389,9 +400,6 @@ namespace Endevrian.Migrations
 
             migrationBuilder.DropTable(
                 name: "SessionSections");
-
-            migrationBuilder.DropTable(
-                name: "Maps");
         }
     }
 }

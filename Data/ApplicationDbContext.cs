@@ -31,5 +31,7 @@ namespace Endevrian.Data
         public DbSet<Map> Maps { get; set; }
 
         public DbSet<Tag> Tags { get; set; }
+
+        public DbSet<TagRelation> TagRelations { get; set; }
     }
 }

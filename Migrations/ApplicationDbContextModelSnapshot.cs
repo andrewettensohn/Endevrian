@@ -211,9 +211,6 @@ namespace Endevrian.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("MapID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -222,9 +219,34 @@ namespace Endevrian.Migrations
 
                     b.HasKey("TagID");
 
-                    b.HasIndex("MapID");
-
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("Endevrian.Models.TagModels.TagRelation", b =>
+                {
+                    b.Property<int>("TagRelationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MapID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MapName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TagID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TagName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TagRelationID");
+
+                    b.ToTable("TagRelations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -434,13 +456,6 @@ namespace Endevrian.Migrations
                         .HasForeignKey("SessionSectionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Endevrian.Models.TagModels.Tag", b =>
-                {
-                    b.HasOne("Endevrian.Models.MapModels.Map", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("MapID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

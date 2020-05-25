@@ -25,7 +25,13 @@ namespace Endevrian.Models.MapModels
 
         public string PreviewFileName { get; set; }
 
-        public string PreviewFilePath { get; set; } 
+        public string PreviewFilePath { get; set; }
+
+        [NotMapped]
+        public List<TagRelation> ActiveTags { get; set; }
+
+        [NotMapped]
+        public List<Tag> InactiveTags { get; set; }
 
         [NotMapped]
         public SessionNote RelatedSessionNote { get; set; }

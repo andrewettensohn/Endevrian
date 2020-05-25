@@ -76,11 +76,18 @@
                                         <i class="fas fa-tags"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        @foreach (var tag in Model.Tags)
+                                        @foreach(var activeTag in map.ActiveTags)
                                         {
                                             <div class="dropdown-item">
-                                                <input type="checkbox">
-                                                <label for="exampleCheck1">@tag.Name</label>
+                                                <input type="checkbox" checked>
+                                                <label>@activeTag.TagName</label>
+                                            </div>
+                                        }
+                                        @foreach (var inactiveTag in map.InactiveTags)
+                                        {
+                                            <div class="dropdown-item">
+                                                <input type="checkbox" onclick="ActivateTag(@inactiveTag.MapID, @inactiveTag.TagID)">
+                                                <label>@inactiveTag.Name</label>
                                             </div>
                                         }
                                     </div>
@@ -100,6 +107,18 @@
 }
 
 <script>
+
+    function ActivateTag(mapId, tagId) {
+
+        //POST Tag Relation
+
+        
+    }
+
+    function DeactivateTag(mapId, tagId) {
+
+        //DELETE Tag relation
+    }
 
     function NavigateToSessionNote(sessionNoteID) {
 

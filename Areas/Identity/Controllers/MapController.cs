@@ -39,7 +39,7 @@ namespace Endevrian.Areas.Identity.Controllers
             _targetFilePath = config.GetValue<string>(WebHostDefaults.ContentRootKey) + "\\wwwroot\\UserContent\\Maps";
             _fileProvider = fileProvider;
             _logger = logger;
-            _queryHelper = new QueryHelper(config, logger);
+            _queryHelper = new QueryHelper(config, logger, context);
 
         }
 
