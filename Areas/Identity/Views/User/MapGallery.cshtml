@@ -79,7 +79,7 @@
                                         @foreach(var activeTag in map.ActiveTags)
                                         {
                                             <div class="dropdown-item">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" checked onclick="DeactivateTag(@activeTag.TagRelationID)">
                                                 <label>@activeTag.TagName</label>
                                             </div>
                                         }
@@ -128,24 +128,15 @@
         
     }
 
-    function DeactivateTag(mapId, tagId) {
+    function DeactivateTag(tagRelationId) {
 
-        //item = {
-
-        //        campaignID: parseInt($("#selectedCampaignID").val(), 10),
-        //        campaignName: $("#inputEditCampaignName").val(),
-        //        campaignDescription: editorData,
-        //    }
-
-        //    fetch("api/Campaigns", {
-        //        method: 'PUT',
-        //        headers: {
-        //            'Content-Type': 'application/json',
-        //        },
-        //        body: JSON.stringify(item)
-        //    })
-        //        .then(() => location.reload())
-        //        .catch(() => console.log("Failed to update item"));
+            fetch("api/Tag/Relate/" + tagRelationId, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .catch(() => console.log("Failed to update item"));
 
         //DELETE Tag relation
     }

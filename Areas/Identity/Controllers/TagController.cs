@@ -81,5 +81,22 @@ namespace Endevrian.Areas.Identity.Controllers
 
             return relation;
         }
+
+        [HttpDelete("Relate/{id}")]
+        public async Task<IActionResult> DeleteTagRelation(int id)
+        {
+            string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            TagRelation tagRelation = await _context.TagRelations.FindAsync(id);
+
+            if(tagRelation.UserId != requestingUser)
+            {
+                return BadRequest();
+            }
+
+            _context.TagRelations.Remove(tagRelation);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
