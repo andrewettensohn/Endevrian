@@ -204,6 +204,51 @@ namespace Endevrian.Migrations
                     b.ToTable("SystemLogs");
                 });
 
+            modelBuilder.Entity("Endevrian.Models.TagModels.Tag", b =>
+                {
+                    b.Property<int>("TagID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TagID");
+
+                    b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("Endevrian.Models.TagModels.TagRelation", b =>
+                {
+                    b.Property<int>("TagRelationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("MapID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MapName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TagID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TagName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TagRelationID");
+
+                    b.ToTable("TagRelations");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")

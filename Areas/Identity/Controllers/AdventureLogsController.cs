@@ -27,7 +27,7 @@ namespace Endevrian.Controllers
         {
             _context = context;
             _logController = logController;
-            _queryHelper = new QueryHelper(configuration, logController);
+            _queryHelper = new QueryHelper(configuration, logController, context);
         }
 
         // GET: api/AdventureLogs
