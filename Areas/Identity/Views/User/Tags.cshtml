@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Tags";
 }
+
+<h3>Map Tags</h3>
 <style>
     .tagTable {
         background-color: #121212;
@@ -33,13 +35,13 @@
             <div class="list-group-item">
                 <div class="row justify-content-between">
                     <div class="col-sm-auto">
-                        <h5>@tag.Name</h5>
+                        <h5 id="tag">@tag.Name</h5>
                     </div>
                     <div class="col-sm-auto">
-                        <button id="btnEditSectionName" class="btn text-white border-primary" type="button" onclick="displayEditSectionName()">
+                        <button id="btnEditSectionName" class="btn text-white border-primary" type="button" onclick="UpdateTagName(@tag.TagID)">
                             Edit <i class="fas fa-edit fa-sm"></i>
                         </button>
-                        <button id="btnDeleteSectionName" class="btn text-white border-danger ml-3" onclick="displayDeleteSectionName()" type="button">
+                        <button id="btnDeleteSectionName" class="btn text-white border-danger ml-3" onclick="DeleteTag(@tag.TagID)" type="button">
                             Delete <i class="fa fa-trash fa-sm"></i>
                         </button>
                     </div>
@@ -67,5 +69,23 @@
             .catch(() => console.log("Failed to create item"));
 
     });
+
+    function UpdateTagName(id) {
+
+
+
+    }
+
+    function DeleteTag(id) {
+
+        fetch("api/Tag/" + id, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
+    }
 
 </script>

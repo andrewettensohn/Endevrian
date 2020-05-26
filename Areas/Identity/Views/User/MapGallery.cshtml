@@ -110,8 +110,6 @@
 
     function ActivateTag(mapId, tagId) {
 
-        //POST Tag Relation
-
         item = {
                 tagID: tagId,
                 mapID: mapId
@@ -137,8 +135,6 @@
                 },
             })
                 .catch(() => console.log("Failed to update item"));
-
-        //DELETE Tag relation
     }
 
     function NavigateToSessionNote(sessionNoteID) {

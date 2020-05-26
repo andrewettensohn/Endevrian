@@ -43,7 +43,7 @@ namespace Endevrian.Areas.Identity.Controllers
         public async Task<ActionResult<Tag>> PostTag(string tagName)
         {
 
-            if(tagName == "" || tagName is null)
+            if (tagName == "" || tagName is null)
             {
                 tagName = "New Tag";
             }
@@ -58,6 +58,52 @@ namespace Endevrian.Areas.Identity.Controllers
             await _context.SaveChangesAsync();
 
             return tag;
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<Tag>> UpdateTagName([FromBody]Tag sentTag)
+        {
+            string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Tag tag = await _context.Tags.FindAsync(sentTag.TagID);
+
+            if (tag.UserId != requestingUser)
+            {
+                return BadRequest();
+            }
+
+            if(sentTag.Name == "" || sentTag.Name is null)
+            {
+                tag.Name = "New Tag";
+            }
+            else
+            {
+                tag.Name = sentTag.Name;
+            }
+
+            _context.Entry(tag).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return tag;
+        }
+
+        //Deleting a Tag does not remove pre-existing tag relations
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTag(int id)
+        {
+            string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Tag tag = await _context.Tags.FindAsync(id);
+
+            if(tag.UserId != requestingUser)
+            {
+                return BadRequest();
+            }
+
+            _context.Tags.Remove(tag);
+            _context.SaveChanges();
+
+            return NoContent();
         }
 
         [HttpPost("Relate")]
