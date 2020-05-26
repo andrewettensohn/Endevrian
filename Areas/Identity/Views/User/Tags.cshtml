@@ -35,7 +35,8 @@
             <div class="list-group-item">
                 <div class="row justify-content-between">
                     <div class="col-sm-auto">
-                        <h5 id="tag">@tag.Name</h5>
+                        <h5 id="headerTagName@(tag.TagID)">@tag.Name</h5>
+                        <input id="inputEditTagName@(tag.TagID)" class="form-control d-none" type="text" />
                     </div>
                     <div class="col-sm-auto">
                         <button id="btnEditSectionName" class="btn text-white border-primary" type="button" onclick="UpdateTagName(@tag.TagID)">
@@ -50,7 +51,6 @@
         </div>
     </div>
 }
-
 
 <script>
 
@@ -72,7 +72,38 @@
 
     function UpdateTagName(id) {
 
+        var input = $("#inputEditTagName" + id);
+        var header = $("#headerTagName" + id);
 
+        header.toggleClass("d-none");
+        input.val(header.text());
+        input.toggleClass("d-none");
+
+        input.on("keypress focusout", async function (evt) {
+            var key = evt.which;
+            if (key == 13 || key == 0) {
+
+            evt.preventDefault();
+
+            item = {
+
+                tagID: id,
+                name: input.val()
+            }
+
+            fetch("api/Tag", {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(item)
+            })
+                .then((response) => response.json())
+                .then(() => location.reload())
+                .catch(() => console.log("Failed to update item"));
+            }
+
+        });
 
     }
 

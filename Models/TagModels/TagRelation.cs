@@ -18,8 +18,5 @@ namespace Endevrian.Models.TagModels
         public int TagID { get; set; }
 
         public string TagName { get; set; }
-
-        //Activate Tag -> New Tag Relation
-        //Map ActiveTags _context.TagRelation.Where(x => x.MapID == map.mapID
     }
 }
