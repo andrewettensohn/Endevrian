@@ -26,42 +26,45 @@
         </div>
     </div>
     <input id="inputCampaignID" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
+
+    @if (Model.AdventureLogs.Count > 0)
+    {
+
+        @foreach (var logForDisplay in Model.AdventureLogs)
+        {
+
+            var logId = logForDisplay.AdventureLogID;
+
+            <div class="jumbotron" style="background-color: #121212">
+                <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.LogTitle</h1>
+                <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
+                <p>@logForDisplay.DisplayLogDate</p>
+                <hr class="my-4">
+                <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.LogBody)</div>
+                <div class="text-dark">
+                    <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
+                </div>
+                <div class="d-flex flex-column p-2 align-items-end">
+                    <div>
+                        <button id="btnUpdateLogBody@(logId)" class="d-none btn border border-success text-success mb-3">Update</button>
+                    </div>
+                    <div>
+                        <button id="btnDeleteLog@(logId)" class="btn border border-danger text-danger" onclick="deleteAdventureLog(@logId)">Delete</button>
+                    </div>
+                </div>
+            </div>
+        }
+
+    }
 }
 else
 {
-    <p>Start a campaign first!</p>
+    <p>You don't have any active campaigns.</p>
+    <a href="@Url.Content($"~/Identity/User/CampaignList")">Start a campaign first!</a>
 }
 
 
-@if (Model.AdventureLogs.Count > 0)
-{
 
-    @foreach (var logForDisplay in Model.AdventureLogs)
-    {
-
-        var logId = logForDisplay.AdventureLogID;
-
-        <div class="jumbotron" style="background-color: #121212">
-            <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.LogTitle</h1>
-            <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
-            <p>@logForDisplay.DisplayLogDate</p>
-            <hr class="my-4">
-            <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.LogBody)</div>
-            <div class="text-dark">
-                <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
-            </div>
-            <div class="d-flex flex-column p-2 align-items-end">
-                <div>
-                    <button id="btnUpdateLogBody@(logId)" class="d-none btn border border-success text-success mb-3">Update</button>
-                </div>
-                <div>
-                    <button id="btnDeleteLog@(logId)" class="btn border border-danger text-danger" onclick="deleteAdventureLog(@logId)">Delete</button>
-                </div>
-            </div>
-        </div>
-    }
-
-}
 
 <script>
 

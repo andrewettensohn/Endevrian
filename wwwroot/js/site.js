@@ -1,32 +1,20 @@
-﻿function deleteMap(mapId) {
+function toggleNavBarScrollAndIcons() {
 
-    //TODO: Don't ask me for confirmation again
-    fetch("api/Map/" + mapId, {
-        method: 'DELETE',
-    })
-        .then(() => window.location.reload());
+    $("#iconNavBarClose").toggleClass("d-none");
+    $("#iconNavBarOpen").toggleClass("d-none");
 
-}
+    if ($('html, body').css("overflow") == "hidden") {
 
-function InputNewMapName(mapId) {
+        $('html, body').css({
+            overflow: 'auto',
+            height: 'auto'
+        });
 
-    $("#headerMapName" + mapId).toggleClass("d-none");
+    } else {
 
-    var inputMap = $("#inputMapName" + mapId);
-    inputMap.toggleClass("d-none");
-
-    inputMap.on("keypress focusout", async function (evt) {
-        var key = evt.which;
-        if (key == 13 || key == 0) {
-
-            evt.preventDefault();
-
-            var newMapName = inputMap.val();
-
-            fetch("api/Map/" + mapId + "/" + newMapName, {
-                method: 'PUT',
-            })
-                .then(() => window.location.reload());
-        }
-    });
+        $('html, body').css({
+            overflow: 'hidden',
+            height: '100%'
+        });
+    }
 }

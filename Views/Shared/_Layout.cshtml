@@ -22,13 +22,23 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div id="topNavBar" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />
+                <div id="topNavBar" class="navbar-collapse collapse d-sm-inline-flex">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="Identity" asp-controller="User" asp-action="CampaignList">DM Screen</a>
+                            <a class="nav-link text-light" asp-area="Identity" asp-controller="User" asp-action="CampaignList">Campaigns</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="Identity" asp-controller="User" asp-action="SessionNotes">Session Notes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="Identity" asp-controller="User" asp-action="MapGallery">Map Gallery</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="Identity" asp-controller="User" asp-action="AdventureLog">Adventure Logs</a>
                         </li>
                     </ul>
+                    <hr />
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>

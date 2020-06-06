@@ -4,6 +4,17 @@
 }
 
 <style>
+    /*img {
+        width: 500px;
+        height: 500px;
+        object-fit: cover;
+    }*/
+
+    /*body {
+        background: url("../../../img/cover.jpg" ) no-repeat center center fixed;
+        background-size: cover;
+    }*/
+
     .borderless td, .borderless th {
         border: none;
     }
@@ -135,6 +146,39 @@
                 },
             })
                 .catch(() => console.log("Failed to update item"));
+    }
+
+    function deleteMap(mapId) {
+
+        //TODO: Don't ask me for confirmation again
+        fetch("api/Map/" + mapId, {
+            method: 'DELETE',
+        })
+            .then(() => window.location.reload());
+
+    }
+
+    function InputNewMapName(mapId) {
+
+        $("#headerMapName" + mapId).toggleClass("d-none");
+
+        var inputMap = $("#inputMapName" + mapId);
+        inputMap.toggleClass("d-none");
+
+        inputMap.on("keypress focusout", async function (evt) {
+            var key = evt.which;
+            if (key == 13 || key == 0) {
+
+                evt.preventDefault();
+
+                var newMapName = inputMap.val();
+
+                fetch("api/Map/" + mapId + "/" + newMapName, {
+                    method: 'PUT',
+                })
+                    .then(() => window.location.reload());
+            }
+        });
     }
 
     function NavigateToSessionNote(sessionNoteID) {
