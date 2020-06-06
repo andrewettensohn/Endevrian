@@ -9,6 +9,7 @@ using Endevrian.Data;
 using Endevrian.Models;
 using Endevrian.Models.MapModels;
 using Endevrian.Models.SessionModels;
+using Endevrian.Models.TagModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,7 @@ namespace Endevrian.Areas.Identity.Controllers
         {
             _logger = logger;
             _context = context;
-            _queryHelper = new QueryHelper(configuration, logger);
+            _queryHelper = new QueryHelper(configuration, logger, context);
         }
 
         public IActionResult AdventureLog()
@@ -101,7 +102,7 @@ namespace Endevrian.Areas.Identity.Controllers
 
             MapViewModel model = new MapViewModel
             {
-                UserMaps = new List<List<Map>>(),
+                UserMaps = new List<List<Map>>()
             };
 
             if (searchString != null)
@@ -144,11 +145,8 @@ namespace Endevrian.Areas.Identity.Controllers
 
             if (searchString != null)
             {
-
                 List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, searchString);
-
                 model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
-
             }
             else
             {
@@ -157,11 +155,13 @@ namespace Endevrian.Areas.Identity.Controllers
                 foreach (Map map in allMaps)
                 {
                     bool foundRelatedNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).AnyAsync();
-
                     if (foundRelatedNote)
                     {
                         map.RelatedSessionNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).FirstAsync();
                     }
+
+                    map.ActiveTags = await _context.TagRelations.Where(x => x.MapID == map.MapID).ToListAsync();
+                    map.InactiveTags = _queryHelper.GetInactiveTagsForMap(map);
                 }
                 model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
             }
@@ -197,6 +197,15 @@ namespace Endevrian.Areas.Identity.Controllers
             }
 
             return View(model);
+        }
+
+        public async Task<IActionResult> Tags()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            List<Tag> userTags = await _context.Tags.Where(x => x.UserId == userId).ToListAsync();
+
+            return View(userTags);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

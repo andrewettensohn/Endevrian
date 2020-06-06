@@ -39,7 +39,7 @@ namespace Endevrian.Areas.Identity.Controllers
             _targetFilePath = config.GetValue<string>(WebHostDefaults.ContentRootKey) + "\\wwwroot\\UserContent\\Maps";
             _fileProvider = fileProvider;
             _logger = logger;
-            _queryHelper = new QueryHelper(config, logger);
+            _queryHelper = new QueryHelper(config, logger, context);
 
         }
 
@@ -55,6 +55,33 @@ namespace Endevrian.Areas.Identity.Controllers
             }
 
             return map;
+        }
+
+        [HttpPut("{id}/{newMapName}")]
+        public async Task<IActionResult> UpdateMapName(int id, string newMapName)
+        {
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Map mapToUpdate = await _context.Maps.FindAsync(id);
+
+            if(mapToUpdate.UserId != currentUser)
+            {
+                return BadRequest();
+            }
+
+            if(newMapName == "")
+            {
+                mapToUpdate.MapName = "Map Name";
+            }
+            else
+            {
+                mapToUpdate.MapName = newMapName;
+            }
+
+            _context.Entry(mapToUpdate).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpDelete("{id}")]

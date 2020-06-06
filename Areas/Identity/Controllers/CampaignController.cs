@@ -25,7 +25,7 @@ namespace Endevrian.Controllers
         {
             _context = context;
             _logger = logController;
-            _queryHelper = new QueryHelper(configuration, logController);
+            _queryHelper = new QueryHelper(configuration, logController, context);
         }
 
         [HttpGet]
