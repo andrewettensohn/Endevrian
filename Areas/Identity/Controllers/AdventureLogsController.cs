@@ -21,13 +21,13 @@ namespace Endevrian.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly SystemLogController _logController;
-        private readonly QueryHelper _queryHelper;
+        //private readonly QueryHelper _queryHelper;
 
         public AdventureLogsController(ApplicationDbContext context, SystemLogController logController, IConfiguration configuration)
         {
             _context = context;
             _logController = logController;
-            _queryHelper = new QueryHelper(configuration, logController, context);
+            //_queryHelper = new QueryHelper(configuration, logController, context);
         }
 
         // GET: api/AdventureLogs
@@ -115,7 +115,7 @@ namespace Endevrian.Controllers
 
                 _context.AdventureLogs.Add(adventureLog);
                 _context.SaveChanges();
-                AddToHistoricalAdventureLogCount();
+                //AddToHistoricalAdventureLogCount();
 
                 return CreatedAtAction("GetAdventureLog", new { id = adventureLog.AdventureLogID }, adventureLog);
             }
@@ -148,43 +148,43 @@ namespace Endevrian.Controllers
             return _context.AdventureLogs.Any(e => e.AdventureLogID == id);
         }
 
-        private void AddToHistoricalAdventureLogCount()
-        {
-            List<HistoricalAdventureLogCount> logCounts = _context.HistoricalAdventureLogCounts.ToList();
+        //private void AddToHistoricalAdventureLogCount()
+        //{
+        //    List<HistoricalAdventureLogCount> logCounts = _context.HistoricalAdventureLogCounts.ToList();
 
-            if (logCounts.Count() < 1)
-            {
-                HistoricalAdventureLogCount logCount = new HistoricalAdventureLogCount
-                {
-                    HistoricalLogCount = 1
-                };
+        //    if (logCounts.Count() < 1)
+        //    {
+        //        HistoricalAdventureLogCount logCount = new HistoricalAdventureLogCount
+        //        {
+        //            HistoricalLogCount = 1
+        //        };
 
-                try
-                {
-                    _context.HistoricalAdventureLogCounts.Add(logCount);
-                    _context.SaveChanges();
-                    _logController.AddSystemLog("INFO: Created New Row In HistoricalAdventureLogCounts table.");
-                }
-                catch(Exception exc)
-                {
-                    _logController.AddSystemLog($"ERROR: Unable to Create New Row In HistoricalAdventureLogCounts table: {exc}");
-                }
+        //        try
+        //        {
+        //            _context.HistoricalAdventureLogCounts.Add(logCount);
+        //            _context.SaveChanges();
+        //            _logController.AddSystemLog("INFO: Created New Row In HistoricalAdventureLogCounts table.");
+        //        }
+        //        catch(Exception exc)
+        //        {
+        //            _logController.AddSystemLog($"ERROR: Unable to Create New Row In HistoricalAdventureLogCounts table: {exc}");
+        //        }
 
-            }
-            else if (logCounts.Count() == 1)
-            {
+        //    }
+        //    else if (logCounts.Count() == 1)
+        //    {
 
-                HistoricalAdventureLogCount logCount = logCounts.First();
-                logCount.HistoricalLogCount++;
-                _queryHelper.UpdateQuery($"UPDATE HistoricalAdventureLogCounts SET HistoricalLogCount = {logCount.HistoricalLogCount}");
+        //        HistoricalAdventureLogCount logCount = logCounts.First();
+        //        logCount.HistoricalLogCount++;
+        //        //_queryHelper.UpdateQuery($"UPDATE HistoricalAdventureLogCounts SET HistoricalLogCount = {logCount.HistoricalLogCount}");
 
-            }
-            else
-            {
-                _logController.AddSystemLog("WARNING: There is more than one row in the HistoricalAdventureLogCounts table");
-            }
+        //    }
+        //    else
+        //    {
+        //        _logController.AddSystemLog("WARNING: There is more than one row in the HistoricalAdventureLogCounts table");
+        //    }
 
-            return;
-        }
+        //    return;
+        //}
     }
 }

@@ -5,6 +5,7 @@ using Endevrian.Models;
 using Endevrian.Models.MapModels;
 using Endevrian.Models.TagModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace Endevrian.Data
@@ -14,6 +15,15 @@ namespace Endevrian.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            SqliteConnectionStringBuilder connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = "ApplicationDbContext.db" };
+            string connectionString = connectionStringBuilder.ToString();
+            SqliteConnection connection = new SqliteConnection(connectionString);
+
+            optionsBuilder.UseSqlite(connection);
         }
 
         public DbSet<AdventureLog> AdventureLogs { get; set; }

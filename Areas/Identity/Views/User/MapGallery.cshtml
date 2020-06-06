@@ -19,103 +19,112 @@
         border: none;
     }
 </style>
-
-<h6 class="display-4 text-center mb-3">@Model.SelectedCampaign.CampaignName Maps</h6>
-<div class="row justify-content-center">
-    <div class="col-lg-4">
-        <form id="formSearch" asp-controller="User" asp-action="MapGallery">
-            <div class="input-group mb-3">
-                <input id="inputUserSearch" type="text" class="form-control" placeholder="Enter Map Name or tag to search" name="searchString" autocomplete="off">
-                <div class="input-group-append">
-                    <button id="btnSearch" class="btn btn-outline-secondary" type="submit">
-                        <i class="fa fa-search text-white" aria-hidden="true"></i>
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-2 mb-3">
-        <div>
-            <a class="btn btn-outline-success text-white" href="@Url.Content($"~/Identity/User/NewMap")">
-                Upload New Map <i class="fas fa-upload"></i>
-            </a>
-        </div>
-    </div>
-    <div class="col-sm-2 ml-auto">
-        <div>
-            <a class="btn btn-outline-primary text-white" href="@Url.Content($"~/Identity/User/Tags")">
-                Tags <i class="fas fa-tags"></i>
-            </a>
-        </div>
-    </div>
-</div>
-
-@if (Model.UserMaps != null)
+@if (Model.SelectedCampaign.IsSelectedCampaign == true)
 {
-    <div class="container mt-5">
-        @foreach (var maps in Model.UserMaps)
-        {
-            <div class="row">
-                @foreach (var map in maps)
-                {
-                    <div class="col-sm mb-3">
-                        <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
-                            <div class="card-header">
-                                <h5 id="headerMapName@(map.MapID)" class="card-title text-light">@map.MapName</h5>
-                                <input id="inputMapName@(map.MapID)" class="input-group-text d-none" value="@map.MapName" />
-                                @if (map.RelatedSessionNote != null)
-                                {
-                                    <button onclick="NavigateToSessionNote(@map.SessionNoteID)" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</button>
-                                }
-                            </div>
-                            <a href="~/UserContent/@map.FilePath"><img loading="lazy" src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
-                            <div class="card-body">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Edit
-                                        <i class="fas fa-edit fa-lg" type="button"></i>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <button class="dropdown-item" onclick="InputNewMapName(@map.MapID)">Rename Map</button>
-                                        <button class="dropdown-item" onclick="deleteMap(@map.MapID)">Delete</button>
-                                    </div>
+    <h6 class="display-4 text-center mb-3">@Model.SelectedCampaign.CampaignName Maps</h6>
+    <div class="row justify-content-center">
+        <div class="col-lg-4">
+            <form id="formSearch" asp-controller="User" asp-action="MapGallery">
+                <div class="input-group mb-3">
+                    <input id="inputUserSearch" type="text" class="form-control" placeholder="Enter Map Name or tag to search" name="searchString" autocomplete="off">
+                    <div class="input-group-append">
+                        <button id="btnSearch" class="btn btn-outline-secondary" type="submit">
+                            <i class="fa fa-search text-white" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2 mb-3">
+            <div>
+                <a class="btn btn-outline-success text-white" href="@Url.Content($"~/Identity/User/NewMap")">
+                    Upload New Map <i class="fas fa-upload"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-sm-2 ml-auto">
+            <div>
+                <a class="btn btn-outline-primary text-white" href="@Url.Content($"~/Identity/User/Tags")">
+                    Tags <i class="fas fa-tags"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.UserMaps != null)
+    {
+        <div class="container mt-5">
+            @foreach (var maps in Model.UserMaps)
+            {
+                <div class="row">
+                    @foreach (var map in maps)
+                    {
+                        <div class="col-sm mb-3">
+                            <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
+                                <div class="card-header">
+                                    <h5 id="headerMapName@(map.MapID)" class="card-title text-light">@map.MapName</h5>
+                                    <input id="inputMapName@(map.MapID)" class="input-group-text d-none" value="@map.MapName" />
+                                    @if (map.RelatedSessionNote != null)
+                                    {
+                                        <button onclick="NavigateToSessionNote(@map.SessionNoteID)" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</button>
+                                    }
                                 </div>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-tags"></i>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        @foreach(var activeTag in map.ActiveTags)
-                                        {
-                                            <div class="dropdown-item">
-                                                <input type="checkbox" checked onclick="DeactivateTag(@activeTag.TagRelationID)">
-                                                <label>@activeTag.TagName</label>
-                                            </div>
-                                        }
-                                        @foreach (var inactiveTag in map.InactiveTags)
-                                        {
-                                            <div class="dropdown-item">
-                                                <input type="checkbox" onclick="ActivateTag(@map.MapID, @inactiveTag.TagID)">
-                                                <label>@inactiveTag.Name</label>
-                                            </div>
-                                        }
+                                <a href="~/UserContent/@map.FilePath"><img loading="lazy" src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
+                                <div class="card-body">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Edit
+                                            <i class="fas fa-edit fa-lg" type="button"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <button class="dropdown-item" onclick="InputNewMapName(@map.MapID)">Rename Map</button>
+                                            <button class="dropdown-item" onclick="deleteMap(@map.MapID)">Delete</button>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-tags"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            @foreach (var activeTag in map.ActiveTags)
+                                            {
+                                                <div class="dropdown-item">
+                                                    <input type="checkbox" checked onclick="DeactivateTag(@activeTag.TagRelationID)">
+                                                    <label>@activeTag.TagName</label>
+                                                </div>
+                                            }
+                                            @foreach (var inactiveTag in map.InactiveTags)
+                                            {
+                                                <div class="dropdown-item">
+                                                    <input type="checkbox" onclick="ActivateTag(@map.MapID, @inactiveTag.TagID)">
+                                                    <label>@inactiveTag.Name</label>
+                                                </div>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
-        }
-    </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    @if (Model.UserMaps.Count == 0)
+    {
+        <h6 class="display-4 text-center">Could not find any maps.</h6>
+    }
+}
+else
+{
+    <p>You don't have any active campaigns.</p>
+    <a href="@Url.Content($"~/Identity/User/CampaignList")">Start a campaign first!</a>
 }
 
-@if (Model.UserMaps.Count == 0)
-{
-    <h6 class="display-4 text-center">Could not find any maps.</h6>
-}
+
 
 <script>
 
@@ -134,7 +143,7 @@
                 body: JSON.stringify(item)
             })
                 .catch(() => console.log("Failed to create item"));
-        
+
     }
 
     function DeactivateTag(tagRelationId) {

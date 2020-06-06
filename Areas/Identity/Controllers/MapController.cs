@@ -28,7 +28,7 @@ namespace Endevrian.Areas.Identity.Controllers
         private readonly string _targetFilePath;
         private readonly IFileProvider _fileProvider;
         private readonly ApplicationDbContext _context;
-        private readonly QueryHelper _queryHelper;
+        //private readonly QueryHelper _queryHelper;
         private SystemLogController _logger;
 
         public MapController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider, SystemLogController logger)
@@ -39,7 +39,7 @@ namespace Endevrian.Areas.Identity.Controllers
             _targetFilePath = config.GetValue<string>(WebHostDefaults.ContentRootKey) + "\\wwwroot\\UserContent\\Maps";
             _fileProvider = fileProvider;
             _logger = logger;
-            _queryHelper = new QueryHelper(config, logger, context);
+            //_queryHelper = new QueryHelper(config, logger, context);
 
         }
 
@@ -127,7 +127,8 @@ namespace Endevrian.Areas.Identity.Controllers
                 return BadRequest();
             }
 
-            Campaign activeCampaign = _queryHelper.ActiveCampaignQuery(currentUser);
+            //Campaign activeCampaign = _queryHelper.ActiveCampaignQuery(currentUser);
+            Campaign selectedCampaign = _context.Campaigns.First(x => x.UserId == currentUser);
             SessionNote relatedSessionNote = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).First();
 
             mapToLink.SessionNoteID = relatedSessionNote.SessionNoteID;
@@ -172,7 +173,8 @@ namespace Endevrian.Areas.Identity.Controllers
 
             Map map = new Map
             {
-                CampaignID = _queryHelper.ActiveCampaignQuery(currentUser).CampaignID,
+                //CampaignID = _queryHelper.ActiveCampaignQuery(currentUser).CampaignID,
+                CampaignID = _context.Campaigns.First(x => x.UserId == currentUser).CampaignID,
                 FileName = postedFile.FileName,
                 FilePath = $"Maps\\{currentUser}\\{postedFile.FileName}",
                 UserId = currentUser,
