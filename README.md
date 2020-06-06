@@ -12,8 +12,3 @@ Endevrian is a Dungeons & Dragons campaign management tool that includes the fol
 -Adventure logs where you can keep a running blog about campaign.
 
 -A campaign list to keep track of your campaigns.
-
-Identity Core: Yes
-Database Solution: MSSQL Server
-Rules for Image Size or Name Lengths: No
-External Blog Viewing: No
