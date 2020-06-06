@@ -13,8 +13,6 @@ using Endevrian.Models.TagModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -24,14 +22,12 @@ namespace Endevrian.Areas.Identity.Controllers
     {
         private readonly SystemLogController _logger;
         private readonly ApplicationDbContext _context;
-        //private readonly QueryHelper _queryHelper;
 
 
-        public UserController(ApplicationDbContext context, IConfiguration configuration, SystemLogController logger)
+        public UserController(ApplicationDbContext context, SystemLogController logger)
         {
             _logger = logger;
             _context = context;
-            //_queryHelper = new QueryHelper(configuration, logger, context);
         }
 
         public IActionResult AdventureLog()
@@ -41,7 +37,6 @@ namespace Endevrian.Areas.Identity.Controllers
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            //Campaign selectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
             Campaign selectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId);
             model.SelectedCampaign = selectedCampaign;
 
@@ -82,15 +77,6 @@ namespace Endevrian.Areas.Identity.Controllers
                 }
             }
 
-            //Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
-            //Campaign SelectedCampaign = _context.Campaigns.First(x => x.UserId == userId);
-
-            //if (SelectedCampaign.IsSelectedCampaign == true)
-            //{
-            //    model.SelectedCampaign = SelectedCampaign;
-            //}
-
-
             return View(model);
         }
 
@@ -99,7 +85,6 @@ namespace Endevrian.Areas.Identity.Controllers
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            //Campaign SelectedCampaign = _queryHelper.ActiveCampaignQuery(userId);
             Campaign SelectedCampaign = _context.Campaigns.First(x => x.UserId == userId);
 
             NewMapViewModel model = new NewMapViewModel
@@ -123,9 +108,6 @@ namespace Endevrian.Areas.Identity.Controllers
 
             if (searchString != null)
             {
-
-                //List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, searchString);
-                //WORK HERE
                 List<Map> foundMaps = GetMapGallery(userId, searchString);
                 model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
 
@@ -164,14 +146,13 @@ namespace Endevrian.Areas.Identity.Controllers
             {
                 if (searchString != null)
                 {
-                    //List<Map> foundMaps = _queryHelper.UserQueryMapGallery(userId, searchString);
                     List<Map> foundMaps = GetMapGallery(userId, searchString);
                     model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
                 }
                 else
                 {
 
-                    List<Map> allMaps = await _context.Maps.Where(x => x.UserId == userId && x.CampaignID == model.SelectedCampaign.CampaignID).ToListAsync();
+                    List<Map> allMaps = GetMapGallery(userId, "");
                     foreach (Map map in allMaps)
                     {
                         bool foundRelatedNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).AnyAsync();
@@ -179,10 +160,6 @@ namespace Endevrian.Areas.Identity.Controllers
                         {
                             map.RelatedSessionNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).FirstAsync();
                         }
-
-                        map.ActiveTags = await _context.TagRelations.Where(x => x.MapID == map.MapID).ToListAsync();
-                        //map.InactiveTags = _queryHelper.GetInactiveTagsForMap(map);
-                        map.InactiveTags = GetInactiveTagsForMap(map);
                     }
                     model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
                 }
@@ -239,7 +216,6 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(userTags);
         }
 
-        //private async Task<ActionResult<List<Map>>> GetMapGallery(string userId, string searchString)
         private List<Map> GetMapGallery(string userId, string searchString)
         {
             List<Map> maps = _context.Maps.Where(x => x.UserId == userId).ToList();
@@ -264,7 +240,19 @@ namespace Endevrian.Areas.Identity.Controllers
                 AND m.UserId = '{userId}'
                 AND m.CampaignID = { selectedCampaignID}";
 
-            return _context.Maps.FromSqlRaw(query).ToList();
+            List<Map> mapsWithoutTags = _context.Maps.FromSqlRaw(query).ToList();
+            List<Map> mapsWithTags = new List<Map>();
+
+            foreach(Map map in mapsWithoutTags)
+            {
+                map.ActiveTags = _context.TagRelations.Where(x => x.MapID == map.MapID).ToList();
+                map.InactiveTags = GetInactiveTagsForMap(map);
+
+                mapsWithTags.Add(map);
+            }
+
+            return mapsWithTags;
+
         }
 
         private List<Tag> GetInactiveTagsForMap(Map map)

@@ -19,13 +19,11 @@ namespace Endevrian.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly SystemLogController _logger;
-        //private readonly QueryHelper _queryHelper;
 
         public CampaignController(ApplicationDbContext context, SystemLogController logController, IConfiguration configuration)
         {
             _context = context;
             _logger = logController;
-            //_queryHelper = new QueryHelper(configuration, logController, context);
         }
 
         [HttpGet]

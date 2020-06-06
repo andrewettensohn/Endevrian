@@ -28,19 +28,14 @@ namespace Endevrian.Areas.Identity.Controllers
         private readonly string _targetFilePath;
         private readonly IFileProvider _fileProvider;
         private readonly ApplicationDbContext _context;
-        //private readonly QueryHelper _queryHelper;
         private SystemLogController _logger;
 
         public MapController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider, SystemLogController logger)
         {
-            // To save physical files to a path provided by configuration:
             _context = context;
-            //_targetFilePath = config.GetValue<string>("StoredFilesPath");
             _targetFilePath = config.GetValue<string>(WebHostDefaults.ContentRootKey) + "\\wwwroot\\UserContent\\Maps";
             _fileProvider = fileProvider;
             _logger = logger;
-            //_queryHelper = new QueryHelper(config, logger, context);
-
         }
 
         [HttpGet("{id}")]
@@ -173,7 +168,6 @@ namespace Endevrian.Areas.Identity.Controllers
 
             Map map = new Map
             {
-                //CampaignID = _queryHelper.ActiveCampaignQuery(currentUser).CampaignID,
                 CampaignID = _context.Campaigns.First(x => x.UserId == currentUser).CampaignID,
                 FileName = postedFile.FileName,
                 FilePath = $"Maps\\{currentUser}\\{postedFile.FileName}",
@@ -193,7 +187,6 @@ namespace Endevrian.Areas.Identity.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
-            //return CreatedAtAction("GetMap", new { id = map.MapID }, map);
         }
 
         private async Task<Map> LinkNewMapToNote(StringValues noteValues, Map map)
