@@ -37,10 +37,6 @@ namespace Endevrian
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //options.UseInMemoryDatabase("EndevrianTestDB"));
 
             services.AddEntityFrameworkSqlite().AddDbContext<ApplicationDbContext>();
 
