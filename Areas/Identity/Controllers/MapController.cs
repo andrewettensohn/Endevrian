@@ -17,6 +17,7 @@ using Microsoft.Extensions.Primitives;
 using Endevrian.Controllers;
 using Endevrian.Models;
 using Microsoft.EntityFrameworkCore;
+using Azure.Storage.Blobs;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -25,17 +26,17 @@ namespace Endevrian.Areas.Identity.Controllers
     [ApiController]
     public class MapController : ControllerBase
     {
-        private readonly string _targetFilePath;
         private readonly IFileProvider _fileProvider;
         private readonly ApplicationDbContext _context;
         private SystemLogController _logger;
+        BlobServiceClient blobServiceClient;
 
         public MapController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider, SystemLogController logger)
         {
             _context = context;
-            _targetFilePath = config.GetValue<string>(WebHostDefaults.ContentRootKey) + "\\wwwroot\\UserContent\\Maps";
             _fileProvider = fileProvider;
             _logger = logger;
+            blobServiceClient = new BlobServiceClient(config.GetConnectionString("FileConnection"));
         }
 
         [HttpGet("{id}")]
@@ -93,10 +94,9 @@ namespace Endevrian.Areas.Identity.Controllers
 
             try
             {
-                string targetfilePath = $"{_targetFilePath}\\{currentUser}\\{mapToDelete.FileName}";
-                System.IO.File.Delete(targetfilePath);
-                string targetPreviewFilePath = $"{_targetFilePath}\\{currentUser}\\{mapToDelete.PreviewFileName}";
-                System.IO.File.Delete(targetPreviewFilePath);
+                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(currentUser);
+                await containerClient.DeleteBlobAsync(mapToDelete.FileName);
+                await containerClient.DeleteBlobAsync(mapToDelete.PreviewFileName);
             }
             catch(Exception exc)
             {
@@ -147,33 +147,32 @@ namespace Endevrian.Areas.Identity.Controllers
 
             string mapName = mapNameValues.AsEnumerable().First();
             string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string targetfilePath = $"{_targetFilePath}\\{currentUser}";
 
-            if(!Directory.Exists(targetfilePath))
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(currentUser);
+
+            if(!containerClient.Exists())
             {
-                Directory.CreateDirectory(targetfilePath);
+                containerClient = await blobServiceClient.CreateBlobContainerAsync(currentUser);
             }
 
-            using (FileStream targetStream = System.IO.File.Create(
-                            Path.Combine(targetfilePath, postedFile.FileName)))
-            {
-                await postedFile.CopyToAsync(targetStream);
+            BlobClient blobClient = containerClient.GetBlobClient(postedFile.FileName);
 
-            }
+            // Open the file and upload its data
+            using Stream uploadFileStream = postedFile.OpenReadStream();
+            await blobClient.UploadAsync(uploadFileStream, true);
+            uploadFileStream.Close();
 
-            string filePath = $"{_targetFilePath}\\{currentUser}\\{postedFile.FileName}";
-
-            Bitmap bmp = new Bitmap(filePath);
-            VaryQualityLevel(bmp, currentUser, postedFile.FileName);
+            Bitmap bmp = new Bitmap(postedFile.OpenReadStream());
+            string previewFilePath = await VaryQualityLevel(bmp, postedFile.FileName, containerClient);
 
             Map map = new Map
             {
                 CampaignID = _context.Campaigns.First(x => x.UserId == currentUser).CampaignID,
                 FileName = postedFile.FileName,
-                FilePath = $"Maps\\{currentUser}\\{postedFile.FileName}",
+                FilePath = blobClient.Uri.ToString(),
                 UserId = currentUser,
                 MapName = mapName,
-                PreviewFilePath = $"Maps\\{ currentUser}\\Preview{ postedFile.FileName}",
+                PreviewFilePath = previewFilePath,
                 PreviewFileName = $"Preview{postedFile.FileName}"
             };
 
@@ -207,7 +206,7 @@ namespace Endevrian.Areas.Identity.Controllers
             return map;
         }
 
-        private void VaryQualityLevel(Bitmap bmp, string currentUser, string fileName)
+        private async Task<string> VaryQualityLevel(Bitmap bmp, string fileName, BlobContainerClient containerClient)
         {
             using (bmp)
             {
@@ -218,7 +217,16 @@ namespace Endevrian.Areas.Identity.Controllers
 
                 EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 25L);
                 myEncoderParameters.Param[0] = myEncoderParameter;
-                bmp.Save(@$"{_targetFilePath}\\{currentUser}\\Preview{fileName}", jpgEncoder, myEncoderParameters);
+
+                BlobClient blobClient = containerClient.GetBlobClient($"Preview{fileName}");
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    bmp.Save(memoryStream, jpgEncoder, myEncoderParameters);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    await blobClient.UploadAsync(memoryStream, true);
+                }
+
+                return blobClient.Uri.ToString();
             }
         }
 
