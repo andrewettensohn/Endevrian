@@ -71,7 +71,7 @@
                                         <button onclick="NavigateToSessionNote(@map.SessionNoteID)" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</button>
                                     }
                                 </div>
-                                <a href="~/UserContent/@map.FilePath"><img loading="lazy" src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
+                                <a href="@map.FilePath"><img loading="lazy" src="@map.PreviewFilePath" alt="Download Map" class="card-img-top"></a>
                                 <div class="card-body">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
