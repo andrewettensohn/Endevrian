@@ -236,9 +236,9 @@ namespace Endevrian.Areas.Identity.Controllers
                 FROM Maps as m
                 LEFT JOIN TagRelations as t on t.MapID = m.MapID
                 WHERE m.MapName LIKE '%{searchString}%'
-                OR t.TagName LIKE '%{searchString}%'
                 AND m.UserId = '{userId}'
-                AND m.CampaignID = { selectedCampaignID}";
+                AND m.CampaignID = { selectedCampaignID}
+                OR t.TagName LIKE '%{searchString}%'";
 
             List<Map> mapsWithoutTags = _context.Maps.FromSqlRaw(query).ToList();
             List<Map> mapsWithTags = new List<Map>();
@@ -252,7 +252,6 @@ namespace Endevrian.Areas.Identity.Controllers
             }
 
             return mapsWithTags;
-
         }
 
         private List<Tag> GetInactiveTagsForMap(Map map)
