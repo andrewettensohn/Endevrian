@@ -23,7 +23,6 @@ namespace Endevrian.Areas.Identity.Controllers
         private readonly SystemLogController _logger;
         private readonly ApplicationDbContext _context;
 
-
         public UserController(ApplicationDbContext context, SystemLogController logger)
         {
             _logger = logger;

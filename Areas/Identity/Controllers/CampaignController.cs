@@ -57,6 +57,8 @@ namespace Endevrian.Controllers
                 await _context.AddAsync(campaign);
                 await _context.SaveChangesAsync();
 
+                await SetCampaignToSelected(campaign.CampaignID);
+
                 return CreatedAtAction("GetCampaign", new { id = campaign.CampaignID }, campaign);
             }
             catch(Exception exc)
