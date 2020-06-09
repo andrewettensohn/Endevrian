@@ -4,16 +4,12 @@
 }
 
 <style>
-    /*img {
-        width: 500px;
-        height: 500px;
-        object-fit: cover;
-    }*/
-
-    /*body {
-        background: url("../../../img/cover.jpg" ) no-repeat center center fixed;
-        background-size: cover;
-    }*/
+    img {
+        border: 1px solid #ddd; /* Gray border */
+        border-radius: 4px; /* Rounded border */
+        padding: 5px; /* Some padding */
+        width: 150px; /* Set a small width */
+    }
 
     .borderless td, .borderless th {
         border: none;
@@ -71,7 +67,7 @@
                                         <button onclick="NavigateToSessionNote(@map.SessionNoteID)" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</button>
                                     }
                                 </div>
-                                <a href="@map.FilePath"><img loading="lazy" src="@map.PreviewFilePath" alt="Download Map" class="card-img-top"></a>
+                                <a href="@map.FilePath"><img loading="lazy" src="@map.FilePath" alt="Download Map" class="card-img-top"></a>
                                 <div class="card-body">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
