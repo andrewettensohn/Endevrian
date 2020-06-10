@@ -24,6 +24,12 @@ namespace Endevrian
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+
+            using (ApplicationDbContext db = new ApplicationDbContext(new DbContextOptions<ApplicationDbContext>()))
+            {
+                db.Database.EnsureCreated();
+                //db.Database.Migrate();
+            }
         }
 
         public IConfiguration Configuration { get; }
@@ -31,12 +37,12 @@ namespace Endevrian
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            //options.UseInMemoryDatabase("EndevrianTestDB"));
+
+            services.AddEntityFrameworkSqlite().AddDbContext<ApplicationDbContext>();
+
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddControllers();

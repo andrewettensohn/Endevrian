@@ -122,6 +122,10 @@
                             <li type="nav-item collapse">
                                 <button class="text-white btn btn-link" data-toggle="collapse" data-target="#sectionContent@(id)">@sessionSection.SessionSectionName</button>
                                 <div id="sectionContent@(id)" class="collapse show">
+                                    <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
+                                    <div id="newNoteArea@(id)" class="collapse">
+                                        <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onenter onfocusout="createNewNote(@(id))" />
+                                    </div>
                                     <ul>
                                         @if (sessionSection.SessionNotes != null && sessionSection.SessionNotes.Count > 0)
                                         {
@@ -132,12 +136,6 @@
                                                 </li>
                                             }
                                         }
-                                        <li type="disc">
-                                            <button class="btn btn-link text-success" data-toggle="collapse" data-target="#newNoteArea@(id)">New Note +</button>
-                                        </li>
-                                        <li id="newNoteArea@(id)" type="none" class="nav-item collapse">
-                                            <input id="inputNewNote@(id)" type="text" class="form-control" placeholder="Note Title" onenter onfocusout="createNewNote(@(id))" />
-                                        </li>
                                     </ul>
                                 </div>
                             </li>
@@ -187,8 +185,8 @@
                             </div>
                             @if (Model.SelectedNoteRelatedMap != null)
                             {
-                                <a href="~/UserContent/@Model.SelectedNoteRelatedMap.FilePath">
-                                    <img class="img-fluid mt-5" src="~/UserContent/@Model.SelectedNoteRelatedMap.FilePath" />
+                                <a href="@Model.SelectedNoteRelatedMap.FilePath">
+                                    <img class="img-fluid mt-5" src="@Model.SelectedNoteRelatedMap.FilePath" />
                                 </a>
                             }
                         </div>

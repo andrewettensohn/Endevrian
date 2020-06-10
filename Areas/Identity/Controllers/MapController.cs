@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -17,6 +15,11 @@ using Microsoft.Extensions.Primitives;
 using Endevrian.Controllers;
 using Endevrian.Models;
 using Microsoft.EntityFrameworkCore;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using ImageProcessor.Imaging.Formats;
+using System.Drawing;
+using ImageProcessor;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -25,22 +28,17 @@ namespace Endevrian.Areas.Identity.Controllers
     [ApiController]
     public class MapController : ControllerBase
     {
-        private readonly string _targetFilePath;
         private readonly IFileProvider _fileProvider;
         private readonly ApplicationDbContext _context;
-        private readonly QueryHelper _queryHelper;
         private SystemLogController _logger;
+        BlobServiceClient blobServiceClient;
 
         public MapController(ApplicationDbContext context, IConfiguration config, IFileProvider fileProvider, SystemLogController logger)
         {
-            // To save physical files to a path provided by configuration:
             _context = context;
-            //_targetFilePath = config.GetValue<string>("StoredFilesPath");
-            _targetFilePath = config.GetValue<string>(WebHostDefaults.ContentRootKey) + "\\wwwroot\\UserContent\\Maps";
             _fileProvider = fileProvider;
             _logger = logger;
-            _queryHelper = new QueryHelper(config, logger, context);
-
+            blobServiceClient = new BlobServiceClient(config.GetConnectionString("FileConnection"));
         }
 
         [HttpGet("{id}")]
@@ -98,10 +96,9 @@ namespace Endevrian.Areas.Identity.Controllers
 
             try
             {
-                string targetfilePath = $"{_targetFilePath}\\{currentUser}\\{mapToDelete.FileName}";
-                System.IO.File.Delete(targetfilePath);
-                string targetPreviewFilePath = $"{_targetFilePath}\\{currentUser}\\{mapToDelete.PreviewFileName}";
-                System.IO.File.Delete(targetPreviewFilePath);
+                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(currentUser);
+                await containerClient.DeleteBlobAsync(mapToDelete.FileName);
+                await containerClient.DeleteBlobAsync(mapToDelete.PreviewFileName);
             }
             catch(Exception exc)
             {
@@ -127,7 +124,7 @@ namespace Endevrian.Areas.Identity.Controllers
                 return BadRequest();
             }
 
-            Campaign activeCampaign = _queryHelper.ActiveCampaignQuery(currentUser);
+            Campaign selectedCampaign = _context.Campaigns.First(x => x.UserId == currentUser);
             SessionNote relatedSessionNote = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).First();
 
             mapToLink.SessionNoteID = relatedSessionNote.SessionNoteID;
@@ -151,33 +148,75 @@ namespace Endevrian.Areas.Identity.Controllers
 
             string mapName = mapNameValues.AsEnumerable().First();
             string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            string targetfilePath = $"{_targetFilePath}\\{currentUser}";
 
-            if(!Directory.Exists(targetfilePath))
+            BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(currentUser);
+
+            if(!containerClient.Exists())
             {
-                Directory.CreateDirectory(targetfilePath);
+                containerClient = await blobServiceClient.CreateBlobContainerAsync(currentUser);
+                containerClient.SetAccessPolicy(PublicAccessType.BlobContainer);
             }
 
-            using (FileStream targetStream = System.IO.File.Create(
-                            Path.Combine(targetfilePath, postedFile.FileName)))
-            {
-                await postedFile.CopyToAsync(targetStream);
+            BlobClient primaryBlobClient = containerClient.GetBlobClient(postedFile.FileName);
+            
 
-            }
+            // Open the file and upload its data
+            using Stream uploadFileStream = postedFile.OpenReadStream();
+            await primaryBlobClient.UploadAsync(uploadFileStream, true);
+            uploadFileStream.Close();
 
-            string filePath = $"{_targetFilePath}\\{currentUser}\\{postedFile.FileName}";
+            //string previewFilePath = "";
 
-            Bitmap bmp = new Bitmap(filePath);
-            VaryQualityLevel(bmp, currentUser, postedFile.FileName);
+            //try
+            //{
+            //    Bitmap bmp = new Bitmap(postedFile.OpenReadStream());
+            //    previewFilePath = await VaryQualityLevel(bmp, postedFile.FileName, containerClient);
+            //}
+            //catch(Exception exc)
+            //{
+
+            //}
+                //BlobClient secondaryBlobClient = containerClient.GetBlobClient($"Preview{postedFile.FileName}");
+
+                //MemoryStream destination = new MemoryStream();
+                //using(Stream source = postedFile.OpenReadStream())
+                //{
+                //    source.CopyTo(destination);
+                //}
+
+                ////using var fileStream = postedFile.OpenReadStream();
+                //byte[] photoBytes = destination.ToArray();
+                ////fileStream.Read(photoBytes, 0, (int)postedFile.Length);
+
+                //// Format is automatically detected though can be changed.
+                //ISupportedImageFormat format = new JpegFormat { Quality = 70 };
+                //using (MemoryStream inStream = new MemoryStream(photoBytes))
+                //{
+                //    using (MemoryStream outStream = new MemoryStream())
+                //    {
+                //        // Initialize the ImageFactory using the overload to preserve EXIF metadata.
+                //        using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
+                //        {
+                //            // Load, resize, set the format and quality and save an image.
+                //            imageFactory.Load(inStream)
+                //                        .Format(format)
+                //                        .Save(outStream);
+                //        }
+                //        // Do something with the stream.
+                //        await secondaryBlobClient.UploadAsync(outStream, true);
+                //        uploadFileStream.Close();
+                //    }
+                //}
+
 
             Map map = new Map
             {
-                CampaignID = _queryHelper.ActiveCampaignQuery(currentUser).CampaignID,
+                CampaignID = _context.Campaigns.First(x => x.UserId == currentUser).CampaignID,
                 FileName = postedFile.FileName,
-                FilePath = $"Maps\\{currentUser}\\{postedFile.FileName}",
+                FilePath = primaryBlobClient.Uri.ToString(),
                 UserId = currentUser,
                 MapName = mapName,
-                PreviewFilePath = $"Maps\\{ currentUser}\\Preview{ postedFile.FileName}",
+                //PreviewFilePath = secondaryBlobClient.Uri.ToString(),
                 PreviewFileName = $"Preview{postedFile.FileName}"
             };
 
@@ -191,7 +230,6 @@ namespace Endevrian.Areas.Identity.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
-            //return CreatedAtAction("GetMap", new { id = map.MapID }, map);
         }
 
         private async Task<Map> LinkNewMapToNote(StringValues noteValues, Map map)
@@ -212,32 +250,48 @@ namespace Endevrian.Areas.Identity.Controllers
             return map;
         }
 
-        private void VaryQualityLevel(Bitmap bmp, string currentUser, string fileName)
-        {
-            using (bmp)
-            {
-                ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+        //private string UploadMapPreview()
+        //{
+
+
+
+        //}
+
+        //private async Task<string> VaryQualityLevel(Bitmap bmp, string fileName, BlobContainerClient containerClient)
+        //{
+        //    using (bmp)
+        //    {
+        //        ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
   
-                Encoder myEncoder = Encoder.Quality;
-                EncoderParameters myEncoderParameters = new EncoderParameters(1);
+        //        Encoder myEncoder = Encoder.Quality;
+        //        EncoderParameters myEncoderParameters = new EncoderParameters(1);
 
-                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 25L);
-                myEncoderParameters.Param[0] = myEncoderParameter;
-                bmp.Save(@$"{_targetFilePath}\\{currentUser}\\Preview{fileName}", jpgEncoder, myEncoderParameters);
-            }
-        }
+        //        EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 25L);
+        //        myEncoderParameters.Param[0] = myEncoderParameter;
 
-        private ImageCodecInfo GetEncoder(ImageFormat format)
-        {
-            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
-            foreach (ImageCodecInfo codec in codecs)
-            {
-                if (codec.FormatID == format.Guid)
-                {
-                    return codec;
-                }
-            }
-            return null;
-        }
+        //        BlobClient blobClient = containerClient.GetBlobClient($"Preview{fileName}");
+        //        using (MemoryStream memoryStream = new MemoryStream())
+        //        {
+        //            bmp.Save(memoryStream, jpgEncoder, myEncoderParameters);
+        //            memoryStream.Seek(0, SeekOrigin.Begin);
+        //            await blobClient.UploadAsync(memoryStream, true);
+        //        }
+
+        //        return blobClient.Uri.ToString();
+        //    }
+        //}
+
+        //private ImageCodecInfo GetEncoder(ImageFormat format)
+        //{
+        //    ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+        //    foreach (ImageCodecInfo codec in codecs)
+        //    {
+        //        if (codec.FormatID == format.Guid)
+        //        {
+        //            return codec;
+        //        }
+        //    }
+        //    return null;
+        //}
     }
 }

@@ -22,13 +22,11 @@ namespace Endevrian.Areas.Identity.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly SystemLogController _logController;
-        private readonly QueryHelper _queryHelper;
 
         public TagController(ApplicationDbContext context, SystemLogController logController, IConfiguration configuration)
         {
             _context = context;
             _logController = logController;
-            _queryHelper = new QueryHelper(configuration, logController, context);
         }
 
         // GET: api/Tags

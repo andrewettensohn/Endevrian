@@ -1,4 +1,22 @@
-﻿<h6 class="display-4 text-center mb-3">Link Map</h6>
+﻿<style>
+    img {
+        border: 1px solid #ddd; /* Gray border */
+        border-radius: 4px; /* Rounded border */
+        padding: 5px; /* Some padding */
+        width: 150px; /* Set a small width */
+    }
+
+    .borderless td, .borderless th {
+        border: none;
+    }
+</style>
+
+
+@{
+    ViewData["Title"] = "Link Map";
+}
+
+<h6 class="display-4 text-center mb-3">Link Map</h6>
 <container>
     <div class="row justify-content-center">
         <div class="col-lg-4">
@@ -44,7 +62,7 @@
                                 }
                                 <button class="btn text-success" onclick="LinkMapToNote(@map.MapID)">Link to @Model.SelectedSessionNote.SessionNoteTitle <i class="fas fa-plus"></i></button>
                             </div>
-                            <a href="~/UserContent/@map.FilePath"><img loading="lazy" src="~/UserContent/@map.PreviewFilePath" class="card-img-top"></a>
+                            <a href="@map.FilePath"><img loading="lazy" src="@map.FilePath" class="card-img-top"></a>
                             <div class="card-body">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -94,10 +112,10 @@
             method: 'POST'
         })
         .then(() => window.location.href = sessionNoteUrl);
-        
+
     }
 
-    
+
     function NavigateToSessionNote(sessionNoteID) {
 
         fetch("api/SessionNote/" + sessionNoteID, {

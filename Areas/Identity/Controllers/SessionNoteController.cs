@@ -114,10 +114,6 @@ namespace Endevrian.Areas.Identity.Controllers
 
                 if (selectedCampaign.UserId == sessionNote.UserId)
                 {
-                    //SessionNote selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).First();
-                    //bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
-
-                    //if (selectedNoteCheck is false) { sessionNote.SelectedSessionNote = true; }
 
                     bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
 
