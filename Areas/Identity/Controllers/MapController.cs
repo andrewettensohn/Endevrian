@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Endevrian.Data;
 using Endevrian.Models.MapModels;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,9 +15,6 @@ using Endevrian.Models;
 using Microsoft.EntityFrameworkCore;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using ImageProcessor.Imaging.Formats;
-using System.Drawing;
-using ImageProcessor;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
@@ -98,7 +93,6 @@ namespace Endevrian.Areas.Identity.Controllers
             {
                 BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(currentUser);
                 await containerClient.DeleteBlobAsync(mapToDelete.FileName);
-                await containerClient.DeleteBlobAsync(mapToDelete.PreviewFileName);
             }
             catch(Exception exc)
             {
@@ -165,50 +159,6 @@ namespace Endevrian.Areas.Identity.Controllers
             await primaryBlobClient.UploadAsync(uploadFileStream, true);
             uploadFileStream.Close();
 
-            //string previewFilePath = "";
-
-            //try
-            //{
-            //    Bitmap bmp = new Bitmap(postedFile.OpenReadStream());
-            //    previewFilePath = await VaryQualityLevel(bmp, postedFile.FileName, containerClient);
-            //}
-            //catch(Exception exc)
-            //{
-
-            //}
-                //BlobClient secondaryBlobClient = containerClient.GetBlobClient($"Preview{postedFile.FileName}");
-
-                //MemoryStream destination = new MemoryStream();
-                //using(Stream source = postedFile.OpenReadStream())
-                //{
-                //    source.CopyTo(destination);
-                //}
-
-                ////using var fileStream = postedFile.OpenReadStream();
-                //byte[] photoBytes = destination.ToArray();
-                ////fileStream.Read(photoBytes, 0, (int)postedFile.Length);
-
-                //// Format is automatically detected though can be changed.
-                //ISupportedImageFormat format = new JpegFormat { Quality = 70 };
-                //using (MemoryStream inStream = new MemoryStream(photoBytes))
-                //{
-                //    using (MemoryStream outStream = new MemoryStream())
-                //    {
-                //        // Initialize the ImageFactory using the overload to preserve EXIF metadata.
-                //        using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
-                //        {
-                //            // Load, resize, set the format and quality and save an image.
-                //            imageFactory.Load(inStream)
-                //                        .Format(format)
-                //                        .Save(outStream);
-                //        }
-                //        // Do something with the stream.
-                //        await secondaryBlobClient.UploadAsync(outStream, true);
-                //        uploadFileStream.Close();
-                //    }
-                //}
-
-
             Map map = new Map
             {
                 CampaignID = _context.Campaigns.First(x => x.UserId == currentUser).CampaignID,
@@ -216,8 +166,6 @@ namespace Endevrian.Areas.Identity.Controllers
                 FilePath = primaryBlobClient.Uri.ToString(),
                 UserId = currentUser,
                 MapName = mapName,
-                //PreviewFilePath = secondaryBlobClient.Uri.ToString(),
-                PreviewFileName = $"Preview{postedFile.FileName}"
             };
 
             bool foundNote = Request.Form.TryGetValue("noteId", out StringValues noteValues);
