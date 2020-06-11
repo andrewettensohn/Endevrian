@@ -53,6 +53,7 @@ namespace Endevrian.Controllers
                 }
 
                 campaign.CampaignCreateDate = Utilities.NewCreateDateFormatted();
+                campaign.CampaignDescription = "Click the edit button to make a description for this campaign.";
 
                 await _context.AddAsync(campaign);
                 await _context.SaveChangesAsync();
