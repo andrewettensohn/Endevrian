@@ -36,12 +36,11 @@ namespace Endevrian.Areas.Identity.Controllers
 
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            Campaign selectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId);
-            model.SelectedCampaign = selectedCampaign;
+            model.SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true);
 
-            if (selectedCampaign != null && selectedCampaign.IsSelectedCampaign == true)
+            if (model.SelectedCampaign != null)
             {
-                List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == selectedCampaign.CampaignID).ToList();
+                List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToList();
                 adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
 
                 model.AdventureLogs = adventureLogList;
@@ -68,12 +67,7 @@ namespace Endevrian.Areas.Identity.Controllers
 
             if(model.Campaigns.Count != 0)
             {
-                Campaign SelectedCampaign = _context.Campaigns.First(x => x.UserId == userId);
-
-                if (SelectedCampaign.IsSelectedCampaign == true)
-                {
-                    model.SelectedCampaign = SelectedCampaign;
-                }
+                model.SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true);
             }
 
             return View(model);
@@ -138,7 +132,7 @@ namespace Endevrian.Areas.Identity.Controllers
             MapViewModel model = new MapViewModel
             {
                 UserMaps = new List<List<Map>>(),
-                SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId)
+                SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true)
             };
 
             if(model.SelectedCampaign != null)
@@ -176,7 +170,7 @@ namespace Endevrian.Areas.Identity.Controllers
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             SessionPlanViewModel model = new SessionPlanViewModel();
-            model.SelectedCampaign = _context.Campaigns.Where(x => x.UserId == userId).FirstOrDefault();
+            model.SelectedCampaign = _context.Campaigns.Where(x => x.UserId == userId && x.IsSelectedCampaign == true).FirstOrDefault();
 
             if(model.SelectedCampaign != null)
             {

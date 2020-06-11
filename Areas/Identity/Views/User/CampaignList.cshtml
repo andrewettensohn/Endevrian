@@ -110,7 +110,7 @@
                         <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newCampaignArea">New Campaign +</button>
                     </li>
                     <li id="newCampaignArea" class="nav-item collapse">
-                        <input id="inputCampaignName" type="text" class="form-control" placeholder="Campaign Name" />
+                        <input id="inputCampaignName" type="text" class="form-control" onfocusout="CreateCampaign()" placeholder="Campaign Name" />
                     </li>
                 </ul>
             </div>
@@ -163,11 +163,8 @@
     const inputAddCampaign = $("#inputCampaignName");
     const formData = new FormData();
 
-    inputAddCampaign.on("keypress focusout", async function (evt) {
-        var key = evt.which;
-        if (key == 13 || key == 0) {
-
-        evt.preventDefault();
+    function CreateCampaign()
+    {
 
         item = {
 
@@ -185,9 +182,7 @@
             .then((response) => response.json())
             .then(() => location.reload())
             .catch(() => console.log("Failed to create item"));
-        }
-
-    });
+    }
 
     function displayEditCampaign() {
 
