@@ -224,8 +224,6 @@ namespace Endevrian.Areas.Identity.Controllers
                 , m.MapName
                 , m.FileName
                 , m.FilePath
-                , m.PreviewFileName
-                , m.PreviewFilePath
                 FROM Maps as m
                 LEFT JOIN TagRelations as t on t.MapID = m.MapID
                 WHERE m.MapName LIKE '%{searchString}%'
