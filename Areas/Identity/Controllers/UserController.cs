@@ -29,31 +29,31 @@ namespace Endevrian.Areas.Identity.Controllers
             _context = context;
         }
 
-        public IActionResult AdventureLog()
-        {
+        //public IActionResult AdventureLog()
+        //{
 
-            AdventureLogViewModel model = new AdventureLogViewModel();
+        //    AdventureLogViewModel model = new AdventureLogViewModel();
 
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            model.SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true);
+        //    model.SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true);
 
-            if (model.SelectedCampaign != null)
-            {
-                List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToList();
-                adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
+        //    if (model.SelectedCampaign != null)
+        //    {
+        //        List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToList();
+        //        adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
 
-                model.AdventureLogs = adventureLogList;
+        //        model.AdventureLogs = adventureLogList;
 
-            }
-            else
-            {
-                model.SelectedCampaign = new Campaign { IsSelectedCampaign = false };
-            }
+        //    }
+        //    else
+        //    {
+        //        model.SelectedCampaign = new Campaign { IsSelectedCampaign = false };
+        //    }
 
-            return View(model);
+        //    return View(model);
 
-        }
+        //}
 
         public async Task<IActionResult> CampaignList()
         {
