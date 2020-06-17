@@ -22,11 +22,18 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="WebEssentials.AspNetCore.PWA" Version="1.0.65" />
   </ItemGroup>
 
 
   <ItemGroup>
     <Folder Include="wwwroot\UserContent\Maps\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\js\pwabuilder-sw-register.js" />
+    <None Include="wwwroot\pwabuilder-sw.js" />
   </ItemGroup>
 
 </Project>
