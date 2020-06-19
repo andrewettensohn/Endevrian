@@ -1,10 +1,6 @@
-﻿@*@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager*@
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
-
 <style>
     body {
         background: url("../img/cover.jpg") no-repeat center center fixed;
@@ -18,15 +14,46 @@
     </div>
 </div>
 
-@*<div class="jumbotron">
-    <h1 class="display-4">Welcome to Endevrian</h1>
-    <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-    <hr class="my-4">
-    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-    <p class="lead">
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-    </p>
-</div>
+<pwa-install showopen>Install</pwa-install>
 
-<a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Register">Register</a>
-<a class="btn-link text-light" asp-area="Identity" asp-page="/Account/Login">Login</a>*@
+<script type="module">
+    import 'https://cdn.jsdelivr.net/npm/@@pwabuilder/pwaupdate';
+
+    const el = document.createElement('pwa-update');
+    document.body.appendChild(el);
+
+</script>
+@*<script>
+    window.addEventListener('beforeinstallprompt', (event) => {
+        console.log('👍', 'beforeinstallprompt', event);
+        // Stash the event so it can be triggered later.
+        window.deferredPrompt = event;
+        // Remove the 'hidden' class from the install button container
+        divInstall.classList.toggle('hidden', false);
+    });
+
+    butInstall.addEventListener('click', () => {
+        console.log('👍', 'butInstall-clicked');
+        const promptEvent = window.deferredPrompt;
+        if (!promptEvent) {
+            // The deferred prompt isn't available.
+            return;
+        }
+        // Show the install prompt.
+        promptEvent.prompt();
+        // Log the result
+        promptEvent.userChoice.then((result) => {
+            console.log('👍', 'userChoice', result);
+            // Reset the deferred prompt variable, since
+            // prompt() can only be called once.
+            window.deferredPrompt = null;
+            // Hide the install button.
+            divInstall.classList.toggle('hidden', true);
+        });
+    });
+
+    window.addEventListener('appinstalled', (event) => {
+        console.log('👍', 'appinstalled', event);
+    });
+</script>*@
+

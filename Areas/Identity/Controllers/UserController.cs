@@ -29,31 +29,31 @@ namespace Endevrian.Areas.Identity.Controllers
             _context = context;
         }
 
-        public IActionResult AdventureLog()
-        {
+        //public IActionResult AdventureLog()
+        //{
 
-            AdventureLogViewModel model = new AdventureLogViewModel();
+        //    AdventureLogViewModel model = new AdventureLogViewModel();
 
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            model.SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true);
+        //    model.SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true);
 
-            if (model.SelectedCampaign != null)
-            {
-                List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToList();
-                adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
+        //    if (model.SelectedCampaign != null)
+        //    {
+        //        List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToList();
+        //        adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
 
-                model.AdventureLogs = adventureLogList;
+        //        model.AdventureLogs = adventureLogList;
 
-            }
-            else
-            {
-                model.SelectedCampaign = new Campaign { IsSelectedCampaign = false };
-            }
+        //    }
+        //    else
+        //    {
+        //        model.SelectedCampaign = new Campaign { IsSelectedCampaign = false };
+        //    }
 
-            return View(model);
+        //    return View(model);
 
-        }
+        //}
 
         public async Task<IActionResult> CampaignList()
         {
@@ -211,38 +211,23 @@ namespace Endevrian.Areas.Identity.Controllers
 
         private List<Map> GetMapGallery(string userId, string searchString)
         {
-            List<Map> maps = _context.Maps.Where(x => x.UserId == userId).ToList();
-            List<TagRelation> tagRelations = _context.TagRelations.Where(x => x.UserId == userId).ToList();
-
             int selectedCampaignID = _context.Campaigns.Where(x => x.UserId == userId).FirstOrDefault().CampaignID;
 
-            string query = $@"
-                SELECT DISTINCT m.MapID
-                , m.CampaignID
-                , m.SessionNoteID
-                , m.UserId
-                , m.MapName
-                , m.FileName
-                , m.FilePath
-                FROM Maps as m
-                LEFT JOIN TagRelations as t on t.MapID = m.MapID
-                WHERE m.MapName LIKE '%{searchString}%'
-                AND m.UserId = '{userId}'
-                AND m.CampaignID = { selectedCampaignID}
-                OR t.TagName LIKE '%{searchString}%'";
+            List<Map> campaignMapsNoTags = _context.Maps.Where(x => x.UserId == userId && x.CampaignID == selectedCampaignID).ToList();
+            List<Map> campaignMaps = new List<Map>();
 
-            List<Map> mapsWithoutTags = _context.Maps.FromSqlRaw(query).ToList();
-            List<Map> mapsWithTags = new List<Map>();
-
-            foreach(Map map in mapsWithoutTags)
+            foreach (Map map in campaignMapsNoTags)
             {
                 map.ActiveTags = _context.TagRelations.Where(x => x.MapID == map.MapID).ToList();
                 map.InactiveTags = GetInactiveTagsForMap(map);
 
-                mapsWithTags.Add(map);
+                campaignMaps.Add(map);
             }
 
-            return mapsWithTags;
+            List<Map> requestedMaps = campaignMaps.Where(x => x.MapName.ToLower().Contains(searchString.ToLower()) || 
+            x.ActiveTags.Any(x => x.TagName.ToLower().Contains(searchString.ToLower()))).ToList();
+
+            return requestedMaps;
         }
 
         private List<Tag> GetInactiveTagsForMap(Map map)

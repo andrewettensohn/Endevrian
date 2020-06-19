@@ -14,8 +14,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Endevrian.Controllers
 {
-    [Area("Identity")]
-    [Route("Identity/User/api/AdventureLogs")]
+    [Route("Home/api/AdventureLogs")]
     [ApiController]
     public class AdventureLogsController : ControllerBase
     {

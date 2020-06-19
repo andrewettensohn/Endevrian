@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Endevrian.Data;
 using Microsoft.Extensions.Configuration;
@@ -46,6 +40,7 @@ namespace Endevrian
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddControllers();
+            services.AddProgressiveWebApp();
             services.AddMvc(options => options.EnableEndpointRouting = false).AddControllersAsServices();
 
             // To list physical files from a path provided by configuration:
