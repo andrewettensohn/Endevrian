@@ -11,7 +11,7 @@ namespace Endevrian.Models
 
         public Campaign SelectedCampaign { get; set; }
 
-        //TODO maybe just display create if there is a selected campaign, otherwise the user needs to be told there's no campaign selected.
+        public bool LogsFound { get; set; }
 
     }
 }
