@@ -211,38 +211,23 @@ namespace Endevrian.Areas.Identity.Controllers
 
         private List<Map> GetMapGallery(string userId, string searchString)
         {
-            List<Map> maps = _context.Maps.Where(x => x.UserId == userId).ToList();
-            List<TagRelation> tagRelations = _context.TagRelations.Where(x => x.UserId == userId).ToList();
-
             int selectedCampaignID = _context.Campaigns.Where(x => x.UserId == userId).FirstOrDefault().CampaignID;
 
-            string query = $@"
-                SELECT DISTINCT m.MapID
-                , m.CampaignID
-                , m.SessionNoteID
-                , m.UserId
-                , m.MapName
-                , m.FileName
-                , m.FilePath
-                FROM Maps as m
-                LEFT JOIN TagRelations as t on t.MapID = m.MapID
-                WHERE m.MapName LIKE '%{searchString}%'
-                AND m.UserId = '{userId}'
-                AND m.CampaignID = { selectedCampaignID}
-                OR t.TagName LIKE '%{searchString}%'";
+            List<Map> campaignMapsNoTags = _context.Maps.Where(x => x.UserId == userId && x.CampaignID == selectedCampaignID).ToList();
+            List<Map> campaignMaps = new List<Map>();
 
-            List<Map> mapsWithoutTags = _context.Maps.FromSqlRaw(query).ToList();
-            List<Map> mapsWithTags = new List<Map>();
-
-            foreach(Map map in mapsWithoutTags)
+            foreach (Map map in campaignMapsNoTags)
             {
                 map.ActiveTags = _context.TagRelations.Where(x => x.MapID == map.MapID).ToList();
                 map.InactiveTags = GetInactiveTagsForMap(map);
 
-                mapsWithTags.Add(map);
+                campaignMaps.Add(map);
             }
 
-            return mapsWithTags;
+            List<Map> requestedMaps = campaignMaps.Where(x => x.MapName.ToLower().Contains(searchString.ToLower()) || 
+            x.ActiveTags.Any(x => x.TagName.ToLower().Contains(searchString.ToLower()))).ToList();
+
+            return requestedMaps;
         }
 
         private List<Tag> GetInactiveTagsForMap(Map map)

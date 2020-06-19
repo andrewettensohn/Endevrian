@@ -25,42 +25,50 @@
         </form>
     </div>
 </div>
+<div class="row justify-content-center">
+    <div id="loadingAnimation" class="spinner-border d-none" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
 
 <script>
 
-    const mapGalleryUrl = "@Url.Content("~/Identity/User/MapGallery")";
-    const sessionNotesUrl = "@Url.Content("~/Identity/User/SessionNotes")";
-    
-    /*UPLOAD ON FILE SELECTION*/
-    $("#newMapForm").on("submit", async function (evt) {
-        evt.preventDefault();
+const mapGalleryUrl = "@Url.Content("~/Identity/User/MapGallery")";
+const sessionNotesUrl = "@Url.Content("~/Identity/User/SessionNotes")";
 
-        let fileInput = document.getElementById("fileInput");
-        let formData = new FormData();
+/*UPLOAD ON FILE SELECTION*/
+$("#newMapForm").on("submit", async function (evt) {
+    evt.preventDefault();
 
-        formData.append("file", fileInput.files[0]);
-        formData.append("mapName", $("#inputMapName").val());
-
-        let searchParam = new URLSearchParams(window.location.search)
-        if (searchParam.has("note")) {
-
-            noteId = searchParam.get("note");
-            formData.append("NoteId", noteId)
-            afterUploadUrl = sessionNotesUrl;
-            
-        }
-        else {
-
-            afterUploadUrl = mapGalleryUrl;
-        }
+    $("#loadingAnimation").toggleClass("d-none");
 
 
-        fetch("api/Map",
-            {
-                method: 'POST',
-                body: formData
-            })
-            .then(() => location.href = afterUploadUrl)
-            .catch("Failed to upload file.")
-    });
+    let fileInput = document.getElementById("fileInput");
+    let formData = new FormData();
+
+    formData.append("file", fileInput.files[0]);
+    formData.append("mapName", $("#inputMapName").val());
+
+    let searchParam = new URLSearchParams(window.location.search)
+    if (searchParam.has("note")) {
+
+        noteId = searchParam.get("note");
+        formData.append("NoteId", noteId)
+        afterUploadUrl = sessionNotesUrl;
+
+    }
+    else {
+
+        afterUploadUrl = mapGalleryUrl;
+    }
+
+
+    fetch("api/Map",
+        {
+            method: 'POST',
+            body: formData
+        })
+        .then(() => location.href = afterUploadUrl)
+        .catch("Failed to upload file.")
+});
 </script>
