@@ -110,7 +110,14 @@
                         <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newCampaignArea">New Campaign +</button>
                     </li>
                     <li id="newCampaignArea" class="nav-item collapse">
-                        <input id="inputCampaignName" type="text" class="form-control" onfocusout="CreateCampaign()" placeholder="Campaign Name" />
+                        <div class="input-group mb-3">
+                            <input id="inputCampaignName" type="text" class="form-control" placeholder="Campaign Name" />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" onclick="CreateCampaign()">
+                                    <i class="fa fa-check text-white"></i>
+                                </button>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
