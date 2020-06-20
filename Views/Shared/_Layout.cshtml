@@ -13,6 +13,11 @@
     <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script>
     <script src="https://kit.fontawesome.com/03b74b7cf0.js" crossorigin="anonymous"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/AdventureLog.js"></script>
+    <script src="~/js/CampaignList.js"></script>
+    <script src="~/js/MapGallery.js"></script>
+    <script src="~/js/SessionNotes.js"></script>
+    <script src="~/js/Tags.js"></script>
     @RenderSection("Scripts", required: false)
 </head>
 <body class="text-white" style="background-color: #121212">
@@ -27,13 +32,13 @@
                 <div id="topNavBar" class="navbar-collapse collapse d-sm-inline-flex">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="Identity" asp-controller="User" asp-action="CampaignList">Campaigns</a>
+                            <a class="nav-link text-light" asp-area="Identity" asp-controller="Author" asp-action="CampaignList">Campaigns</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="Identity" asp-controller="User" asp-action="SessionNotes">Session Notes</a>
+                            <a class="nav-link text-light" asp-area="Identity" asp-controller="Author" asp-action="SessionNotes">Session Notes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="Identity" asp-controller="User" asp-action="MapGallery">Map Gallery</a>
+                            <a class="nav-link text-light" asp-area="Identity" asp-controller="Author" asp-action="MapGallery">Map Gallery</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="AdventureLog">Adventure Logs</a>

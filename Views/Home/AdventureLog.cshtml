@@ -10,7 +10,7 @@
 {
     <div class="d-flex flex-column p-2 align-items-end">
         <div>
-            <button class="btn border border-primary text-primary" type="button" data-toggle="collapse" data-target="#collapseNewLog">
+            <button class="btn border border-primary text-primary" type="button" data-toggle="collapse" data-target="#collapseNewLog" onclick="AddLog()">
                 New Session Log
             </button>
         </div>
@@ -37,166 +37,39 @@
 
         var logId = logForDisplay.AdventureLogID;
 
-<div class="jumbotron" style="background-color: #121212">
-    <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.LogTitle</h1>
-    <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
-    <p>@logForDisplay.DisplayLogDate</p>
-    <hr class="my-4">
-    <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.LogBody)</div>
-    <div class="text-dark">
-        <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
-    </div>
-    @if (user == logForDisplay.UserId)
-    {
-        <div class="d-flex flex-column p-2 align-items-end">
-            <div>
-                <button id="btnUpdateLogBody@(logId)" class="d-none btn border border-success text-success mb-3">Update</button>
+        @if (user == logForDisplay.UserId)
+        {
+            <div class="jumbotron" style="background-color: #121212">
+                <h1 id="hLogTitle@(logId)" class="display-4" onclick="displayEditLogName(@(logId))">@logForDisplay.LogTitle</h1>
+                <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
+                <p>@logForDisplay.DisplayLogDate</p>
+                <hr class="my-4">
+                <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.LogBody)</div>
+                <div class="text-dark">
+                    <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
+                </div>
+                <div class="d-flex flex-column p-2 align-items-end">
+                    <div>
+                        <button id="btnUpdateLogBody@(logId)" class="d-none btn border border-success text-success mb-3">Update</button>
+                    </div>
+                    <div>
+                        <button id="btnDeleteLog@(logId)" class="btn border border-danger text-danger" onclick="deleteAdventureLog(@logId)">Delete</button>
+                    </div>
+                </div>
             </div>
-            <div>
-                <button id="btnDeleteLog@(logId)" class="btn border border-danger text-danger" onclick="deleteAdventureLog(@logId)">Delete</button>
+        }
+        else
+        {
+            <div class="jumbotron" style="background-color: #121212">
+                <h1 class="display-4">@logForDisplay.LogTitle</h1>
+                <p>@logForDisplay.DisplayLogDate</p>
+                <hr class="my-4">
+                <div>@Html.Raw(logForDisplay.LogBody)</div>
             </div>
-        </div>
-    }
-</div>
+        }
     }
 }
 else
 {
     <p>No Adventure Logs have been made yet.</p>
 }
-
-<script>
-
-    const uri = "api/AdventureLogs/";
-
-    ClassicEditor
-        .create(document.querySelector('#textAreaLogBody'), {
-            removePlugins: ['ImageUpload', 'MediaEmbed']
-        })
-
-    const logForm = $("#logForm");
-    const formData = new FormData();
-
-    logForm.on("submit", async function (evt) {
-
-        evt.preventDefault();
-
-        item = {
-
-            logTitle: $("#inputLogTitle").val(),
-            logBody: $("#textAreaLogBody").val(),
-        }
-
-        fetch(uri, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(item)
-        })
-            .then((response) => response.json())
-            .then(() => location.reload())
-            .catch(() => console.log("Failed to create item"));
-
-    });
-
-    function deleteAdventureLog(id) {
-
-        fetch(uri + id, {
-            method: 'DELETE'
-        })
-            .then(() => location.reload())
-            .catch(() => console.log("Failed to delete item"));
-
-    }
-
-    function displayEditLogName(id) {
-
-        $("#hLogTitle" + id).toggleClass('d-none');
-        var currentLogTitleText = $("#hLogTitle" + id).text();
-        $("#inputLogTitle" + id).val(currentLogTitleText);
-        $("#inputLogTitle" + id).toggleClass('d-none');
-        $("#inputLogTitle" + id).focus();
-
-    }
-
-    function editLogName(id) {
-
-        $("#inputLogTitle" + id).toggleClass('d-none');
-        var updatedLogTitle = $("#inputLogTitle" + id).val();
-        $("#hLogTitle" + id).toggleClass('d-none');
-        $("#hLogTitle" + id).text(updatedLogTitle);
-
-        item = {
-
-            adventureLogID: id,
-            logTitle: updatedLogTitle
-
-        }
-
-        fetch(uri + id, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(item)
-        })
-            .then((response) => response.json())
-            .then(() => location.reload())
-            .catch(() => console.log("Failed to update log name"));
-
-    }
-
-    function displayEditLogBody(id) {
-
-        $("#pLogBody" + id).toggleClass('d-none');
-        var currentLogBodyText = $("#pLogBody" + id).html();
-        $("#areaInputLogBody" + id).html(currentLogBodyText);
-        $("#areaInputLogBody" + id).toggleClass('d-none');
-        $("#areaInputLogBody" + id).focus();
-        $("#btnDeleteLog" + id).toggleClass('d-none');
-        $("#btnUpdateLogBody" + id).toggleClass('d-none');
-        attachEditor(id);
-
-    }
-
-    function attachEditor(id) {
-
-        let editor;
-
-        ClassicEditor
-            .create(document.querySelector('#areaInputLogBody' + id))
-            .then(newEditor => {
-                editor = newEditor;
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
-
-        document.querySelector('#btnUpdateLogBody' + id).addEventListener('click', () => {
-            const editorData = editor.getData();
-
-            item = {
-
-                adventureLogID: id,
-                logBody: editorData
-
-            }
-
-            fetch(uri + id, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(item)
-            })
-                .then(() => location.reload())
-                .catch(error => console.error('Unable to edit log body', error));
-
-        });
-
-    }
-
-
-</script>

@@ -110,7 +110,14 @@
                         <button class="text-success btn btn-link" data-toggle="collapse" data-target="#newCampaignArea">New Campaign +</button>
                     </li>
                     <li id="newCampaignArea" class="nav-item collapse">
-                        <input id="inputCampaignName" type="text" class="form-control" onfocusout="CreateCampaign()" placeholder="Campaign Name" />
+                        <div class="input-group mb-3">
+                            <input id="inputCampaignName" type="text" class="form-control" placeholder="Campaign Name" />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" onclick="CreateCampaign()">
+                                    <i class="fa fa-check text-white"></i>
+                                </button>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -131,7 +138,7 @@
                     </div>
                     <div id="areaEditCampaign" class="d-none text-dark">
                         <textarea id="textAreaCampaignDescription"></textarea>
-                        <button id="btnUpdateCampaign" class="btn text-success border border-success">Update</button>
+                        <button id="btnUpdateCampaign" class="btn text-success border border-success mt-3">Update</button>
                         <input id="selectedCampaignID" class="d-none" value="@Model.SelectedCampaign.CampaignID" />
                     </div>
                 </div>
@@ -156,108 +163,3 @@
         </div>
     </div>
 </body>
-
-<script>
-
-    const uri = "api/Campaigns/";
-    const inputAddCampaign = $("#inputCampaignName");
-    const formData = new FormData();
-
-    function CreateCampaign()
-    {
-
-        item = {
-
-            campaignName: inputAddCampaign.val(),
-
-        }
-
-        fetch(uri, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(item)
-        })
-            .then((response) => response.json())
-            .then(() => location.reload())
-            .catch(() => console.log("Failed to create item"));
-    }
-
-    function displayEditCampaign() {
-
-        $("#campaignBody").toggleClass("d-none");
-        $("#areaEditCampaign").toggleClass("d-none");
-        let currentCampaignDescription = $("#campaignDescription").html();
-        $("#textAreaCampaignDescription").html(currentCampaignDescription);
-        attachEditor();
-
-    }
-
-    function attachEditor() {
-
-        let editor;
-
-        ClassicEditor
-            .create(document.querySelector('#textAreaCampaignDescription'))
-            .then(newEditor => {
-                editor = newEditor;
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
-        let nameInput = $("#inputEditCampaignName");
-        let campaignName = $("#campaignName");
-
-        nameInput.toggleClass("d-none")
-        campaignName.toggleClass("d-none");
-        nameInput.val(campaignName.text());
-
-        $("#btnUpdateCampaign").on("click", async function (evt) {
-            let editorData = editor.getData();
-
-            evt.preventDefault();
-
-            item = {
-
-                campaignID: parseInt($("#selectedCampaignID").val(), 10),
-                campaignName: $("#inputEditCampaignName").val(),
-                campaignDescription: editorData,
-            }
-
-            fetch("api/Campaigns", {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(item)
-            })
-                .then(() => location.reload())
-                .catch(() => console.log("Failed to update item"));
-
-        });
-    }
-
-
-    function selectCampaign(id) {
-
-
-        fetch(uri + id, {
-            method: 'PUT',
-        })
-            .then(() => location.reload())
-            .catch(() => console.log("Failed to update item"));
-    }
-
-    function deleteCampaign(id) {
-
-        fetch(uri + id, {
-            method: 'DELETE'
-        })
-            .then(() => location.reload())
-            .catch(() => console.log("Failed to delete item"));
-
-    }
-
-</script>

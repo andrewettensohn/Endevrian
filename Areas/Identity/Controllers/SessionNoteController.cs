@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Endevrian.Areas.Identity.Controllers
 {
     [Area("Identity")]
-    [Route("Identity/User/api/SessionNote")]
+    [Route("Identity/Author/api/SessionNote")]
     [ApiController]
     public class SessionNoteController : ControllerBase
     {
@@ -114,10 +114,9 @@ namespace Endevrian.Areas.Identity.Controllers
 
                 if (selectedCampaign.UserId == sessionNote.UserId)
                 {
-
                     bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
 
-                    if (selectedNoteCheck == true)
+                    if (selectedNoteCheck)
                     {
                         List<SessionNote> selectedNotes = _context.SessionNotes.Where(x => x.UserId == sessionNote.UserId && x.SelectedSessionNote == true).ToList();
 
@@ -165,9 +164,10 @@ namespace Endevrian.Areas.Identity.Controllers
                 bool selectedNoteCheck = _context.SessionNotes.Where(x => x.SelectedSessionNote == true).Any();
 
                 //TODO: This needs to be done per campaign, not on all of the user's notes
-                if (selectedNoteCheck == true)
+                if (selectedNoteCheck)
                 {
-                    List<SessionNote> selectedNotes = _context.SessionNotes.Where(x => x.UserId == currentUser && x.SelectedSessionNote == true).ToList();
+                    List<SessionNote> selectedNotes = _context.SessionNotes.Where(x => x.UserId == currentUser 
+                    && x.SelectedSessionNote == true && x.CampaignID == sessionNoteToSelect.CampaignID).ToList();
 
                     foreach (SessionNote selectedNote in selectedNotes)
                     {

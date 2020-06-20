@@ -16,7 +16,7 @@ namespace Endevrian.Areas.Identity.Controllers
 {
 
     [Area("Identity")]
-    [Route("Identity/User/api/Tag")]
+    [Route("Identity/Author/api/Tag")]
     [ApiController]
     public class TagController : ControllerBase
     {

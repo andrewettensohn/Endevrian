@@ -18,42 +18,16 @@ namespace Endevrian.Areas.Identity.Controllers
 {
     [Area("Identity")]
     [Authorize]
-    public class UserController : Controller
+    public class AuthorController : Controller
     {
         private readonly SystemLogController _logger;
         private readonly ApplicationDbContext _context;
 
-        public UserController(ApplicationDbContext context, SystemLogController logger)
+        public AuthorController(ApplicationDbContext context, SystemLogController logger)
         {
             _logger = logger;
             _context = context;
         }
-
-        //public IActionResult AdventureLog()
-        //{
-
-        //    AdventureLogViewModel model = new AdventureLogViewModel();
-
-        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //    model.SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true);
-
-        //    if (model.SelectedCampaign != null)
-        //    {
-        //        List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToList();
-        //        adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
-
-        //        model.AdventureLogs = adventureLogList;
-
-        //    }
-        //    else
-        //    {
-        //        model.SelectedCampaign = new Campaign { IsSelectedCampaign = false };
-        //    }
-
-        //    return View(model);
-
-        //}
 
         public async Task<IActionResult> CampaignList()
         {
