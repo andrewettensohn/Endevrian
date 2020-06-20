@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Endevrian.Data;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
+using Endevrian.Models.WikiModels;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Endevrian.Controllers
 {
@@ -39,31 +41,25 @@ namespace Endevrian.Controllers
             return View(model);
         }
 
-        //public IActionResult AdventureLog()
-        //{
+        public IActionResult WikiPortal()
+        {
+            WikiPortalViewModel model = new WikiPortalViewModel
+            {
+                Campaigns = _context.Campaigns.ToList()
+            };
 
-        //    AdventureLogViewModel model = new AdventureLogViewModel();
+            foreach (Campaign campaign in model.Campaigns)
+            {
+                //campaign.WikiPages
+            }
 
-        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(model.Campaigns == null)
+            {
+                model.Campaigns = new List<Campaign>();
+            }
 
-        //    model.SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true);
-
-        //    if (model.SelectedCampaign != null)
-        //    {
-        //        List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToList();
-        //        adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
-
-        //        model.AdventureLogs = adventureLogList;
-
-        //    }
-        //    else
-        //    {
-        //        model.SelectedCampaign = new Campaign { IsSelectedCampaign = false };
-        //    }
-
-        //    return View(model);
-
-        //}
+            return View(model);
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

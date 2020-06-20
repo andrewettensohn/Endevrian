@@ -18,8 +18,5 @@ namespace Endevrian.Models.WikiModels
         public string ImagePath { get; set; }
 
         public string WikiContent { get; set; }
-
-        //TODO: Complete this.
-
     }
 }

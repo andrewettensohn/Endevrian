@@ -3,7 +3,7 @@
 @inject UserManager<IdentityUser> UserManager
 @{var user = User.FindFirstValue(ClaimTypes.NameIdentifier);}
 @{
-    ViewData["Title"] = "Put Wiki Page Name Here";
+    ViewData["Title"] = "Wiki Portal";
 }
 <h6 class="display-4 text-center mb-3">Endevrian Wiki</h6>
 <div class="row justify-content-center">
@@ -20,3 +20,16 @@
         </form>
     </div>
 </div>
+
+@if (user != null)
+{
+ <p>Author</p>   
+}
+
+@if(Model.Campaigns.Count > 0)
+{
+    foreach(var campaign in Model.Campaigns)
+    {
+        <h3>@campaign.CampaignName</h3>
+    }
+}
