@@ -27,11 +27,11 @@ function displayEditCampaign() {
     $("#areaEditCampaign").toggleClass("d-none");
     let currentCampaignDescription = $("#campaignDescription").html();
     $("#textAreaCampaignDescription").html(currentCampaignDescription);
-    attachEditor();
+    attachEditorCampaign();
 
 }
 
-function attachEditor() {
+function attachEditorCampaign() {
 
     let editor;
 

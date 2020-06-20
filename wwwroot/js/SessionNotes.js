@@ -117,11 +117,11 @@ function displayEditNote() {
     $("#sectionEditNote").toggleClass("d-none");
     let currentNoteBodyText = $("#noteBody").html();
     $("#textAreaLogBody").html(currentNoteBodyText);
-    attachEditor();
+    attachEditorSessionNote();
 
 }
 
-function attachEditor() {
+function attachEditorSessionNote() {
 
     let editor;
 
