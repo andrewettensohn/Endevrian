@@ -1,35 +1,38 @@
 ﻿const AdventureUri = "api/AdventureLogs/";
 
-ClassicEditor
-    .create(document.querySelector('#textAreaLogBody'), {
-        removePlugins: ['ImageUpload', 'MediaEmbed']
-    })
+function AddLog() {
 
-const logForm = $("#logForm");
-const formData = new FormData();
+    ClassicEditor
+        .create(document.querySelector('#textAreaLogBody'), {
+            removePlugins: ['ImageUpload', 'MediaEmbed']
+        })
 
-logForm.on("submit", async function (evt) {
+    var logForm = $("#logForm");
+    var formData = new FormData();
 
-    evt.preventDefault();
+    logForm.on("submit", async function (evt) {
 
-    item = {
+        evt.preventDefault();
 
-        logTitle: $("#inputLogTitle").val(),
-        logBody: $("#textAreaLogBody").val(),
-    }
+        item = {
 
-    fetch(uri, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(item)
-    })
-        .then((response) => response.json())
-        .then(() => location.reload())
-        .catch(() => console.log("Failed to create item"));
+            logTitle: $("#inputLogTitle").val(),
+            logBody: $("#textAreaLogBody").val(),
+        }
 
-});
+        fetch(AdventureUri, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to create item"));
+
+    });
+}
 
 function deleteAdventureLog(id) {
 
@@ -65,7 +68,7 @@ function editLogName(id) {
 
     }
 
-    fetch(uri + id, {
+    fetch(AdventureUri + id, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -115,7 +118,7 @@ function attachEditor(id) {
 
         }
 
-        fetch(uri + id, {
+        fetch(AdventureUri + id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
