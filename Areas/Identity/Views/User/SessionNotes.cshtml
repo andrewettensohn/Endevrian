@@ -201,8 +201,8 @@
                                     Map
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="@Url.Content($"~/Identity/User/LinkMap?note={Model.SelectedNote.SessionNoteID}")">Add an Existing Map</a>
-                                    <a class="dropdown-item" href="@Url.Content($"~/Identity/User/NewMap?note={Model.SelectedNote.SessionNoteID}")">Add a New Map</a>
+                                    <a class="dropdown-item" href="@Url.Content($"~/Identity/Author/LinkMap?note={Model.SelectedNote.SessionNoteID}")">Add an Existing Map</a>
+                                    <a class="dropdown-item" href="@Url.Content($"~/Identity/Author/NewMap?note={Model.SelectedNote.SessionNoteID}")">Add a New Map</a>
                                 </div>
                             </div>
                         </div>
@@ -273,7 +273,7 @@
 else
 {
     <p>You don't have any active campaigns.</p>
-    <a href="@Url.Content($"~/Identity/User/CampaignList")">Start a campaign first!</a>
+    <a href="@Url.Content($"~/Identity/Author/CampaignList")">Start a campaign first!</a>
 }
 
 
