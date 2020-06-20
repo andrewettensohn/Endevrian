@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Endevrian.Areas.Identity.Controllers
 {
     [Area("Identity")]
-    [Route("Identity/User/api/SessionNote")]
+    [Route("Identity/Author/api/SessionNote")]
     [ApiController]
     public class SessionNoteController : ControllerBase
     {

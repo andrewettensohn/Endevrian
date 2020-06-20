@@ -19,7 +19,7 @@ using Azure.Storage.Blobs.Models;
 namespace Endevrian.Areas.Identity.Controllers
 {
     [Area("Identity")]
-    [Route("Identity/User/api/Map")]
+    [Route("Identity/Author/api/Map")]
     [ApiController]
     public class MapController : ControllerBase
     {
