@@ -21,15 +21,20 @@
     </div>
 </div>
 
-@if (user != null)
+@if (Model.Campaigns.Count > 0)
 {
- <p>Author</p>   
-}
-
-@if(Model.Campaigns.Count > 0)
-{
-    foreach(var campaign in Model.Campaigns)
+    foreach (var campaign in Model.Campaigns)
     {
         <h3>@campaign.CampaignName</h3>
+
+        @foreach (var page in campaign.WikiPages)
+        {
+            <p>page.Name</p>
+        }
+
+        @if (user != null)
+        {
+            <a>Add to the Wiki</a>
+        }
     }
 }

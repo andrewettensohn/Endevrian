@@ -50,10 +50,15 @@ namespace Endevrian.Controllers
 
             foreach (Campaign campaign in model.Campaigns)
             {
-                //campaign.WikiPages
+                campaign.WikiPages = _context.WikiPages.Where(x => x.CampaignID == campaign.CampaignID).ToList();
+
+                if(campaign.WikiPages is null)
+                {
+                    campaign.WikiPages = new List<WikiPage>();
+                }
             }
 
-            if(model.Campaigns == null)
+            if(model.Campaigns is null)
             {
                 model.Campaigns = new List<Campaign>();
             }
