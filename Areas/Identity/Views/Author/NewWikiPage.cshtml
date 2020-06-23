@@ -2,3 +2,75 @@
     ViewData["Title"] = "New Wiki Page";
 }
 
+<style>
+    img {
+        border: 1px solid #ddd; /* Gray border */
+        border-radius: 4px; /* Rounded border */
+        padding: 5px; /* Some padding */
+        width: 150px; /* Set a small width */
+    }
+
+    .borderless td, .borderless th {
+        border: none;
+    }
+</style>
+
+<p>Add New Wiki Page</p>
+
+<input class="form-control mb-3" type="text" placeholder="Enter Title" />
+<div class="row">
+    <div class="col-sm-9 text-dark">
+        <textarea class="form-control" id="areaInputWiki" rows="20" cols="50" placeholder="In the days of old..."></textarea>
+    </div>
+    <div class="col-sm-3">
+        <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
+            <div class="card-header">
+                <h5>Copy Text From Title Input</h5>
+            </div>
+            <img loading="lazy" alt="Upload Image" class="card-img-top">
+            <div class="card-body">
+                <p>Other details</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="btn btn-secondary">Submit</button>
+
+<script>
+
+    $(document).ready(function () {
+        let editor;
+
+        ClassicEditor
+            .create(document.querySelector('#areaInputWiki'))
+            .then(newEditor => {
+                editor = newEditor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        document.querySelector('#btnSubmitWiki').addEventListener('click', () => {
+            const editorData = editor.getData();
+
+            item = {
+
+                adventureLogID: id,
+                logBody: editorData
+
+            }
+
+            fetch(AdventureUri + id, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(item)
+            })
+                .then(() => location.reload())
+                .catch(error => console.error('Unable to edit log body', error));
+
+        });
+    });
+</script>

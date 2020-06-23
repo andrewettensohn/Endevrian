@@ -183,6 +183,11 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(userTags);
         }
 
+        public IActionResult NewWikiPage()
+        {
+            return View();
+        }
+
         private List<Map> GetMapGallery(string userId, string searchString)
         {
             int selectedCampaignID = _context.Campaigns.Where(x => x.UserId == userId).FirstOrDefault().CampaignID;
