@@ -14,20 +14,18 @@
     }
 </style>
 <!--Input Form-->
-<form name="newTagForm" id="newTagForm">
-    <div class="row mb-3">
-        <div class="col-sm-5">
-            <div class="input-group mb-3">
-                <input type="text" id="inputNewTagName" class="form-control" placeholder="New Tag Name">
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <button class="btn btn-outline-success text-white" type="submit">Create New Tag</button>
+<div class="row mb-3">
+    <div class="col-sm-5">
+        <div class="input-group mb-3">
+            <input type="text" id="inputNewTagName" class="form-control" placeholder="New Tag Name">
         </div>
     </div>
-</form>
-<!--Input Form-->
+    <div class="col-sm-6">
+        <button class="btn btn-outline-success text-white" onclick="AddTag()">Create New Tag</button>
+    </div>
+</div>
 
+<!--Input Form-->
 @foreach (var tag in Model)
 {
     <div class="row mb-3">
