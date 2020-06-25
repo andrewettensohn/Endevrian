@@ -29,12 +29,23 @@
 
         @foreach (var page in campaign.WikiPages)
         {
-            <p>page.Name</p>
+            <p>@(page.PageName)</p>
         }
 
         @if (user != null)
         {
-            <a asp-area="Identity" asp-controller="Author" asp-action="NewWikiPage">Add Wiki Page</a>
+            <a asp-area="Identity" asp-controller="Author" asp-action="NewWikiPage" asp-route-campaignID="@campaign.CampaignID">Add Wiki Page</a>
         }
     }
 }
+
+@*<form id="formSearch" asp-controller="User" asp-action="MapGallery">
+    <div class="input-group mb-3">
+        <input id="inputUserSearch" type="text" class="form-control" placeholder="Enter Map Name or tag to search" name="searchString" autocomplete="off">
+        <div class="input-group-append">
+            <button id="btnSearch" class="btn btn-outline-secondary" type="submit">
+                <i class="fa fa-search text-white" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</form>*@

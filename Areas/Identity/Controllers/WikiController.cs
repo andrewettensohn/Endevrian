@@ -32,24 +32,22 @@ namespace Endevrian.Areas.Identity.Controllers
         [HttpPost]
         public async Task<ActionResult<WikiPage>> PostWikiPage()
         {
-            WikiPage sentWikiPage = new WikiPage();
+            
             bool parseCampaignId = int.TryParse(Request.Form["campaignID"], out int sentCampaignId);
             bool parseWikiPageId = int.TryParse(Request.Form["wikiPageID"], out int sentWikiPageId);
             if (!parseCampaignId || !parseWikiPageId || sentCampaignId == 0) 
             {
                 return BadRequest();
             }
-            sentWikiPage.CampaignID = sentCampaignId;
-            sentWikiPage.WikiPageID = sentWikiPageId;
 
-            if(Request.Form["wikiContent"] == "")
+            WikiPage sentWikiPage = new WikiPage
             {
-                sentWikiPage.WikiContent = "No Content has been added to this page yet.";
-            }
-            if(Request.Form["wikiPageName"] == "")
-            {
-                sentWikiPage.PageName = "New Page";
-            }
+                CampaignID = sentCampaignId,
+                WikiPageID = sentWikiPageId,
+                WikiContent = (Request.Form["wikiContent"] == "") ? "No Content has been added to this page yet." : Request.Form["wikiContent"].ToString(),
+                PageName = (Request.Form["pageName"] == "") ? "New Page" : Request.Form["pageName"].ToString(),
+                ImageFile = (Request.Form.Files.Count > 0) ? Request.Form.Files[0] : null
+            };
 
             string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -63,11 +61,7 @@ namespace Endevrian.Areas.Identity.Controllers
                     return BadRequest();
                 }
 
-                if(currentWikiPage.ImagePath is null)
-                {
-                    sentWikiPage.ImagePath = await UploadWikiImage(sentWikiPage);
-                }
-                else
+                if(currentWikiPage.ImagePath != null && sentWikiPage.ImageFile != null)
                 {
                     await DeleteOldImageBlobIfNotEqual(sentWikiPage);
                     sentWikiPage.ImagePath = await UploadWikiImage(sentWikiPage);
@@ -84,7 +78,12 @@ namespace Endevrian.Areas.Identity.Controllers
                 }
 
                 sentWikiPage.UserId = currentUser;
-                sentWikiPage.ImagePath = await UploadWikiImage(sentWikiPage);
+
+                if (sentWikiPage.ImageFile != null)
+                {
+                    sentWikiPage.ImagePath = await UploadWikiImage(sentWikiPage);
+                }
+
                 await _context.AddAsync(sentWikiPage);
             }
 
