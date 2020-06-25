@@ -17,7 +17,7 @@
 
 <p>Add New Wiki Page</p>
 
-<input class="form-control mb-3" type="text" placeholder="Enter Title" />
+<input id="inputPageName" class="form-control mb-3" type="text" placeholder="Enter Title" />
 <div class="row">
     <div class="col-sm-9 text-dark">
         <textarea class="form-control" id="areaInputWiki" rows="20" cols="50" placeholder="In the days of old..."></textarea>
@@ -34,6 +34,8 @@
         </div>
     </div>
 </div>
+<input id="hiddenCampaignId" class="d-none" value="@(Model.CampaignID)" />
+<input id="hiddenWikiPageId" class="d-none" value="@(Model.WikiPageID)" />
 
 <button class="btn btn-secondary" id="btnSubmitWiki">Submit</button>
 
@@ -41,6 +43,7 @@
 
     $(document).ready(function () {
         let editor;
+        let formData = new FormData();
 
         ClassicEditor
             .create(document.querySelector('#areaInputWiki'))
@@ -52,25 +55,29 @@
             });
 
         document.querySelector('#btnSubmitWiki').addEventListener('click', () => {
-            const editorData = editor.getData();
+            //const editorData = editor.getData();
 
-            item = {
+            formData.append("wikiPageID", $("#hiddenWikiPageId").val());
+            formData.append("campaignID", $("#hiddenCampaignId").val());
+            formData.append("pageName", $("#inputPageName").val());
+            formData.append("wikiContent", editor.getData());
+            //formData.append("mapName", $("#inputMapName").val());
 
-                wikiPageID: id, //if update
-                campaignID: c, //required
-                wikiContent: editorData
+            //item = {
 
-            }
+            //    wikiPageID: id, //if update
+            //    campaignID: c, //required
+            //    pageName: "",
+            //    wikiContent: editorData
 
-            fetch("", {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(item)
+            //}
+
+            fetch("api/WikiPage", {
+                method: 'POST',
+                body: formData
             })
                 .then(() => location.reload())
-                .catch(error => console.error('Unable to edit log body', error));
+                .catch(error => console.error('Unable to create wikiPage', error));
 
         });
     });

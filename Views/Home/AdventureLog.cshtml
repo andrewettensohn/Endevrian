@@ -44,7 +44,7 @@
                 <input id="inputLogTitle@(logId)" class="d-none form-control" onfocusout="editLogName(@(logId))" />
                 <p>@logForDisplay.DisplayLogDate</p>
                 <hr class="my-4">
-                <div id="pLogBody@(logId)" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.LogBody)</div>
+                <div id="pLogBody@(logId)" class="text-white" onclick="displayEditLogBody(@(logId))">@Html.Raw(logForDisplay.LogBody)</div>
                 <div class="text-dark">
                     <textarea id="areaInputLogBody@(logId)" class="d-none form-control" rows="10" cols="50"></textarea>
                 </div>

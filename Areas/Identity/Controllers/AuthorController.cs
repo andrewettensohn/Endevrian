@@ -10,6 +10,7 @@ using Endevrian.Models;
 using Endevrian.Models.MapModels;
 using Endevrian.Models.SessionModels;
 using Endevrian.Models.TagModels;
+using Endevrian.Models.WikiModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -183,9 +184,15 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(userTags);
         }
 
-        public IActionResult NewWikiPage()
+        public IActionResult NewWikiPage([FromQuery] int campaignID, [FromQuery] int wikiPageID)
         {
-            return View();
+            NewWikiPageViewModel model = new NewWikiPageViewModel
+            {
+                CampaignID = campaignID,
+                WikiPageID = wikiPageID
+            };
+
+            return View(model);
         }
 
         private List<Map> GetMapGallery(string userId, string searchString)

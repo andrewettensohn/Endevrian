@@ -8,6 +8,7 @@ using Azure.Storage.Blobs.Models;
 using Endevrian.Data;
 using Endevrian.Models.WikiModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -27,10 +28,28 @@ namespace Endevrian.Areas.Identity.Controllers
             blobServiceClient = new BlobServiceClient(config.GetConnectionString("FileConnection"));
         }
 
-        // POST: api/Tag
-        [HttpPost("{tagName}")]
-        public async Task<ActionResult<WikiPage>> PostWikiPage(WikiPage sentWikiPage)
+        // POST: api/WikiPage
+        [HttpPost]
+        public async Task<ActionResult<WikiPage>> PostWikiPage()
         {
+            WikiPage sentWikiPage = new WikiPage();
+            bool parseCampaignId = int.TryParse(Request.Form["campaignID"], out int sentCampaignId);
+            bool parseWikiPageId = int.TryParse(Request.Form["wikiPageID"], out int sentWikiPageId);
+            if (!parseCampaignId || !parseWikiPageId || sentCampaignId == 0) 
+            {
+                return BadRequest();
+            }
+            sentWikiPage.CampaignID = sentCampaignId;
+            sentWikiPage.WikiPageID = sentWikiPageId;
+
+            if(Request.Form["wikiContent"] == "")
+            {
+                sentWikiPage.WikiContent = "No Content has been added to this page yet.";
+            }
+            if(Request.Form["wikiPageName"] == "")
+            {
+                sentWikiPage.PageName = "New Page";
+            }
 
             string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -51,7 +70,7 @@ namespace Endevrian.Areas.Identity.Controllers
                 else
                 {
                     await DeleteOldImageBlobIfNotEqual(sentWikiPage);
-                    await UploadWikiImage(sentWikiPage);
+                    sentWikiPage.ImagePath = await UploadWikiImage(sentWikiPage);
                 }
 
                 _context.Entry(sentWikiPage).State = EntityState.Modified;
