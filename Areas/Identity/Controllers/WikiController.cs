@@ -1,26 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Azure.Storage.Blobs.Specialized;
 using Endevrian.Data;
 using Endevrian.Models.WikiModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Storage.Blob;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace Endevrian.Areas.Identity.Controllers
 {
     [Area("Identity")]
-    [Route("Identity/Author/api/Tag")]
+    [Route("Identity/Author/api/WikiPage")]
     [ApiController]
     public class WikiController : ControllerBase
     {
