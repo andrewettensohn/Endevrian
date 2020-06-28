@@ -186,13 +186,7 @@ namespace Endevrian.Areas.Identity.Controllers
 
         public IActionResult NewWikiPage([FromQuery] int campaignID, [FromQuery] int wikiPageID)
         {
-            NewWikiPageViewModel model = new NewWikiPageViewModel
-            {
-                CampaignID = campaignID,
-                WikiPageID = wikiPageID
-            };
-
-            return View(model);
+            return View(new NewWikiPageViewModel { CampaignID = campaignID, WikiPageID = wikiPageID, CampaignName =  _context.Campaigns.Find(campaignID).CampaignName});
         }
 
         private List<Map> GetMapGallery(string userId, string searchString)

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Endevrian.Models;
-using Microsoft.EntityFrameworkCore;
 using Endevrian.Data;
-using Microsoft.Extensions.Configuration;
-using System.Security.Claims;
 using Endevrian.Models.WikiModels;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Endevrian.Controllers
 {
@@ -50,7 +44,7 @@ namespace Endevrian.Controllers
 
             foreach (Campaign campaign in model.Campaigns)
             {
-                campaign.WikiPages = _context.WikiPages.Where(x => x.CampaignID == campaign.CampaignID).ToList();
+                campaign.WikiPages = _context.WikiPages.Where(x => x.CampaignID == campaign.CampaignID).OrderBy(x => x.PageName).ToList();
 
                 if(campaign.WikiPages is null)
                 {
@@ -64,6 +58,13 @@ namespace Endevrian.Controllers
             }
 
             return View(model);
+        }
+
+        public async Task<IActionResult> WikiContent([FromQuery] int wikiPageID)
+        {
+            WikiPage wikiPage = await _context.WikiPages.FindAsync(wikiPageID);
+
+            return View(wikiPage);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

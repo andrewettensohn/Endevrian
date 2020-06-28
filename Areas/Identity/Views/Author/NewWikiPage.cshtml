@@ -15,7 +15,7 @@
     }
 </style>
 
-<p>Add New Wiki Page</p>
+<p>Add New Wiki Page to @(Model.CampaignName)</p>
 
 <input id="inputPageName" class="form-control mb-3" type="text" placeholder="Enter Title" />
 <div class="row">
@@ -62,15 +62,6 @@
             formData.append("pageName", $("#inputPageName").val());
             formData.append("wikiContent", editor.getData());
             //formData.append("mapName", $("#inputMapName").val());
-
-            //item = {
-
-            //    wikiPageID: id, //if update
-            //    campaignID: c, //required
-            //    pageName: "",
-            //    wikiContent: editorData
-
-            //}
 
             fetch("api/WikiPage", {
                 method: 'POST',

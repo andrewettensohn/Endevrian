@@ -10,5 +10,7 @@ namespace Endevrian.Models.WikiModels
         public int CampaignID { get; set; }
 
         public int WikiPageID { get; set; }
+
+        public string CampaignName { get; set; }
     }
 }
