@@ -5,7 +5,6 @@
 @{
     ViewData["Title"] = Model.PageName;
 }
-<h6 class="display-4 text-center mb-3">Endevrian Wiki</h6>
 <div class="row justify-content-center">
     <div class="col-lg-4">
         <form id="formSearch" asp-controller="User" asp-action="MapGallery">
@@ -20,8 +19,22 @@
         </form>
     </div>
 </div>
-<h3>@Model.PageName</h3>
-<p>@Html.Raw(Model.WikiContent)</p>
+<div class="row">
+    <div class="col-sm-3">
+        <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
+            <div class="card-header">
+                <h3>@Model.PageName</h3>
+            </div>
+            <img loading="lazy" alt="Upload Image" class="card-img-top">
+            <div class="card-body">
+                <p>Other details</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <p>@Html.Raw(Model.WikiContent)</p>
+    </div>
+</div>
 
 
 
