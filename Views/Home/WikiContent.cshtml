@@ -20,12 +20,15 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-4">
         <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
             <div class="card-header">
                 <h3>@Model.PageName</h3>
             </div>
-            <img loading="lazy" src="@Model.ImagePath" alt="Upload Image" class="card-img-top">
+            @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+            {
+                <img loading="lazy" src="@Model.ImagePath" alt="No Image Found" class="card-img-top">
+            }
             <div class="card-body">
                 <p>Other details</p>
             </div>
