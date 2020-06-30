@@ -25,13 +25,13 @@
             <div class="card-header">
                 <h3>@Model.PageName</h3>
             </div>
-            <img loading="lazy" alt="Upload Image" class="card-img-top">
+            <img loading="lazy" src="@Model.ImagePath" alt="Upload Image" class="card-img-top">
             <div class="card-body">
                 <p>Other details</p>
             </div>
         </div>
     </div>
-    <div class="col-sm-9">
+    <div class="col-sm-8">
         <p>@Html.Raw(Model.WikiContent)</p>
     </div>
 </div>

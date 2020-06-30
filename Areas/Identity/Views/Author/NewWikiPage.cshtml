@@ -25,7 +25,10 @@
             <div class="card-header">
                 <input id="inputPageName" class="form-control mb-3" type="text" placeholder="Enter Page Title" />
             </div>
-            <img loading="lazy" alt="Upload Image" class="card-img-top">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="fileInput">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+            </div>
             <div class="card-body">
                 <p>Other details</p>
             </div>
@@ -53,13 +56,14 @@
             });
 
         document.querySelector('#btnSubmitWiki').addEventListener('click', () => {
-            //const editorData = editor.getData();
 
+            let fileInput = document.getElementById("fileInput");
             formData.append("wikiPageID", $("#hiddenWikiPageId").val());
             formData.append("campaignID", $("#hiddenCampaignId").val());
             formData.append("pageName", $("#inputPageName").val());
             formData.append("wikiContent", editor.getData());
-            //formData.append("mapName", $("#inputMapName").val());
+            formData.append("wikiContent", fileInput.files[0]);
+            //formData.append("file", $("imageInput").files[0]);
 
             fetch("api/WikiPage", {
                 method: 'POST',
