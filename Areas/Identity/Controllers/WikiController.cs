@@ -30,7 +30,7 @@ namespace Endevrian.Areas.Identity.Controllers
 
         // POST: api/WikiPage
         [HttpPost]
-        public async Task<ActionResult<WikiPage>> PostWikiPage()
+        public async Task<IActionResult> PostWikiPage()
         {
             
             bool parseCampaignId = int.TryParse(Request.Form["campaignID"], out int sentCampaignId);
@@ -89,7 +89,7 @@ namespace Endevrian.Areas.Identity.Controllers
 
             await _context.SaveChangesAsync();
 
-            return sentWikiPage;
+            return Ok(sentWikiPage);
         }
 
         private async Task<IActionResult> DeleteOldImageBlobIfNotEqual(WikiPage wikiPage)
