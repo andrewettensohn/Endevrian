@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Endevrian.Models.WikiModels
 {
@@ -22,6 +17,8 @@ namespace Endevrian.Models.WikiModels
 
         [NotMapped]
         public IFormFile ImageFile { get; set; }
+
+        public string CardContent { get; set; }
 
         public string WikiContent { get; set; }
     }

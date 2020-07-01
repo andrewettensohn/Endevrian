@@ -27,7 +27,7 @@
                 <label class="custom-file-label" for="customFile">Click Here to Add an Image</label>
             </div>
             <div class="card-body">
-                <p>Other details</p>
+                
             </div>
         </div>
     </div>
@@ -62,7 +62,7 @@
             formData.append("campaignID", $("#hiddenCampaignId").val());
             formData.append("pageName", $("#inputPageName").val());
             formData.append("wikiContent", editor.getData());
-            formData.append("wikiContent", fileInput.files[0]);
+            formData.append("file", fileInput.files[0]);
 
             fetch("api/WikiPage", {
                 method: 'POST',
