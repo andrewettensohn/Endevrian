@@ -7,10 +7,6 @@
     <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="ApplicationDbContext.db" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.4.4" />
