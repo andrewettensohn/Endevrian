@@ -59,13 +59,44 @@ namespace Endevrian.Controllers
 
             return View(model);
         }
-
-        public async Task<IActionResult> WikiContent([FromQuery] int wikiPageID)
+        
+        public async Task<IActionResult> WikiContent([FromQuery] int? wikiPageID, string searchQuery)
         {
-            WikiPage wikiPage = await _context.WikiPages.FindAsync(wikiPageID);
+            WikiContentViewModel model = new WikiContentViewModel();
 
-            return View(wikiPage);
+            if(wikiPageID != null)
+            {
+                model.SelectedPage = await _context.WikiPages.FindAsync(wikiPageID);
+            }
+            else if (searchQuery != null)
+            {
+                searchQuery = searchQuery.ToLower();
+                List<WikiPage> searchResults = _context.WikiPages.Where(
+                x => x.PageName.ToLower().StartsWith(searchQuery)
+                || x.PageName.ToLower().EndsWith(searchQuery)
+                || x.PageName.ToLower().Contains(searchQuery)).ToList();
+
+                if(searchResults.Count != 1)
+                {
+                    //TempData["searchResults"] = searchResults;
+                    //return RedirectToAction("WikiSearchResults");
+                    model.SelectedPage = null;
+                    model.SearchResults = searchResults;
+                }
+                else
+                {
+                    model.SelectedPage = searchResults.FirstOrDefault();
+                }
+            }
+
+            return View(model);
         }
+
+        //public async Task<IActionResult> WikiSearchResults(List<WikiPage> passedSearchResults)
+        //{
+        //    List<WikiPage> searchResults = (List<WikiPage>)TempData["searchResults"];
+        //    return View(searchResults);
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

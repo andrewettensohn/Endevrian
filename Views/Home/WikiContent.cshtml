@@ -2,14 +2,14 @@
 @using System.Security.Claims;
 @inject UserManager<IdentityUser> UserManager
 @{var user = User.FindFirstValue(ClaimTypes.NameIdentifier);}
-@{
-    ViewData["Title"] = Model.PageName;
-}
+@*@{
+        ViewData["Title"] = Model.PageName;
+    }*@
 <div class="row justify-content-center">
     <div class="col-lg-4">
-        <form id="formSearch" asp-controller="User" asp-action="MapGallery">
+        <form id="formSearch" asp-controller="Home" asp-action="WikiContent">
             <div class="input-group mb-3">
-                <input id="inputUserSearch" type="text" class="form-control" placeholder="Search the wiki" name="searchString" autocomplete="off">
+                <input id="inputUserSearch" type="text" class="form-control" placeholder="Search the wiki" name="searchQuery" autocomplete="off">
                 <div class="input-group-append">
                     <button id="btnSearch" class="btn btn-outline-secondary" type="submit">
                         <i class="fa fa-search text-white" aria-hidden="true"></i>
@@ -19,22 +19,44 @@
         </form>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-3">
-        <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
-            <div class="card-header">
-                <h3>@Model.PageName</h3>
-            </div>
-            <img loading="lazy" src="@Model.ImagePath" alt="Upload Image" class="card-img-top">
-            <div class="card-body">
-                <p>Other details</p>
+@if (Model.SelectedPage != null)
+{
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
+                <div class="card-header">
+                    <h3>@Model.SelectedPage.PageName</h3>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.SelectedPage.ImagePath))
+                {
+                    <img loading="lazy" src="@Model.SelectedPage.ImagePath" alt="No Image Found" class="card-img-top">
+                }
+                <div class="card-body">
+                    <p>Other details</p>
+                </div>
             </div>
         </div>
+        <div class="col-sm-8">
+            <p>@Html.Raw(Model.SelectedPage.WikiContent)</p>
+        </div>
     </div>
-    <div class="col-sm-8">
-        <p>@Html.Raw(Model.WikiContent)</p>
-    </div>
-</div>
+}
+else if (Model.SearchResults.Count > 0)
+{
+    <ul class="mb-5">
+        @foreach (var page in Model.SearchResults)
+        {
+            <li class="mb-3">
+                <a asp-area="" asp-controller="Home" asp-action="WikiContent" asp-route-wikiPageID="@(page.WikiPageID)">@(page.PageName)</a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <h6 class="display-4 text-center">Could not find any wiki entries matching your search terms.</h6>
+}
+
 
 
 

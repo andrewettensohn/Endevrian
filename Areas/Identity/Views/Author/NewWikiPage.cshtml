@@ -17,22 +17,22 @@
 
 <p>Add New Wiki Page to @(Model.CampaignName)</p>
 <div class="row">
-    <div class="col-sm-9 text-dark">
-        <textarea class="form-control" id="areaInputWiki" rows="5" cols="50" placeholder="In the days of old..."></textarea>
-    </div>
-    <div class="col-sm-3">
+    <div class="col-sm-4">
         <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
             <div class="card-header">
                 <input id="inputPageName" class="form-control mb-3" type="text" placeholder="Enter Page Title" />
             </div>
             <div class="custom-file">
                 <input type="file" class="custom-file-input" id="fileInput">
-                <label class="custom-file-label" for="customFile">Choose file</label>
+                <label class="custom-file-label" for="customFile">Click Here to Add an Image</label>
             </div>
             <div class="card-body">
-                <p>Other details</p>
+                
             </div>
         </div>
+    </div>
+    <div class="col-sm-8 text-dark">
+        <textarea class="form-control" id="areaInputWiki" rows="5" cols="50" placeholder="In the days of old..."></textarea>
     </div>
 </div>
 <input id="hiddenCampaignId" class="d-none" value="@(Model.CampaignID)" />
@@ -62,7 +62,7 @@
             formData.append("campaignID", $("#hiddenCampaignId").val());
             formData.append("pageName", $("#inputPageName").val());
             formData.append("wikiContent", editor.getData());
-            formData.append("wikiContent", fileInput.files[0]);
+            formData.append("file", fileInput.files[0]);
 
             fetch("api/WikiPage", {
                 method: 'POST',
