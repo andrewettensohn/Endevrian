@@ -78,8 +78,6 @@ namespace Endevrian.Controllers
 
                 if(searchResults.Count != 1)
                 {
-                    //TempData["searchResults"] = searchResults;
-                    //return RedirectToAction("WikiSearchResults");
                     model.SelectedPage = null;
                     model.SearchResults = searchResults;
                 }
