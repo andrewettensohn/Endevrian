@@ -7,10 +7,9 @@ namespace Endevrian.Models.WikiModels
 {
     public class NewWikiPageViewModel
     {
-        public int CampaignID { get; set; }
+        public Campaign Campaign { get; set; }
 
-        public int WikiPageID { get; set; }
+        public WikiPage WikiPage { get; set; }
 
-        public string CampaignName { get; set; }
     }
 }

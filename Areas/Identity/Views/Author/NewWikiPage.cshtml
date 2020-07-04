@@ -15,30 +15,62 @@
     }
 </style>
 
-<p>Add New Wiki Page to @(Model.CampaignName)</p>
-<div class="row">
-    <div class="col-sm-4">
-        <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
-            <div class="card-header">
-                <input id="inputPageName" class="form-control mb-3" type="text" placeholder="Enter Page Title" />
-            </div>
-            <div class="custom-file">
-                <input type="file" class="custom-file-input" id="fileInput">
-                <label class="custom-file-label" for="customFile">Click Here to Add an Image</label>
-            </div>
-            <div class="card-body">
-                
+<p>Add New Wiki Page to @(Model.Campaign.CampaignName)</p>
+
+@if (Model.WikiPage != null)
+{
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
+                <div class="card-header">
+                    <input id="inputPageName" class="form-control mb-3" type="text" placeholder="Enter Page Title" value="@Model.WikiPage.PageName" />
+                </div>
+                @if (!string.IsNullOrWhiteSpace(Model.WikiPage.ImagePath))
+                {
+                    <img src="@Model.WikiPage.ImagePath" />
+                }
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="fileInput">
+                    <label class="custom-file-label" for="customFile">Click Here to Add an Image</label>
+                </div>
+                <div class="card-body">
+
+                </div>
             </div>
         </div>
+        <div class="col-sm-8 text-dark">
+            <textarea class="form-control" id="areaInputWiki" rows="5" cols="50" placeholder="In the days of old...">@Model.WikiPage.WikiContent</textarea>
+        </div>
     </div>
-    <div class="col-sm-8 text-dark">
-        <textarea class="form-control" id="areaInputWiki" rows="5" cols="50" placeholder="In the days of old..."></textarea>
-    </div>
-</div>
-<input id="hiddenCampaignId" class="d-none" value="@(Model.CampaignID)" />
-<input id="hiddenWikiPageId" class="d-none" value="@(Model.WikiPageID)" />
+    <input id="hiddenCampaignId" class="d-none" value="@(Model.Campaign.CampaignID)" />
+    <input id="hiddenWikiPageId" class="d-none" value="@(Model.WikiPage.WikiPageID)" />
+}
+else
+{
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
+                <div class="card-header">
+                    <input id="inputPageName" class="form-control mb-3" type="text" placeholder="Enter Page Title"/>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="fileInput">
+                    <label class="custom-file-label" for="customFile">Click Here to Add an Image</label>
+                </div>
+                <div class="card-body">
 
-<button class="btn btn-secondary" id="btnSubmitWiki">Submit</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8 text-dark">
+            <textarea class="form-control" id="areaInputWiki" rows="5" cols="50" placeholder="In the days of old..."></textarea>
+        </div>
+    </div>
+    <input id="hiddenCampaignId" class="d-none" value="@(Model.Campaign.CampaignID)" />
+    <input id="hiddenWikiPageId" class="d-none" value="0" />
+}
+
+<button class="btn btn-secondary mt-3" id="btnSubmitWiki">Submit</button>
 
 <script>
 

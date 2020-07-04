@@ -28,11 +28,17 @@ namespace Endevrian.Areas.Identity.Controllers
             blobServiceClient = new BlobServiceClient(config.GetConnectionString("FileConnection"));
         }
 
+        // GET: api/WikiPage
+        [HttpGet]
+        public async Task<ActionResult<WikiPage>> GetWikiPage(int WikiPageID)
+        {
+            return await _context.WikiPages.FindAsync(WikiPageID);
+        }
+
         // POST: api/WikiPage
         [HttpPost]
         public async Task<ActionResult<WikiPage>> PostWikiPage()
         {
-            
             bool parseCampaignId = int.TryParse(Request.Form["campaignID"], out int sentCampaignId);
             bool parseWikiPageId = int.TryParse(Request.Form["wikiPageID"], out int sentWikiPageId);
             if (!parseCampaignId || !parseWikiPageId || sentCampaignId == 0) 
@@ -42,54 +48,77 @@ namespace Endevrian.Areas.Identity.Controllers
 
             WikiPage sentWikiPage = new WikiPage
             {
-                CampaignID = sentCampaignId,
-                WikiPageID = sentWikiPageId,
-                WikiContent = (Request.Form["wikiContent"] == "") ? "No Content has been added to this page yet." : Request.Form["wikiContent"].ToString(),
-                PageName = (Request.Form["pageName"] == "") ? "New Page" : Request.Form["pageName"].ToString(),
+                WikiContent = string.IsNullOrWhiteSpace(Request.Form["wikiContent"]) ? "No Content has been added to this page yet." : Request.Form["wikiContent"].ToString(),
+                PageName = string.IsNullOrWhiteSpace(Request.Form["pageName"]) ? "New Page" : Request.Form["pageName"].ToString(),
                 ImageFile = (Request.Form.Files.Count > 0) ? Request.Form.Files[0] : null
             };
 
             string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (sentWikiPage.WikiPageID != 0)
+            if (sentWikiPageId != 0)
             {
                 //Update Existing Wiki Page
-                WikiPage currentWikiPage = await _context.WikiPages.FindAsync(sentWikiPage.WikiPageID);
-                
-                if(currentWikiPage.UserId != currentUser)
+                WikiPage currentWikiPage = _context.WikiPages.Find(sentWikiPageId);
+
+                currentWikiPage.WikiContent = sentWikiPage.WikiContent;
+                currentWikiPage.PageName = sentWikiPage.PageName;
+
+                if (currentWikiPage.UserId != currentUser)
                 {
                     return BadRequest();
                 }
 
-                if(currentWikiPage.ImagePath != null && sentWikiPage.ImageFile != null)
+                if (string.IsNullOrWhiteSpace(currentWikiPage.ImagePath) && sentWikiPage.ImageFile != null)
                 {
-                    await DeleteOldImageBlobIfNotEqual(sentWikiPage);
-                    sentWikiPage.ImagePath = await UploadWikiImage(sentWikiPage);
+                    currentWikiPage.ImageFile = sentWikiPage.ImageFile;
+                    await DeleteOldImageBlobIfNotEqual(currentWikiPage);
+                    currentWikiPage.ImagePath = await UploadWikiImage(currentWikiPage);
                 }
 
-                _context.Entry(sentWikiPage).State = EntityState.Modified;
+                _context.Entry(currentWikiPage).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return currentWikiPage;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!WikiPageExists(currentWikiPage.WikiPageID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
             else
             {
                 //Create New Wiki Page
-                if(!_context.Campaigns.Where(x => x.CampaignID == sentWikiPage.CampaignID).Any())
+                if(!_context.Campaigns.Where(x => x.CampaignID == sentCampaignId).Any())
                 {
                     return BadRequest();
                 }
 
                 sentWikiPage.UserId = currentUser;
-
+                sentWikiPage.CampaignID = sentCampaignId;
                 if (sentWikiPage.ImageFile != null)
                 {
                     sentWikiPage.ImagePath = await UploadWikiImage(sentWikiPage);
                 }
 
                 await _context.AddAsync(sentWikiPage);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetWikiPage", new { id = sentWikiPage.WikiPageID }, sentWikiPage);
             }
+        }
 
-            await _context.SaveChangesAsync();
-
-            return sentWikiPage;
+        private bool WikiPageExists(int id)
+        {
+            return _context.WikiPages.Any(e => e.WikiPageID == id);
         }
 
         private async Task<IActionResult> DeleteOldImageBlobIfNotEqual(WikiPage wikiPage)

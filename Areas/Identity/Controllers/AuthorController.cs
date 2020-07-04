@@ -184,9 +184,15 @@ namespace Endevrian.Areas.Identity.Controllers
             return View(userTags);
         }
 
-        public IActionResult NewWikiPage([FromQuery] int campaignID, [FromQuery] int wikiPageID)
+        public async Task<IActionResult> NewWikiPage([FromQuery] int campaignID, [FromQuery] int wikiPageID)
         {
-            return View(new NewWikiPageViewModel { CampaignID = campaignID, WikiPageID = wikiPageID, CampaignName =  _context.Campaigns.Find(campaignID).CampaignName});
+            NewWikiPageViewModel model = new NewWikiPageViewModel
+            {
+                WikiPage = await _context.WikiPages.FindAsync(wikiPageID),
+                Campaign = await _context.Campaigns.FindAsync(campaignID)
+            };
+
+            return View(model);
         }
 
         private List<Map> GetMapGallery(string userId, string searchString)
