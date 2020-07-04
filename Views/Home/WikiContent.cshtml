@@ -2,9 +2,6 @@
 @using System.Security.Claims;
 @inject UserManager<IdentityUser> UserManager
 @{var user = User.FindFirstValue(ClaimTypes.NameIdentifier);}
-@*@{
-        ViewData["Title"] = Model.PageName;
-    }*@
 <div class="row justify-content-center">
     <div class="col-lg-4">
         <form id="formSearch" asp-controller="Home" asp-action="WikiContent">
@@ -21,6 +18,9 @@
 </div>
 @if (Model.SelectedPage != null)
 {
+
+    ViewData["Title"] = Model.SelectedPage.PageName;
+
     <div class="row">
         <div class="col-sm-4">
             <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
@@ -40,9 +40,16 @@
             <p>@Html.Raw(Model.SelectedPage.WikiContent)</p>
         </div>
     </div>
+
+    if (user == Model.SelectedPage.UserId)
+    {
+        <a asp-area="Identity" asp-controller="Author" asp-action="NewWikiPage" asp-route-campaignID="@(Model.SelectedPage.CampaignID)" asp-route-wikiPageID="@(Model.SelectedPage.WikiPageID)">Edit Wiki Page</a>
+        @*<a class="btn btn-secondary" href="@Url.Content($"~/Identity/Author/NewWikiPage?WikiPageID={Model.SelectedPage.WikiPageID}")">Edit Wiki Page</a>*@
+    }
 }
 else if (Model.SearchResults.Count > 0)
 {
+    ViewData["Title"] = "Wiki Search Results";
     <ul class="mb-5">
         @foreach (var page in Model.SearchResults)
         {
@@ -54,6 +61,7 @@ else if (Model.SearchResults.Count > 0)
 }
 else
 {
+    ViewData["Title"] = "Wiki Search Results";
     <h6 class="display-4 text-center">Could not find any wiki entries matching your search terms.</h6>
 }
 
