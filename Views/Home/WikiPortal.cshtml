@@ -38,9 +38,7 @@
         </ul>
         @if (user == campaign.UserId)
         {
-            <button class="btn btn-outline-primary">
-                <a asp-area="Identity" asp-controller="Author" asp-action="NewWikiPage" asp-route-campaignID="@campaign.CampaignID">Add Page to This Wiki</a>
-            </button>
+            <a asp-area="Identity" asp-controller="Author" asp-action="NewWikiPage" asp-route-campaignID="@campaign.CampaignID">Add Page to This Wiki</a>
         }
     </div>
     }

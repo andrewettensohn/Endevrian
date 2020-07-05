@@ -44,7 +44,6 @@
     if (user == Model.SelectedPage.UserId)
     {
         <a asp-area="Identity" asp-controller="Author" asp-action="NewWikiPage" asp-route-campaignID="@(Model.SelectedPage.CampaignID)" asp-route-wikiPageID="@(Model.SelectedPage.WikiPageID)">Edit Wiki Page</a>
-        @*<a class="btn btn-secondary" href="@Url.Content($"~/Identity/Author/NewWikiPage?WikiPageID={Model.SelectedPage.WikiPageID}")">Edit Wiki Page</a>*@
     }
 }
 else if (Model.SearchResults.Count > 0)

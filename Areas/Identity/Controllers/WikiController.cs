@@ -68,7 +68,7 @@ namespace Endevrian.Areas.Identity.Controllers
                     return BadRequest();
                 }
 
-                if (string.IsNullOrWhiteSpace(currentWikiPage.ImagePath) && sentWikiPage.ImageFile != null)
+                if (!string.IsNullOrWhiteSpace(currentWikiPage.ImagePath) && sentWikiPage.ImageFile != null)
                 {
                     currentWikiPage.ImageFile = sentWikiPage.ImageFile;
                     await DeleteOldImageBlobIfNotEqual(currentWikiPage);
@@ -80,7 +80,10 @@ namespace Endevrian.Areas.Identity.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
+                    //return currentWikiPage;
+                    currentWikiPage.ImageFile = null;
                     return currentWikiPage;
+                    //return CreatedAtAction("GetWikiPage", new { id = sentWikiPage.WikiPageID }, sentWikiPage);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -112,7 +115,8 @@ namespace Endevrian.Areas.Identity.Controllers
                 await _context.AddAsync(sentWikiPage);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetWikiPage", new { id = sentWikiPage.WikiPageID }, sentWikiPage);
+                sentWikiPage.ImageFile = null;
+                return sentWikiPage;
             }
         }
 
