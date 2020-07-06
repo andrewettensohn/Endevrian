@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+@inject UserManager<IdentityUser> UserManager
+@{var user = User.FindFirstValue(ClaimTypes.NameIdentifier);}
+@{
+    ViewData["Title"] = "Wiki Portal";
+}
+<h6 class="display-4 text-center mb-3">Endevrian Wiki</h6>
+<div class="row justify-content-center">
+    <div class="col-lg-4">
+        <form id="formSearch" asp-controller="Home" asp-action="WikiContent">
+            <div class="input-group mb-3">
+                <input id="inputUserSearch" type="text" class="form-control" placeholder="Search the wiki" name="searchQuery" autocomplete="off">
+                <div class="input-group-append">
+                    <button id="btnSearch" class="btn btn-outline-secondary" type="submit">
+                        <i class="fa fa-search text-white" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.Campaigns.Count > 0)
+{
+    foreach (var campaign in Model.Campaigns)
+    {
+    <div class="mb-5">
+        <h3>@campaign.CampaignName</h3>
+        <ul class="list-group list-group-flush mb-5">
+            @foreach (var page in campaign.WikiPages)
+            {
+                <li class="list-group-item" style="background-color: #121212;">
+                    <a asp-area="" asp-controller="Home" asp-action="WikiContent" asp-route-wikiPageID="@(page.WikiPageID)">@(page.PageName)</a>
+                </li>
+            }
+        </ul>
+        @if (user == campaign.UserId)
+        {
+            <a class="btn btn-outline-primary" asp-area="Identity" asp-controller="Author" asp-action="NewWikiPage" asp-route-campaignID="@campaign.CampaignID">Add Page to This Wiki</a>
+        }
+    </div>
+    }
+}

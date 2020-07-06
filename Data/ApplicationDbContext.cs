@@ -4,6 +4,7 @@ using System.Text;
 using Endevrian.Models;
 using Endevrian.Models.MapModels;
 using Endevrian.Models.TagModels;
+using Endevrian.Models.WikiModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -43,5 +44,7 @@ namespace Endevrian.Data
         public DbSet<Tag> Tags { get; set; }
 
         public DbSet<TagRelation> TagRelations { get; set; }
+
+        public DbSet<WikiPage> WikiPages { get; set; }
     }
 }

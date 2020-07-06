@@ -48,8 +48,6 @@
         }
 
     });
-
-
 }
 
 function displayEditSectionName(sessionSectionId) {

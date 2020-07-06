@@ -1,6 +1,5 @@
-﻿$("#newTagForm").on("submit", async function (evt) {
+﻿function AddTag() {
 
-    evt.preventDefault();
     var tagName = $("#inputNewTagName").val();
     fetch("api/Tag/" + tagName, {
         method: 'POST',
@@ -11,8 +10,7 @@
         .then((response) => response.json())
         .then(() => location.reload())
         .catch(() => console.log("Failed to create item"));
-
-});
+}
 
 function UpdateTagName(id) {
 
@@ -48,7 +46,6 @@ function UpdateTagName(id) {
         }
 
     });
-
 }
 
 function DeleteTag(id) {

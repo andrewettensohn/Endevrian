@@ -10,6 +10,7 @@ using Endevrian.Models;
 using Endevrian.Models.MapModels;
 using Endevrian.Models.SessionModels;
 using Endevrian.Models.TagModels;
+using Endevrian.Models.WikiModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -181,6 +182,17 @@ namespace Endevrian.Areas.Identity.Controllers
             List<Tag> userTags = await _context.Tags.Where(x => x.UserId == userId).ToListAsync();
 
             return View(userTags);
+        }
+
+        public async Task<IActionResult> NewWikiPage([FromQuery] int campaignID, [FromQuery] int wikiPageID)
+        {
+            NewWikiPageViewModel model = new NewWikiPageViewModel
+            {
+                WikiPage = await _context.WikiPages.FindAsync(wikiPageID),
+                Campaign = await _context.Campaigns.FindAsync(campaignID)
+            };
+
+            return View(model);
         }
 
         private List<Map> GetMapGallery(string userId, string searchString)

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Endevrian.Models;
-using Microsoft.EntityFrameworkCore;
 using Endevrian.Data;
-using Microsoft.Extensions.Configuration;
-using System.Security.Claims;
+using Endevrian.Models.WikiModels;
 
 namespace Endevrian.Controllers
 {
@@ -39,31 +35,60 @@ namespace Endevrian.Controllers
             return View(model);
         }
 
-        //public IActionResult AdventureLog()
-        //{
+        public IActionResult WikiPortal()
+        {
+            WikiPortalViewModel model = new WikiPortalViewModel
+            {
+                Campaigns = _context.Campaigns.ToList()
+            };
 
-        //    AdventureLogViewModel model = new AdventureLogViewModel();
+            foreach (Campaign campaign in model.Campaigns)
+            {
+                campaign.WikiPages = _context.WikiPages.Where(x => x.CampaignID == campaign.CampaignID).OrderBy(x => x.PageName).ToList();
 
-        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if(campaign.WikiPages is null)
+                {
+                    campaign.WikiPages = new List<WikiPage>();
+                }
+            }
 
-        //    model.SelectedCampaign = _context.Campaigns.FirstOrDefault(x => x.UserId == userId && x.IsSelectedCampaign == true);
+            if(model.Campaigns is null)
+            {
+                model.Campaigns = new List<Campaign>();
+            }
 
-        //    if (model.SelectedCampaign != null)
-        //    {
-        //        List<AdventureLog> adventureLogList = _context.AdventureLogs.Where(x => x.CampaignID == model.SelectedCampaign.CampaignID).ToList();
-        //        adventureLogList = adventureLogList.OrderByDescending(x => x.AdventureLogID).ToList();
+            return View(model);
+        }
+        
+        public async Task<IActionResult> WikiContent([FromQuery] int? wikiPageID, string searchQuery)
+        {
+            WikiContentViewModel model = new WikiContentViewModel();
 
-        //        model.AdventureLogs = adventureLogList;
+            if(wikiPageID != null)
+            {
+                model.SelectedPage = await _context.WikiPages.FindAsync(wikiPageID);
+            }
+            else if (searchQuery != null)
+            {
+                searchQuery = searchQuery.ToLower();
+                List<WikiPage> searchResults = _context.WikiPages.Where(
+                x => x.PageName.ToLower().StartsWith(searchQuery)
+                || x.PageName.ToLower().EndsWith(searchQuery)
+                || x.PageName.ToLower().Contains(searchQuery)).ToList();
 
-        //    }
-        //    else
-        //    {
-        //        model.SelectedCampaign = new Campaign { IsSelectedCampaign = false };
-        //    }
+                if(searchResults.Count != 1)
+                {
+                    model.SelectedPage = null;
+                    model.SearchResults = searchResults;
+                }
+                else
+                {
+                    model.SelectedPage = searchResults.FirstOrDefault();
+                }
+            }
 
-        //    return View(model);
-
-        //}
+            return View(model);
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
