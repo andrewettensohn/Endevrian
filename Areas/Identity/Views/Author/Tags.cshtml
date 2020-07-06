@@ -34,7 +34,14 @@
                 <div class="row justify-content-between">
                     <div class="col-sm-auto">
                         <h5 id="headerTagName@(tag.TagID)">@tag.Name</h5>
-                        <input id="inputEditTagName@(tag.TagID)" class="form-control d-none" type="text" />
+                        <div id="editInputGroup@(tag.TagID)" class="input-group mb-3 d-none">
+                            <input id="inputEditTagName@(tag.TagID)" class="form-control" type="text" />
+                            <div class="input-group-append">
+                                <button id="btnSubmitEdit" class="btn btn-outline-secondary" type="button">
+                                    <i class="fa fa-check text-white"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-sm-auto">
                         <button id="btnEditSectionName" class="btn text-white border-primary" type="button" onclick="UpdateTagName(@tag.TagID)">

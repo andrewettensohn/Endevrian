@@ -14,37 +14,34 @@
 
 function UpdateTagName(id) {
 
+    var inputGroup = $("#editInputGroup" + id);
     var input = $("#inputEditTagName" + id);
     var header = $("#headerTagName" + id);
 
     header.toggleClass("d-none");
     input.val(header.text());
-    input.toggleClass("d-none");
+    inputGroup.toggleClass("d-none");
 
-    input.on("keypress focusout", async function (evt) {
-        var key = evt.which;
-        if (key == 13 || key == 0) {
+    $("#btnSubmitEdit").on("click", async function (evt) {
 
-            evt.preventDefault();
+        evt.preventDefault();
 
-            item = {
+        item = {
 
-                tagID: id,
-                name: input.val()
-            }
-
-            fetch("api/Tag", {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(item)
-            })
-                .then((response) => response.json())
-                .then(() => location.reload())
-                .catch(() => console.log("Failed to update item"));
+            tagID: id,
+            name: input.val()
         }
 
+        fetch("api/Tag", {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => location.reload())
+            .catch(() => console.log("Failed to update item"));
     });
 }
 
