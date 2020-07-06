@@ -57,7 +57,14 @@
                             <div class="card border-0 shadow" style="width: 21rem; background-color: #121212;">
                                 <div class="card-header">
                                     <h5 id="headerMapName@(map.MapID)" class="card-title text-light">@map.MapName</h5>
-                                    <input id="inputMapName@(map.MapID)" class="input-group-text d-none" value="@map.MapName" />
+                                    <div id="inputGroupMapName" class="input-group mb-3 d-none">
+                                        <input id="inputMapName@(map.MapID)" class="input-group-text" value="@map.MapName" />
+                                        <div class="input-group-append">
+                                            <button id="btnSubmitMapNameChange" class="btn btn-outline-secondary" type="button">
+                                                <i class="fa fa-check text-white"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                     @if (map.RelatedSessionNote != null)
                                     {
                                         <button onclick="NavigateToSessionNote(@map.SessionNoteID)" class="btn text-primary">Used in @map.RelatedSessionNote.SessionNoteTitle</button>
