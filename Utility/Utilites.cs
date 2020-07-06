@@ -1,5 +1,7 @@
-﻿using Endevrian.Models;
+﻿using Endevrian.Data;
+using Endevrian.Models;
 using Endevrian.Models.MapModels;
+using Endevrian.Models.TagModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +58,44 @@ namespace Endevrian.Utility
 
 
             return (mapListVm);
+        }
+
+        public static List<Map> GetMapGallery(string userId, string searchString, ApplicationDbContext _context)
+        {
+            int selectedCampaignID = _context.Campaigns.Where(x => x.UserId == userId).FirstOrDefault().CampaignID;
+
+            List<Map> campaignMapsNoTags = _context.Maps.Where(x => x.UserId == userId && x.CampaignID == selectedCampaignID).ToList();
+            List<Map> campaignMaps = new List<Map>();
+
+            foreach (Map map in campaignMapsNoTags)
+            {
+                map.ActiveTags = _context.TagRelations.Where(x => x.MapID == map.MapID).ToList();
+                map.InactiveTags = GetInactiveTagsForMap(map, _context);
+
+                campaignMaps.Add(map);
+            }
+
+            List<Map> requestedMaps = campaignMaps.Where(x => x.MapName.ToLower().Contains(searchString.ToLower()) ||
+            x.ActiveTags.Any(x => x.TagName.ToLower().Contains(searchString.ToLower()))).ToList();
+
+            return requestedMaps;
+        }
+
+        public static List<Tag> GetInactiveTagsForMap(Map map, ApplicationDbContext _context)
+        {
+            List<Tag> InactiveTags = new List<Tag>();
+            List<Tag> allTags = _context.Tags.Where(x => x.UserId == map.UserId).ToList();
+            foreach (Tag tag in allTags)
+            {
+                List<TagRelation> matchingTags = map.ActiveTags.Where(x => x.TagID == tag.TagID).ToList();
+
+                if (!matchingTags.Any())
+                {
+                    InactiveTags.Add(tag);
+                }
+            }
+
+            return InactiveTags;
         }
     }
 }

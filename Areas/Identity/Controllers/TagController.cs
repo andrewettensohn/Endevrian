@@ -3,6 +3,7 @@ using Endevrian.Data;
 using Endevrian.Models;
 using Endevrian.Models.MapModels;
 using Endevrian.Models.TagModels;
+using Endevrian.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -85,20 +86,31 @@ namespace Endevrian.Areas.Identity.Controllers
             return tag;
         }
 
-        //Deleting a Tag does not remove pre-existing tag relations
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTag(int id)
         {
             string requestingUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            Tag tag = await _context.Tags.FindAsync(id);
+            Tag tagToDelete = await _context.Tags.FindAsync(id);
 
-            if(tag.UserId != requestingUser)
+            if(tagToDelete.UserId != requestingUser)
             {
                 return BadRequest();
             }
 
-            _context.Tags.Remove(tag);
+            List<Map> allUserMaps = Utilities.GetMapGallery(tagToDelete.UserId, "", _context);
+            
+            foreach(Map map in allUserMaps)
+            {
+                if(map.ActiveTags.Any(x => x.TagID == tagToDelete.TagID))
+                {
+                    int tagRelationID = map.ActiveTags.FirstOrDefault(x => x.TagID == tagToDelete.TagID).TagRelationID;
+                    TagRelation tagRelation = await _context.TagRelations.FindAsync(tagRelationID);
+                    _context.TagRelations.Remove(tagRelation);
+                }
+            }
+
+            _context.Tags.Remove(tagToDelete);
             _context.SaveChanges();
 
             return NoContent();
