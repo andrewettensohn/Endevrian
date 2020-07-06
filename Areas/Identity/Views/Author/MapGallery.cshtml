@@ -80,6 +80,10 @@
                                             <i class="fas fa-tags"></i>
                                         </button>
                                         <div class="dropdown-menu">
+                                            @if(map.ActiveTags.Count == 0 && map.InactiveTags.Count == 0)
+                                            {
+                                                <p class="ml-1">No Tags Created Yet</p>
+                                            }
                                             @foreach (var activeTag in map.ActiveTags)
                                             {
                                                 <div class="dropdown-item">
