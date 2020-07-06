@@ -31,6 +31,12 @@ namespace Endevrian.Areas.Identity.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> NewAdventureLog([FromQuery] int adventureLogID)
+        {
+            AdventureLog log = await _context.AdventureLogs.FindAsync(adventureLogID);
+            return View(log);
+        }
+
         public async Task<IActionResult> CampaignList()
         {
 
