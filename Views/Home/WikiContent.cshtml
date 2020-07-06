@@ -32,7 +32,7 @@
                     <img loading="lazy" src="@Model.SelectedPage.ImagePath" alt="No Image Found" class="card-img-top">
                 }
                 <div class="card-body">
-                    <p>Other details</p>
+                    <p>@Model.SelectedPage.CardContent</p>
                 </div>
             </div>
         </div>
@@ -43,20 +43,22 @@
 
     if (user == Model.SelectedPage.UserId)
     {
-        <a asp-area="Identity" asp-controller="Author" asp-action="NewWikiPage" asp-route-campaignID="@(Model.SelectedPage.CampaignID)" asp-route-wikiPageID="@(Model.SelectedPage.WikiPageID)">Edit Wiki Page</a>
+        <a class="btn btn-outline-primary mt-3" asp-area="Identity" asp-controller="Author" asp-action="NewWikiPage" asp-route-campaignID="@(Model.SelectedPage.CampaignID)" asp-route-wikiPageID="@(Model.SelectedPage.WikiPageID)">Edit Wiki Page</a>
     }
 }
 else if (Model.SearchResults.Count > 0)
 {
     ViewData["Title"] = "Wiki Search Results";
-    <ul class="mb-5">
-        @foreach (var page in Model.SearchResults)
-        {
-            <li class="mb-3">
-                <a asp-area="" asp-controller="Home" asp-action="WikiContent" asp-route-wikiPageID="@(page.WikiPageID)">@(page.PageName)</a>
-            </li>
-        }
-    </ul>
+    <div>
+        <ul class="list-group list-group-flush mb-5">
+            @foreach (var page in Model.SearchResults)
+            {
+                <li class="list-group-item" style="background-color: #121212;">
+                    <a asp-area="" asp-controller="Home" asp-action="WikiContent" asp-route-wikiPageID="@(page.WikiPageID)">@(page.PageName)</a>
+                </li>
+            }
+        </ul>
+    </div>
 }
 else
 {

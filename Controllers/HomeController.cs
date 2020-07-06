@@ -90,12 +90,6 @@ namespace Endevrian.Controllers
             return View(model);
         }
 
-        //public async Task<IActionResult> WikiSearchResults(List<WikiPage> passedSearchResults)
-        //{
-        //    List<WikiPage> searchResults = (List<WikiPage>)TempData["searchResults"];
-        //    return View(searchResults);
-        //}
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

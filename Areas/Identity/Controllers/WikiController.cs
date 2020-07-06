@@ -35,6 +35,23 @@ namespace Endevrian.Areas.Identity.Controllers
             return await _context.WikiPages.FindAsync(WikiPageID);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteWikiPage(int id)
+        {
+            string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            WikiPage pageToDelete = await _context.WikiPages.FindAsync(id);
+
+            if(pageToDelete.UserId != currentUser)
+            {
+                return BadRequest();
+            }
+
+            _context.Remove(pageToDelete);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         // POST: api/WikiPage
         [HttpPost]
         public async Task<ActionResult<WikiPage>> PostWikiPage()
@@ -50,7 +67,8 @@ namespace Endevrian.Areas.Identity.Controllers
             {
                 WikiContent = string.IsNullOrWhiteSpace(Request.Form["wikiContent"]) ? "No Content has been added to this page yet." : Request.Form["wikiContent"].ToString(),
                 PageName = string.IsNullOrWhiteSpace(Request.Form["pageName"]) ? "New Page" : Request.Form["pageName"].ToString(),
-                ImageFile = (Request.Form.Files.Count > 0) ? Request.Form.Files[0] : null
+                ImageFile = (Request.Form.Files.Count > 0) ? Request.Form.Files[0] : null,
+                CardContent = Request.Form["cardContent"].ToString()
             };
 
             string currentUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -62,6 +80,7 @@ namespace Endevrian.Areas.Identity.Controllers
 
                 currentWikiPage.WikiContent = sentWikiPage.WikiContent;
                 currentWikiPage.PageName = sentWikiPage.PageName;
+                currentWikiPage.CardContent = sentWikiPage.CardContent;
 
                 if (currentWikiPage.UserId != currentUser)
                 {
