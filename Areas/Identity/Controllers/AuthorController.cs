@@ -11,6 +11,7 @@ using Endevrian.Models.MapModels;
 using Endevrian.Models.SessionModels;
 using Endevrian.Models.TagModels;
 using Endevrian.Models.WikiModels;
+using Endevrian.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,12 @@ namespace Endevrian.Areas.Identity.Controllers
         {
             _logger = logger;
             _context = context;
+        }
+
+        public async Task<IActionResult> NewAdventureLog([FromQuery] int adventureLogID)
+        {
+            AdventureLog log = await _context.AdventureLogs.FindAsync(adventureLogID);
+            return View(log);
         }
 
         public async Task<IActionResult> CampaignList()
@@ -76,8 +83,8 @@ namespace Endevrian.Areas.Identity.Controllers
 
             if (searchString != null)
             {
-                List<Map> foundMaps = GetMapGallery(userId, searchString);
-                model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
+                List<Map> foundMaps = Utilities.GetMapGallery(userId, searchString, _context);
+                model.UserMaps = Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
 
             }
             else
@@ -93,7 +100,7 @@ namespace Endevrian.Areas.Identity.Controllers
                         map.RelatedSessionNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).FirstAsync();
                     }
                 }
-                model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
+                model.UserMaps = Utilities.OrderMapsForRows(allMaps, model.UserMaps);
             }
 
             return View(model);
@@ -114,13 +121,13 @@ namespace Endevrian.Areas.Identity.Controllers
             {
                 if (searchString != null)
                 {
-                    List<Map> foundMaps = GetMapGallery(userId, searchString);
-                    model.UserMaps = Utility.Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
+                    List<Map> foundMaps = Utilities.GetMapGallery(userId, searchString, _context);
+                    model.UserMaps = Utilities.OrderMapsForRows(foundMaps, model.UserMaps);
                 }
                 else
                 {
 
-                    List<Map> allMaps = GetMapGallery(userId, "");
+                    List<Map> allMaps = Utilities.GetMapGallery(userId, "", _context);
                     foreach (Map map in allMaps)
                     {
                         bool foundRelatedNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).AnyAsync();
@@ -129,7 +136,7 @@ namespace Endevrian.Areas.Identity.Controllers
                             map.RelatedSessionNote = await _context.SessionNotes.Where(x => x.SessionNoteID == map.SessionNoteID).FirstAsync();
                         }
                     }
-                    model.UserMaps = Utility.Utilities.OrderMapsForRows(allMaps, model.UserMaps);
+                    model.UserMaps = Utilities.OrderMapsForRows(allMaps, model.UserMaps);
                 }
             }
             else
@@ -193,44 +200,6 @@ namespace Endevrian.Areas.Identity.Controllers
             };
 
             return View(model);
-        }
-
-        private List<Map> GetMapGallery(string userId, string searchString)
-        {
-            int selectedCampaignID = _context.Campaigns.Where(x => x.UserId == userId).FirstOrDefault().CampaignID;
-
-            List<Map> campaignMapsNoTags = _context.Maps.Where(x => x.UserId == userId && x.CampaignID == selectedCampaignID).ToList();
-            List<Map> campaignMaps = new List<Map>();
-
-            foreach (Map map in campaignMapsNoTags)
-            {
-                map.ActiveTags = _context.TagRelations.Where(x => x.MapID == map.MapID).ToList();
-                map.InactiveTags = GetInactiveTagsForMap(map);
-
-                campaignMaps.Add(map);
-            }
-
-            List<Map> requestedMaps = campaignMaps.Where(x => x.MapName.ToLower().Contains(searchString.ToLower()) || 
-            x.ActiveTags.Any(x => x.TagName.ToLower().Contains(searchString.ToLower()))).ToList();
-
-            return requestedMaps;
-        }
-
-        private List<Tag> GetInactiveTagsForMap(Map map)
-        {
-            List<Tag> InactiveTags = new List<Tag>();
-            List<Tag> allTags = _context.Tags.Where(x => x.UserId == map.UserId).ToList();
-            foreach (Tag tag in allTags)
-            {
-                List<TagRelation> matchingTags = map.ActiveTags.Where(x => x.TagID == tag.TagID).ToList();
-
-                if (!matchingTags.Any())
-                {
-                    InactiveTags.Add(tag);
-                }
-            }
-
-            return InactiveTags;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

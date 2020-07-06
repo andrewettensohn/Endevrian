@@ -44,7 +44,7 @@ namespace Endevrian.Controllers
 
             foreach (Campaign campaign in model.Campaigns)
             {
-                campaign.WikiPages = _context.WikiPages.Where(x => x.CampaignID == campaign.CampaignID).OrderBy(x => x.PageName).ToList();
+                campaign.WikiPages = _context.WikiPages.Where(x => x.CampaignID == campaign.CampaignID).OrderByDescending(x => x.PageName).ToList();
 
                 if(campaign.WikiPages is null)
                 {

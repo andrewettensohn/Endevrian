@@ -1,37 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Endevrian.Data;
 using Endevrian.Models;
-using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Endevrian.Utility;
-using Microsoft.Extensions.Configuration;
 
 namespace Endevrian.Controllers
 {
-    [Route("Home/api/AdventureLogs")]
+    [Area("Identity")]
+    [Route("Identity/Author/api/AdventureLogs")]
     [ApiController]
     public class AdventureLogsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly SystemLogController _logController;
 
-        public AdventureLogsController(ApplicationDbContext context, SystemLogController logController, IConfiguration configuration)
+        public AdventureLogsController(ApplicationDbContext context, SystemLogController logController)
         {
             _context = context;
             _logController = logController;
-        }
-
-        // GET: api/AdventureLogs
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<AdventureLog>>> GetAdventureLogs()
-        {
-            return (await _context.AdventureLogs.ToListAsync());
         }
 
         // GET: api/AdventureLogs/5
@@ -59,11 +49,11 @@ namespace Endevrian.Controllers
             {
                 return BadRequest();
             }
-            if (sentAdventureLog.LogTitle != null)
+            if (!string.IsNullOrWhiteSpace(sentAdventureLog.LogTitle))
             {
                 adventureLog.LogTitle = sentAdventureLog.LogTitle;
             }
-            if (sentAdventureLog.LogBody != null)
+            if (!string.IsNullOrWhiteSpace(sentAdventureLog.LogBody))
             {
                 adventureLog.LogBody = sentAdventureLog.LogBody;
             }
@@ -98,19 +88,18 @@ namespace Endevrian.Controllers
             {
                 adventureLog.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                if (adventureLog.LogTitle == "" || adventureLog.LogTitle is null)
+                if (string.IsNullOrWhiteSpace(adventureLog.LogTitle))
                 {
                     adventureLog.LogTitle = "Untitled";
                 }
-
-                if (adventureLog.LogBody == "" || adventureLog.LogBody is null)
+                if (string.IsNullOrWhiteSpace(adventureLog.LogBody))
                 {
-                    adventureLog.LogBody = "Nothing seems to be here! Click here to edit.";
+                    adventureLog.LogBody = "Nothing seems to be here!";
                 }
 
                 adventureLog = Utilities.NewCreateDateFormatted(adventureLog);
 
-                _context.AdventureLogs.Add(adventureLog);
+                await _context.AdventureLogs.AddAsync(adventureLog);
                 _context.SaveChanges();
 
                 return CreatedAtAction("GetAdventureLog", new { id = adventureLog.AdventureLogID }, adventureLog);

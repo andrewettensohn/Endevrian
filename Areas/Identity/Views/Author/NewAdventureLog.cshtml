@@ -1,0 +1,109 @@
+﻿@{
+    ViewData["Title"] = "Edit Adventure Log";
+}
+
+@if (Model != null)
+{
+    <div class="jumbotron" style="background-color: #121212">
+        <input id="inputLogTitle" class="form-control" placeholder="Log Title" value="@Model.LogTitle"/>
+        <hr class="my-4">
+        <div class="text-dark">
+            <textarea id="areaInputLogBody" placeholder="Tell your story here" class="form-control" rows="10" cols="50">@Model.LogBody</textarea>
+        </div>
+        <div class="d-flex flex-column p-2 align-items-end">
+            <div>
+                <button id="btnUpdateLogBody" class="btn border border-success text-success mb-3" onclick="EditAdventureLog(@Model.AdventureLogID)">Submit</button>
+            </div>
+            <div>
+                <button id="btnDeleteLog" class="btn border border-danger text-danger" onclick="deleteAdventureLog(@Model.AdventureLogID)">Delete</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="jumbotron" style="background-color: #121212">
+        <input id="inputLogTitle" class="form-control" placeholder="Log Title" value="" />
+        <hr class="my-4">
+        <div class="text-dark">
+            <textarea id="areaInputLogBody" placeholder="Tell your story here" class="form-control" rows="10" cols="50"></textarea>
+        </div>
+        <div class="d-flex flex-column p-2 align-items-end">
+            <div>
+                <button id="btnUpdateLogBody" class="btn border border-success text-success mb-3" onclick="AddAdventureLog()">Submit</button>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script>
+    const AdventureUri = "api/AdventureLogs/";
+    const LogsHome = "@Url.Content($"~/Home/AdventureLog")";
+    let editor;
+    $(document).ready(function () {
+
+        ClassicEditor
+            .create(document.querySelector('#areaInputLogBody'))
+            .then(newEditor => {
+                editor = newEditor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+    });
+
+    function EditAdventureLog(id) {
+
+        let editorData = editor.getData();
+
+        item = {
+
+            adventureLogID: id,
+            logBody: editorData
+
+        }
+
+        fetch(AdventureUri + id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then(() => window.location.href = LogsHome)
+            .catch(error => console.error('Unable to edit log body', error));
+    }
+
+    function AddAdventureLog() {
+
+        item = {
+
+            logTitle: $("#inputLogTitle").val(),
+            logBody: $("#textAreaLogBody").val(),
+        }
+
+        fetch(AdventureUri, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(item)
+        })
+            .then((response) => response.json())
+            .then(() => window.location.href = LogsHome)
+            .catch(() => console.log("Failed to create item"));
+    }
+
+    function deleteAdventureLog(id) {
+
+        fetch(AdventureUri + id, {
+            method: 'DELETE'
+        })
+            .then(() => window.location.href = LogsHome)
+            .catch(() => console.log("Failed to delete item"));
+
+    }
+
+</script>

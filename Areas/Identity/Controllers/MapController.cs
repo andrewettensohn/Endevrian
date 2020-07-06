@@ -153,7 +153,6 @@ namespace Endevrian.Areas.Identity.Controllers
 
             BlobClient primaryBlobClient = containerClient.GetBlobClient(postedFile.FileName);
             
-
             // Open the file and upload its data
             using Stream uploadFileStream = postedFile.OpenReadStream();
             await primaryBlobClient.UploadAsync(uploadFileStream, true);
@@ -197,49 +196,5 @@ namespace Endevrian.Areas.Identity.Controllers
 
             return map;
         }
-
-        //private string UploadMapPreview()
-        //{
-
-
-
-        //}
-
-        //private async Task<string> VaryQualityLevel(Bitmap bmp, string fileName, BlobContainerClient containerClient)
-        //{
-        //    using (bmp)
-        //    {
-        //        ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
-  
-        //        Encoder myEncoder = Encoder.Quality;
-        //        EncoderParameters myEncoderParameters = new EncoderParameters(1);
-
-        //        EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 25L);
-        //        myEncoderParameters.Param[0] = myEncoderParameter;
-
-        //        BlobClient blobClient = containerClient.GetBlobClient($"Preview{fileName}");
-        //        using (MemoryStream memoryStream = new MemoryStream())
-        //        {
-        //            bmp.Save(memoryStream, jpgEncoder, myEncoderParameters);
-        //            memoryStream.Seek(0, SeekOrigin.Begin);
-        //            await blobClient.UploadAsync(memoryStream, true);
-        //        }
-
-        //        return blobClient.Uri.ToString();
-        //    }
-        //}
-
-        //private ImageCodecInfo GetEncoder(ImageFormat format)
-        //{
-        //    ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
-        //    foreach (ImageCodecInfo codec in codecs)
-        //    {
-        //        if (codec.FormatID == format.Guid)
-        //        {
-        //            return codec;
-        //        }
-        //    }
-        //    return null;
-        //}
     }
 }

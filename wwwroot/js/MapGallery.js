@@ -42,20 +42,17 @@ function InputNewMapName(mapId) {
     $("#headerMapName" + mapId).toggleClass("d-none");
 
     var inputMap = $("#inputMapName" + mapId);
-    inputMap.toggleClass("d-none");
+    $("#inputGroupMapName").toggleClass("d-none");
 
-    inputMap.on("keypress focusout", async function (evt) {
-        var key = evt.which;
-        if (key == 13 || key == 0) {
+    $("#btnSubmitMapNameChange").on("click", async function (evt) {
+        evt.preventDefault();
 
-            evt.preventDefault();
+        var newMapName = inputMap.val();
 
-            var newMapName = inputMap.val();
+        fetch("api/Map/" + mapId + "/" + newMapName, {
+            method: 'PUT',
+        })
+            .then(() => window.location.reload());
 
-            fetch("api/Map/" + mapId + "/" + newMapName, {
-                method: 'PUT',
-            })
-                .then(() => window.location.reload());
-        }
     });
 }

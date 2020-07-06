@@ -104,7 +104,6 @@ else
 }
 
 <script>
-
     $(document).ready(function () {
         let editor;
         let formData = new FormData();
@@ -124,12 +123,6 @@ else
             //replace the "Choose a file" label
             $(this).next('.custom-file-label').html(fileName);
         })
-
-        document.querySelector('#btnSubmitWiki').addEventListener('click', () => {
-
-            fetch("")
-
-        });
 
         document.querySelector('#btnSubmitWiki').addEventListener('click', () => {
 
