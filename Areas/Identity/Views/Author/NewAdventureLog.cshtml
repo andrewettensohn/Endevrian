@@ -81,7 +81,7 @@ else
         item = {
 
             logTitle: $("#inputLogTitle").val(),
-            logBody: $("#textAreaLogBody").val(),
+            logBody: editor.getData(),
         }
 
         fetch(AdventureUri, {

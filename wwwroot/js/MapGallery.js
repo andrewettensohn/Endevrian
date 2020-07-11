@@ -40,14 +40,12 @@ function deleteMap(mapId) {
 function InputNewMapName(mapId) {
 
     $("#headerMapName" + mapId).toggleClass("d-none");
-
-    var inputMap = $("#inputMapName" + mapId);
-    $("#inputGroupMapName").toggleClass("d-none");
+    $("#inputGroupMapName" + mapId).toggleClass("d-none");
 
     $("#btnSubmitMapNameChange").on("click", async function (evt) {
         evt.preventDefault();
 
-        var newMapName = inputMap.val();
+        var newMapName = $("#inputMapName" + mapId).val();
 
         fetch("api/Map/" + mapId + "/" + newMapName, {
             method: 'PUT',
